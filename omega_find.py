@@ -1,5 +1,5 @@
 """ Written by Benjamin Jack Cullen
-Intention: File ops template.
+Intention: Find files that may be obfuscated in a certain way.
 Setup: Multiprocess + Async.
 """
 import multiprocessing
