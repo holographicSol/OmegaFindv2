@@ -135,7 +135,7 @@ if __name__ == '__main__':
     allow_x = perform_checks(mode, _target, _proc_max)
 
     if allow_x is True:
-        print('[OmegaFind v2]')
+        print('\n[OmegaFind v2]')
         # create datetime tag
         dt = str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
