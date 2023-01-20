@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
     _recognized_files = './db/database_file_recognition.txt'
-    mode = 'scan'
+    mode = '--de-scan'
     _target = 'D:\\TEST\\'
     # _target = 'C:\\Windows\\'
     _proc_max = 4
@@ -177,7 +177,7 @@ if __name__ == '__main__':
         # un-chunk results
         results = chunk_handler.un_chunk_data(results, depth=1)
 
-        if mode == 'learn':
+        if mode == '--learn':
             print('[Learning]')
             t = time.perf_counter()
             filtered_results = omega_find_learn.learn(data=results)
