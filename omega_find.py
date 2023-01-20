@@ -194,15 +194,18 @@ if __name__ == '__main__':
         if mode == 'learn':
             print(f'[Results] {len(results)}')
             print(f'[New Definitions] {len(filtered_results)}')
-            if filtered_results:
+            if len(filtered_results) >= 1:
                 # update recognized files
+                print('[Updating Definitions]')
                 asyncio.run(async_write_definitions(*filtered_results, file='./db/database_file_recognition.txt'))
 
         elif mode == 'scan':
             print(f'[Results] {len(results)}')
             print(f'[Unrecognized Files] {len(filtered_results)}')
-            # create unrecognized file list in timestamped data directory
-            asyncio.run(async_write_scan_results(*filtered_results, file='scan_results__'+dt+'.txt', _dt=dt))
+            if len(filtered_results) >= 1:
+                # create unrecognized file list in timestamped data directory
+                print('[Writing Scan Results]')
+                asyncio.run(async_write_scan_results(*filtered_results, file='scan_results__'+dt+'.txt', _dt=dt))
 
         print('[Complete]')
 
