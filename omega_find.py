@@ -123,8 +123,8 @@ if __name__ == '__main__':
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
     _recognized_files = './db/database_file_recognition.txt'
     mode = 'scan'
-    _target = 'D:\\TEST\\'
-    # _target = 'E:\\'
+    # _target = 'D:\\TEST\\'
+    _target = 'C:\\Users\\'
     _proc_max = 6
 
     # mode = str(sys.argv[1])
@@ -166,6 +166,7 @@ if __name__ == '__main__':
         print('[Expected Number Of Chunks]', len(chunks))
 
         # run the async multiprocess operation(s)
+        print('[Scanning]')
         t = time.perf_counter()
         results = asyncio.run(main(chunks))
         print(f'[Chunks of Results] {len(results)}')
