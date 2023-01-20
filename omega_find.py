@@ -203,25 +203,3 @@ if __name__ == '__main__':
 
     else:
         print('[invalid input]')
-
-
-"""
-import asyncio
-
-
-async def search(result, data, filtered_results):
-    try:
-        check_ = [result[1], result[2]]
-        if check_ not in data:
-            if check_ not in filtered_results:
-                return result
-    except:
-        pass
-
-
-async def de_obfuscate(data: list) -> list:
-    filtered_results = []
-    [filtered_results.append(await search(result=result, data=data, filtered_results=filtered_results)) for result in data]z
-    return filtered_results
-
-"""
