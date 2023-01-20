@@ -145,8 +145,8 @@ if __name__ == '__main__':
             recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_recognized_files))
         else:
             open(_recognized_files, 'w').close()
-        print(f'[recognized buffers] {len(recognized_files)}')
-        print(f'[known suffixes] {len(suffixes)}')
+        print(f'[Recognized Buffers] {len(recognized_files)}')
+        print(f'[Known Suffixes] {len(suffixes)}')
 
         # pre-scan
         t = time.perf_counter()
