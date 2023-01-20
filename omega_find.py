@@ -2,7 +2,6 @@
 Intention: De-Obfuscation.
 Setup: Multiprocess + Async.
 """
-import multiprocessing
 import os
 import sys
 import time
@@ -15,6 +14,8 @@ import prescan
 import chunk_handler
 import pathlib
 import aiofiles
+import omega_find_learn
+import omega_find_deobfuscate
 
 
 def get_suffix(file: str) -> str:
@@ -36,7 +37,7 @@ def file_sub_ops(_bytes: str) -> str:
 
 async def read_bytes(file: str) -> bytes:
     async with aiofiles.open(file, mode='rb') as handle:
-        _bytes = await handle.read(20971520)
+        _bytes = await handle.read(1024)
         await handle.close()
     return await asyncio.to_thread(file_sub_ops, _bytes)
 
@@ -124,8 +125,8 @@ if __name__ == '__main__':
     _recognized_files = './db/database_file_recognition.txt'
     mode = 'scan'
     # _target = 'D:\\TEST\\'
-    _target = 'C:\\Users\\'
-    _proc_max = 6
+    _target = 'D:\\Archives\\'
+    _proc_max = 8
 
     # mode = str(sys.argv[1])
     # _target = str(sys.argv[2])
@@ -175,36 +176,21 @@ if __name__ == '__main__':
         # un-chunk results
         results = chunk_handler.un_chunk_data(results, depth=1)
 
-        # check if results in recognized files
-        filtered_results = []
-        for result in results:
-            try:
-                # only check suffix and buffer results
-                check_ = [result[1], result[2]]
-                if check_ not in recognized_files:
-                    if check_ not in filtered_results:
-                        if mode == 'learn':
-                            # learn results: suffix, buffer
-                            filtered_results.append([result[1], result[2]])
-                        elif mode == 'scan':
-                            # scan results: path, alleged-suffix, buffer
-                            filtered_results.append(result)
-            except:
-                pass
-
         if mode == 'learn':
+            filtered_results = omega_find_learn.learn(data=results)
             print(f'[Results] {len(results)}')
             print(f'[New Definitions] {len(filtered_results)}')
             if len(filtered_results) >= 1:
-                # update recognized files
                 print('[Updating Definitions]')
                 asyncio.run(async_write_definitions(*filtered_results, file='./db/database_file_recognition.txt'))
 
         elif mode == 'scan':
+            t = time.perf_counter()
+            filtered_results = asyncio.run(omega_find_deobfuscate.async_de_obfuscate(_results=results, _recognized_files=recognized_files))
+            print(f'[Async Post Process Time] {time.perf_counter()-t}')
             print(f'[Results] {len(results)}')
             print(f'[Unrecognized Files] {len(filtered_results)}')
             if len(filtered_results) >= 1:
-                # create unrecognized file list in timestamped data directory
                 print('[Writing Scan Results]')
                 asyncio.run(async_write_scan_results(*filtered_results, file='scan_results__'+dt+'.txt', _dt=dt))
 
@@ -212,3 +198,25 @@ if __name__ == '__main__':
 
     else:
         print('[invalid input]')
+
+
+"""
+import asyncio
+
+
+async def search(result, data, filtered_results):
+    try:
+        check_ = [result[1], result[2]]
+        if check_ not in data:
+            if check_ not in filtered_results:
+                return result
+    except:
+        pass
+
+
+async def de_obfuscate(data: list) -> list:
+    filtered_results = []
+    [filtered_results.append(await search(result=result, data=data, filtered_results=filtered_results)) for result in data]z
+    return filtered_results
+
+"""
