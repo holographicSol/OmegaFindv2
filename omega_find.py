@@ -122,10 +122,10 @@ def perform_checks(_mode: str, _target: str, _proc_max: int) -> bool:
 if __name__ == '__main__':
 
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
-    _db_recognized_files = './db/database_file_recognition2.txt'
+    _db_recognized_files = './db/database_file_recognition.txt'
     mode = '--learn'
-    _target = 'D:\\TEST\\'
-    # _target = 'C:\\Windows\\'
+    # _target = 'D:\\TEST\\'
+    _target = 'C:\\'
     _proc_max = 4
 
     # mode = str(sys.argv[1])
