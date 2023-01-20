@@ -122,7 +122,7 @@ def perform_checks(_mode: str, _target: str, _proc_max: int) -> bool:
 if __name__ == '__main__':
 
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
-    _recognized_files = './db/database_file_recognition.txt'
+    _db_recognized_files = './db/database_file_recognition2.txt'
     mode = '--learn'
     _target = 'D:\\TEST\\'
     # _target = 'C:\\Windows\\'
@@ -142,10 +142,10 @@ if __name__ == '__main__':
 
         # read recognized files
         recognized_files, suffixes = [], []
-        if os.path.exists(_recognized_files):
-            recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_recognized_files))
+        if os.path.exists(_db_recognized_files):
+            recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files))
         else:
-            open(_recognized_files, 'w').close()
+            open(_db_recognized_files, 'w').close()
         print(f'[Recognized Buffers] {len(recognized_files)}')
         print(f'[Known Suffixes] {len(suffixes)}')
 
@@ -186,7 +186,7 @@ if __name__ == '__main__':
             print(f'[New Definitions] {len(filtered_results)}')
             if len(filtered_results) >= 1:
                 print('[Updating Definitions]')
-                asyncio.run(async_write_definitions(*filtered_results, file='./db/database_file_recognition.txt'))
+                asyncio.run(async_write_definitions(*filtered_results, file=_db_recognized_files))
 
         elif mode == '--de-scan':
             print('[De-Obfuscating]')
