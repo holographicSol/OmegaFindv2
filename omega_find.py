@@ -188,7 +188,7 @@ if __name__ == '__main__':
                 print('[Updating Definitions]')
                 asyncio.run(async_write_definitions(*filtered_results, file='./db/database_file_recognition.txt'))
 
-        elif mode == 'scan':
+        elif mode == '--de-scan':
             print('[De-Obfuscating]')
             t = time.perf_counter()
             filtered_results = asyncio.run(omega_find_deobfuscate.async_de_obfuscate(_results=results, _recognized_files=recognized_files))
