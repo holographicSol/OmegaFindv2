@@ -1,5 +1,5 @@
 """ Written by Benjamin Jack Cullen
-Intention: Find files that may be obfuscated in a certain way.
+Intention: File ops template.
 Setup: Multiprocess + Async.
 """
 import multiprocessing
@@ -26,7 +26,6 @@ def get_suffix(file: str) -> str:
 
 
 def file_sub_ops(_bytes: str) -> str:
-    """ optional sub-ops """
     buff = ''
     try:
         buff = magic.from_buffer(_bytes)
@@ -43,7 +42,6 @@ async def read_bytes(file: str) -> bytes:
 
 
 async def file_ops(file: str) -> list:
-    """ ops """
     try:
         buffer = await read_bytes(file)
         suffix = await asyncio.to_thread(get_suffix, file)
@@ -124,10 +122,10 @@ if __name__ == '__main__':
 
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
     _recognized_files = './db/database_file_recognition.txt'
-    mode = 'learn'
-    # _target = 'D:\\TEST\\'
-    _target = 'C:\\'
-    _proc_max = 4
+    mode = 'scan'
+    _target = 'D:\\TEST\\'
+    # _target = 'E:\\'
+    _proc_max = 6
 
     # mode = str(sys.argv[1])
     # _target = str(sys.argv[2])
@@ -137,6 +135,7 @@ if __name__ == '__main__':
     allow_x = perform_checks(mode, _target, _proc_max)
 
     if allow_x is True:
+        print('[OmegaFind v2]')
         # create datetime tag
         dt = str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
@@ -146,15 +145,15 @@ if __name__ == '__main__':
             recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_recognized_files))
         else:
             open(_recognized_files, 'w').close()
-        print('[recognized buffers]', len(recognized_files))
-        print('[known suffixes]', len(suffixes))
+        print(f'[recognized buffers] {len(recognized_files)}')
+        print(f'[known suffixes] {len(suffixes)}')
 
         # pre-scan
         t = time.perf_counter()
         files, x_files = pre_scan_handler(_target=_target)
-        print('[files]', len(files))
-        print('[x_files]', len(x_files))
-        print('[pre-scan time]', time.perf_counter() - t)
+        print(f'[Files] {len(files)}')
+        print(f'[Skipping Files] {len(x_files)}')
+        print(f'[Pre-Scan Time] {time.perf_counter() - t}')
 
         # log all paths
         asyncio.run(async_write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
@@ -164,13 +163,13 @@ if __name__ == '__main__':
 
         # chunk data ready for async multiprocess
         chunks = chunk_handler.chunk_data(files, _proc_max)
-        print('[number of expected chunks]', len(chunks))
+        print('[Expected Number Of Chunks]', len(chunks))
 
         # run the async multiprocess operation(s)
         t = time.perf_counter()
         results = asyncio.run(main(chunks))
-        print('[chunked results]', len(results))
-        print('[multi-process+async ops time]', time.perf_counter()-t)
+        print(f'[Chunks of Results] {len(results)}')
+        print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
 
         # un-chunk results
         results = chunk_handler.un_chunk_data(results, depth=1)
@@ -193,15 +192,15 @@ if __name__ == '__main__':
                 pass
 
         if mode == 'learn':
-            print('[results]', len(results))
-            print('[new definitions]', len(filtered_results))
+            print(f'[Results] {len(results)}')
+            print(f'[New Definitions] {len(filtered_results)}')
             if filtered_results:
                 # update recognized files
                 asyncio.run(async_write_definitions(*filtered_results, file='./db/database_file_recognition.txt'))
 
         elif mode == 'scan':
-            print('[results]', len(results))
-            print('[un-recognized files]', len(filtered_results))
+            print(f'[Results] {len(results)}')
+            print(f'[Unrecognized Files] {len(filtered_results)}')
             # create unrecognized file list in timestamped data directory
             asyncio.run(async_write_scan_results(*filtered_results, file='scan_results__'+dt+'.txt', _dt=dt))
 
