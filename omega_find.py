@@ -1,5 +1,5 @@
 """ Written by Benjamin Jack Cullen
-Intention: File ops template.
+Intention: De-Obfuscation.
 Setup: Multiprocess + Async.
 """
 import multiprocessing
