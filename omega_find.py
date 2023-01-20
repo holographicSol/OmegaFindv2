@@ -18,6 +18,16 @@ import omega_find_learn
 import omega_find_deobfuscate
 
 
+learn_seen_before = []
+
+
+def pre_scan_handler(_target: str) -> list:
+    scan_results = prescan.scan(path=_target)
+    _files = scan_results[0]
+    _x_files = scan_results[1]
+    return _files, _x_files
+
+
 def get_suffix(file: str) -> str:
     sfx = pathlib.Path(file).suffix
     sfx = sfx.replace('.', '').lower()
@@ -42,30 +52,56 @@ async def read_bytes(file: str) -> bytes:
     return await asyncio.to_thread(file_sub_ops, _bytes)
 
 
-async def file_ops(file: str) -> list:
+async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
+    if [suffix, buffer] not in _recognized_files:
+        if [suffix, buffer] not in learn_seen_before:
+            learn_seen_before.append([suffix, buffer])
+            return [suffix, buffer]
+
+
+async def scan_learn(file: str, _recognized_files: list) -> list:
+    global learn_seen_before
     try:
         buffer = await read_bytes(file)
         suffix = await asyncio.to_thread(get_suffix, file)
-        return [file, suffix, buffer]
+        return await scan_learn_check(suffix, buffer, _recognized_files)
     except:
         pass
 
 
-async def entry_point(chunk: list) -> list:
-    return [await file_ops(item) for item in chunk]
+async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files):
+    if [suffix, buffer] not in _recognized_files:
+        return [file, suffix, buffer]
 
 
-async def main(_chunks: list) -> list:
+async def de_scan(file: str, _recognized_files: list) -> list:
+    global learn_seen_before
+    try:
+        buffer = await read_bytes(file)
+        suffix = await asyncio.to_thread(get_suffix, file)
+        return await de_scan_check(file, suffix, buffer, _recognized_files)
+    except:
+        pass
+
+
+async def entry_point_learn(chunk: list, **kwargs) -> list:
+    _recognized_files = kwargs.values()
+    _recognized_files = chunk_handler.un_chunk_data(_recognized_files, depth=1)
+    return [await scan_learn(item, _recognized_files) for item in chunk]
+
+
+async def entry_point_de_scan(chunk: list, **kwargs) -> list:
+    _recognized_files = kwargs.values()
+    return [await de_scan(item, *_recognized_files) for item in chunk]
+
+
+async def main(_chunks: list, _recognized_files: list, _mode: str):
     async with Pool() as pool:
-        _results = await pool.map(entry_point, _chunks)
+        if mode == '--learn':
+            _results = await pool.map(entry_point_learn, _chunks, {'my excellent foobar': _recognized_files})
+        elif mode == '--de-scan':
+            _results = await pool.map(entry_point_de_scan, _chunks, {'my excellent foobar': _recognized_files})
     return _results
-
-
-def pre_scan_handler(_target: str) -> list:
-    scan_results = prescan.scan(path=_target)
-    _files = scan_results[0]
-    _x_files = scan_results[1]
-    return _files, _x_files
 
 
 async def async_read_definitions(fname):
@@ -120,13 +156,16 @@ def perform_checks(_mode: str, _target: str, _proc_max: int) -> bool:
 
 
 if __name__ == '__main__':
+    # Requires the aiomultiprocess pool file that I personally modified or this will not work.
 
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
     _db_recognized_files = './db/database_file_recognition.txt'
-    mode = '--learn'
+    # mode = '--de-scan'
+    mode = '--de-scan'
     # _target = 'D:\\TEST\\'
-    _target = 'C:\\'
-    _proc_max = 4
+    # _target = 'D:\\Music\\'
+    _target = 'C:\\Windows\\'
+    _proc_max = 32
 
     # mode = str(sys.argv[1])
     # _target = str(sys.argv[2])
@@ -170,34 +209,26 @@ if __name__ == '__main__':
         # run the async multiprocess operation(s)
         print(f'[Scanning Target]')
         t = time.perf_counter()
-        results = asyncio.run(main(chunks))
+        results = asyncio.run(main(chunks, recognized_files, mode))
         print(f'[Chunks of Results] {len(results)}')
         print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
 
         # un-chunk results
         results = chunk_handler.un_chunk_data(results, depth=1)
+        print(f'[Results] {len(results)}')
+        print('[Results]', results)
 
         if mode == '--learn':
-            print('[Learning]')
-            t = time.perf_counter()
-            filtered_results = asyncio.run(omega_find_learn.async_learn(_results=results, _recognized_files=recognized_files))
-            print(f'[Async Post-Process Time] {time.perf_counter() - t}')
-            print(f'[Results] {len(results)}')
-            print(f'[New Definitions] {len(filtered_results)}')
-            if len(filtered_results) >= 1:
+            print(f'[New Definitions] {len(results)}')
+            if len(results) >= 1:
                 print('[Updating Definitions]')
-                asyncio.run(async_write_definitions(*filtered_results, file=_db_recognized_files))
+                asyncio.run(async_write_definitions(*results, file=_db_recognized_files))
 
         elif mode == '--de-scan':
-            print('[De-Obfuscating]')
-            t = time.perf_counter()
-            filtered_results = asyncio.run(omega_find_deobfuscate.async_de_obfuscate(_results=results, _recognized_files=recognized_files))
-            print(f'[Async Post-Process Time] {time.perf_counter()-t}')
-            print(f'[Results] {len(results)}')
-            print(f'[Unrecognized Files] {len(filtered_results)}')
-            if len(filtered_results) >= 1:
+            print(f'[Unrecognized Files] {len(results)}')
+            if len(results) >= 1:
                 print('[Writing Scan Results]')
-                asyncio.run(async_write_scan_results(*filtered_results, file='scan_results__'+dt+'.txt', _dt=dt))
+                asyncio.run(async_write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
 
         print('[Complete]')
 
