@@ -14,8 +14,6 @@ import prescan
 import chunk_handler
 import pathlib
 import aiofiles
-import omega_find_learn
-import omega_find_deobfuscate
 
 
 learn_seen_before = []
@@ -96,11 +94,13 @@ async def entry_point_de_scan(chunk: list, **kwargs) -> list:
 
 
 async def main(_chunks: list, _recognized_files: list, _mode: str):
+    global learn_seen_before
     async with Pool() as pool:
         if mode == '--learn':
-            _results = await pool.map(entry_point_learn, _chunks, {'my excellent foobar': _recognized_files})
+            learn_seen_before = []
+            _results = await pool.map(entry_point_learn, _chunks, {'any': _recognized_files})
         elif mode == '--de-scan':
-            _results = await pool.map(entry_point_de_scan, _chunks, {'my excellent foobar': _recognized_files})
+            _results = await pool.map(entry_point_de_scan, _chunks, {'any': _recognized_files})
     return _results
 
 
@@ -160,11 +160,9 @@ if __name__ == '__main__':
 
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
     _db_recognized_files = './db/database_file_recognition.txt'
-    # mode = '--de-scan'
+    # mode = '--learn'
     mode = '--de-scan'
-    # _target = 'D:\\TEST\\'
-    # _target = 'D:\\Music\\'
-    _target = 'C:\\Windows\\'
+    _target = 'D:\\TEST\\'
     _proc_max = 32
 
     # mode = str(sys.argv[1])
@@ -216,7 +214,7 @@ if __name__ == '__main__':
         # un-chunk results
         results = chunk_handler.un_chunk_data(results, depth=1)
         print(f'[Results] {len(results)}')
-        print('[Results]', results)
+        # print('[Results]', results)
 
         if mode == '--learn':
             print(f'[New Definitions] {len(results)}')
