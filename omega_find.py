@@ -107,7 +107,7 @@ async def async_write_scan_results(*args, file: str, _dt: str):
 
 
 def perform_checks(_mode: str, _target: str, _proc_max: int) -> bool:
-    modes = ['learn', 'scan']
+    modes = ['--learn', '--de-scan']
     _allow_x = False
     if mode:
         if mode in modes:
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
     _recognized_files = './db/database_file_recognition.txt'
-    mode = '--de-scan'
+    mode = '--learn'
     _target = 'D:\\TEST\\'
     # _target = 'C:\\Windows\\'
     _proc_max = 4
@@ -180,8 +180,8 @@ if __name__ == '__main__':
         if mode == '--learn':
             print('[Learning]')
             t = time.perf_counter()
-            filtered_results = omega_find_learn.learn(data=results)
-            print(f'[Post-Process Time] {time.perf_counter() - t}')
+            filtered_results = asyncio.run(omega_find_learn.async_learn(_results=results, _recognized_files=recognized_files))
+            print(f'[Async Post-Process Time] {time.perf_counter() - t}')
             print(f'[Results] {len(results)}')
             print(f'[New Definitions] {len(filtered_results)}')
             if len(filtered_results) >= 1:
