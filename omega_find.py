@@ -204,7 +204,7 @@ if __name__ == '__main__':
             # create unrecognized file list in timestamped data directory
             asyncio.run(async_write_scan_results(*filtered_results, file='scan_results__'+dt+'.txt', _dt=dt))
 
-        print('[complete]')
+        print('[Complete]')
 
     else:
         print('[invalid input]')
