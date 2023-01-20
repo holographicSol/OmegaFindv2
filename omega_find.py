@@ -124,8 +124,8 @@ if __name__ == '__main__':
     # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
     _recognized_files = './db/database_file_recognition.txt'
     mode = 'scan'
-    # _target = 'D:\\TEST\\'
-    _target = 'C:\\Windows\\'
+    _target = 'D:\\TEST\\'
+    # _target = 'C:\\Windows\\'
     _proc_max = 4
 
     # mode = str(sys.argv[1])
@@ -168,7 +168,7 @@ if __name__ == '__main__':
         print('[Expected Number Of Chunks]', len(chunks))
 
         # run the async multiprocess operation(s)
-        print('[Scanning]')
+        print(f'[Scanning Target]')
         t = time.perf_counter()
         results = asyncio.run(main(chunks))
         print(f'[Chunks of Results] {len(results)}')
@@ -178,7 +178,10 @@ if __name__ == '__main__':
         results = chunk_handler.un_chunk_data(results, depth=1)
 
         if mode == 'learn':
+            print('[Learning]')
+            t = time.perf_counter()
             filtered_results = omega_find_learn.learn(data=results)
+            print(f'[Post-Process Time] {time.perf_counter() - t}')
             print(f'[Results] {len(results)}')
             print(f'[New Definitions] {len(filtered_results)}')
             if len(filtered_results) >= 1:
@@ -186,9 +189,10 @@ if __name__ == '__main__':
                 asyncio.run(async_write_definitions(*filtered_results, file='./db/database_file_recognition.txt'))
 
         elif mode == 'scan':
+            print('[De-Obfuscating]')
             t = time.perf_counter()
             filtered_results = asyncio.run(omega_find_deobfuscate.async_de_obfuscate(_results=results, _recognized_files=recognized_files))
-            print(f'[Async Post Process Time] {time.perf_counter()-t}')
+            print(f'[Async Post-Process Time] {time.perf_counter()-t}')
             print(f'[Results] {len(results)}')
             print(f'[Unrecognized Files] {len(filtered_results)}')
             if len(filtered_results) >= 1:
