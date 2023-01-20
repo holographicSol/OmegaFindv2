@@ -1,2 +1,4 @@
 # OmegaFindv2
-multiprocessed and asynced.
+Multiprocessed and Asynced.
+
+Are file(s) what the suffix claims to be.
