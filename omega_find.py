@@ -125,8 +125,8 @@ if __name__ == '__main__':
     _recognized_files = './db/database_file_recognition.txt'
     mode = 'scan'
     # _target = 'D:\\TEST\\'
-    _target = 'D:\\Archives\\'
-    _proc_max = 8
+    _target = 'C:\\Windows\\'
+    _proc_max = 4
 
     # mode = str(sys.argv[1])
     # _target = str(sys.argv[2])
@@ -150,6 +150,7 @@ if __name__ == '__main__':
         print(f'[Known Suffixes] {len(suffixes)}')
 
         # pre-scan
+        print('[Pre-Scanning]')
         t = time.perf_counter()
         files, x_files = pre_scan_handler(_target=_target)
         print(f'[Files] {len(files)}')
