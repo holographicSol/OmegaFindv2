@@ -29,9 +29,10 @@ def buffer_max() -> int:
 
 
 def database() -> str:
+    _db_recognized_files = './db/database_file_recognition.txt'
     if '--database' in sys.argv:
-        return sys.argv[sys.argv.index('--database') + 1]
-
+        _db_recognized_files = sys.argv[sys.argv.index('--database')+1]
+    return _db_recognized_files
 
 def digits() -> bool:
     _digits = False
