@@ -208,8 +208,8 @@ if __name__ == '__main__':
 
             dt = get_dt()
 
+            # read database
             recognized_files, suffixes = read_db()
-
             if verbose is True:
                 print(f'[Recognized Buffers] {len(recognized_files)}')
                 print(f'[Known Suffixes] {len(suffixes)}')
@@ -265,7 +265,6 @@ if __name__ == '__main__':
             print('')
 
         else:
-            # if os.path.exists(_target) and os.path.exists(_db_recognized_files):
             print('[Invalid Input]')
             if not os.path.exists(_target):
                 print('[Invalid Target]', _target)
