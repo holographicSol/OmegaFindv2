@@ -255,7 +255,6 @@ if __name__ == '__main__':
                     if i != 0:
                         print('            ' + str(_))
                     i += 1
-                print('\n')
                 multiproc_dict = {'files_recognized': recognized_files,
                                   'buffer_max': _buffer_max,
                                   'suffix': type_suffix}
