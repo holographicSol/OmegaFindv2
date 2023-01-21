@@ -18,7 +18,9 @@ import omega_find_help
 import re
 import omega_find_sysargv
 
-learn_seen_before = []
+
+def get_dt():
+    return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
 def pre_scan_handler(_target: str) -> list:
@@ -53,13 +55,10 @@ async def read_bytes(file: str, _buffer_max: int) -> bytes:
 
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
-    global learn_seen_before
     digi_str = r'[0-9]'
     buffer = re.sub(digi_str, '', str(buffer))
     if [suffix, buffer] not in _recognized_files:
-        if [suffix, buffer] not in learn_seen_before:
-            learn_seen_before.append([suffix, buffer])
-            return [suffix, buffer]
+        return [suffix, buffer]
 
 
 async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
@@ -80,7 +79,6 @@ async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files
 
 
 async def de_scan(file: str, _recognized_files: list, _buffer_max: int) -> list:
-    global learn_seen_before
     try:
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(get_suffix, file)
@@ -102,10 +100,8 @@ async def entry_point_de_scan(chunk: list, **kwargs) -> list:
 
 
 async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
-    global learn_seen_before
     async with Pool() as pool:
         if mode == '--learn':
-            learn_seen_before = []
             _results = await pool.map(entry_point_learn, _chunks, _multiproc_dict)
         elif mode == '--de-scan':
             _results = await pool.map(entry_point_de_scan, _chunks, _multiproc_dict)
@@ -173,8 +169,7 @@ if __name__ == '__main__':
         if os.path.exists(_target):
             print('\n[OmegaFind v2] Version 2. Multi-processed async for better performance.')
 
-            # create datetime tag
-            dt = str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
+            dt = get_dt()
 
             # read recognized files
             recognized_files, suffixes = [], []
