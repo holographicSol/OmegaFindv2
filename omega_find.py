@@ -226,7 +226,6 @@ if __name__ == '__main__':
             print('')
 
         else:
-            # if os.path.exists(_target) and os.path.exists(_db_recognized_files):
             print('[Invalid Input]')
             if not os.path.exists(_target):
                 print('[Invalid Target]', _target)
