@@ -249,12 +249,11 @@ if __name__ == '__main__':
                 multiproc_dict = {'files_recognized': recognized_files,
                                   'buffer_max': _buffer_max}
             elif type_scan is True:
-                chunk_suffix = list(chunk_handler.divide_chunks(_list=type_suffix, _max=12))
+                chunk_suffix = list(chunk_handler.chunk_data(data=type_suffix, chunk_size=12))
                 i = 0
                 print('[Suffixes]')
                 for _ in chunk_suffix:
-                    if i != 0:
-                        print('         ' + str(_))
+                    print('         ' + str(_))
                     i += 1
                 multiproc_dict = {'files_recognized': recognized_files,
                                   'buffer_max': _buffer_max,
