@@ -224,7 +224,7 @@ if __name__ == '__main__':
         # un-chunk results
         results = chunk_handler.un_chunk_data(results, depth=1)
         print(f'[Results] {len(results)}')
-        print('[Results]', results)
+        # print('[Results]', results)
 
         if mode == '--learn':
             print(f'[New Definitions] {len(results)}')
