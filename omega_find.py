@@ -15,7 +15,7 @@ import chunk_handler
 import pathlib
 import aiofiles
 import omega_find_help
-
+import re
 
 learn_seen_before = []
 
@@ -147,6 +147,7 @@ async def async_write_scan_results(*args, file: str, _dt: str):
 
 
 if __name__ == '__main__':
+
     if '-h' in sys.argv:
         omega_find_help.omega_help()
 
