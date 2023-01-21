@@ -35,13 +35,6 @@ def database() -> str:
     return _db_recognized_files
 
 
-def digits() -> bool:
-    _digits = False
-    if '--digits' in sys.argv:
-        _digits = True
-    return _digits
-
-
 def verbosity() -> bool:
     verbose = False
     if '-v' in sys.argv:
