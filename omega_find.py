@@ -52,6 +52,9 @@ async def read_bytes(file: str, _buffer_size: int) -> bytes:
 
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
+    global learn_seen_before
+    digi_str = r'[0-9]'
+    buffer = re.sub(digi_str, '', str(buffer))
     if [suffix, buffer] not in _recognized_files:
         if [suffix, buffer] not in learn_seen_before:
             learn_seen_before.append([suffix, buffer])
@@ -59,16 +62,18 @@ async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
 
 
 async def scan_learn(file: str, _recognized_files: list, _buffer_size: int) -> list:
-    global learn_seen_before
     try:
         buffer = await read_bytes(file, _buffer_size)
         suffix = await asyncio.to_thread(get_suffix, file)
-        return await scan_learn_check(suffix, buffer, _recognized_files)
+        x = await scan_learn_check(suffix, buffer, _recognized_files)
+        return x
     except:
         pass
 
 
 async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files):
+    digi_str = r'[0-9]'
+    buffer = re.sub(digi_str, '', str(buffer))
     if [suffix, buffer] not in _recognized_files:
         return [file, suffix, buffer]
 
@@ -86,7 +91,6 @@ async def de_scan(file: str, _recognized_files: list, _buffer_size: int) -> list
 async def entry_point_learn(chunk: list, **kwargs) -> list:
     _recognized_files = kwargs.get('files_recognized')
     _buffer_size = int(kwargs.get('buff_size'))
-    _recognized_files = chunk_handler.un_chunk_data(_recognized_files, depth=1)
     return [await scan_learn(item, _recognized_files, _buffer_size) for item in chunk]
 
 
@@ -108,6 +112,7 @@ async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
 
 
 async def async_read_definitions(fname):
+    digi_str = r'[0-9]'
     async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
         _data = await handle.read()
     _data = _data.split('\n')
@@ -117,6 +122,7 @@ async def async_read_definitions(fname):
         idx = datas.find(' ')
         suffix = datas[:idx]
         buffer = datas[idx+1:]
+        buffer = re.sub(digi_str, '', buffer)  # todo
         _file_recognition_store.append([suffix, buffer])
         if suffix not in _suffixes:
             _suffixes.append(suffix)
@@ -170,7 +176,7 @@ if __name__ == '__main__':
         if '-v' in sys.argv:
             verbose = True
 
-        if os.path.exists(_target) and os.path.exists(_db_recognized_files):
+        if os.path.exists(_target):
             print('\n[OmegaFind v2] Version 2. Multi-processed async for better performance.')
 
             # create datetime tag
@@ -183,6 +189,7 @@ if __name__ == '__main__':
             if verbose is True:
                 print(f'[Recognized Buffers] {len(recognized_files)}')
                 print(f'[Known Suffixes] {len(suffixes)}')
+            print(recognized_files)
 
             # pre-scan
             print('[Pre-Scanning] ..')
