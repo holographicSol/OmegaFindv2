@@ -43,9 +43,9 @@ def file_sub_ops(_bytes: str) -> str:
     return buff
 
 
-async def read_bytes(file: str) -> bytes:
+async def read_bytes(file: str, _buffer_size: int) -> bytes:
     async with aiofiles.open(file, mode='rb') as handle:
-        _bytes = await handle.read(1024)
+        _bytes = await handle.read(_buffer_size)
         await handle.close()
     return await asyncio.to_thread(file_sub_ops, _bytes)
 
@@ -57,10 +57,10 @@ async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
             return [suffix, buffer]
 
 
-async def scan_learn(file: str, _recognized_files: list) -> list:
+async def scan_learn(file: str, _recognized_files: list, _buffer_size: int) -> list:
     global learn_seen_before
     try:
-        buffer = await read_bytes(file)
+        buffer = await read_bytes(file, _buffer_size)
         suffix = await asyncio.to_thread(get_suffix, file)
         return await scan_learn_check(suffix, buffer, _recognized_files)
     except:
@@ -72,10 +72,10 @@ async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files
         return [file, suffix, buffer]
 
 
-async def de_scan(file: str, _recognized_files: list) -> list:
+async def de_scan(file: str, _recognized_files: list, _buffer_size: int) -> list:
     global learn_seen_before
     try:
-        buffer = await read_bytes(file)
+        buffer = await read_bytes(file, _buffer_size)
         suffix = await asyncio.to_thread(get_suffix, file)
         return await de_scan_check(file, suffix, buffer, _recognized_files)
     except:
@@ -83,24 +83,26 @@ async def de_scan(file: str, _recognized_files: list) -> list:
 
 
 async def entry_point_learn(chunk: list, **kwargs) -> list:
-    _recognized_files = kwargs.values()
+    _recognized_files = kwargs.get('files_recognized')
+    _buffer_size = int(kwargs.get('buff_size'))
     _recognized_files = chunk_handler.un_chunk_data(_recognized_files, depth=1)
-    return [await scan_learn(item, _recognized_files) for item in chunk]
+    return [await scan_learn(item, _recognized_files, _buffer_size) for item in chunk]
 
 
 async def entry_point_de_scan(chunk: list, **kwargs) -> list:
-    _recognized_files = kwargs.values()
-    return [await de_scan(item, *_recognized_files) for item in chunk]
+    _recognized_files = kwargs.get('files_recognized')
+    _buffer_size = int(kwargs.get('buff_size'))
+    return [await de_scan(item, _recognized_files, _buffer_size) for item in chunk]
 
 
-async def main(_chunks: list, _recognized_files: list, _mode: str):
+async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
     global learn_seen_before
     async with Pool() as pool:
         if mode == '--learn':
             learn_seen_before = []
-            _results = await pool.map(entry_point_learn, _chunks, {'any': _recognized_files})
+            _results = await pool.map(entry_point_learn, _chunks, _multiproc_dict)
         elif mode == '--de-scan':
-            _results = await pool.map(entry_point_de_scan, _chunks, {'any': _recognized_files})
+            _results = await pool.map(entry_point_de_scan, _chunks, _multiproc_dict)
     return _results
 
 
@@ -127,6 +129,7 @@ async def async_write_definitions(*args, file: str):
         codecs.open(file, "w", encoding='utf8').close()
     async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
         await handle.write('\n'.join(str(arg[0] + ' ' + arg[1]) for arg in args))
+        await handle.write('\n')
 
 
 async def async_write_scan_results(*args, file: str, _dt: str):
@@ -158,22 +161,25 @@ def perform_checks(_mode: str, _target: str, _proc_max: int) -> bool:
 if __name__ == '__main__':
     # Requires the aiomultiprocess pool file that I personally modified or this will not work.
 
-    # WARNING: ensure sufficient ram/page-file/swap if changing read_bytes(bytes). ensure _proc_max suits your system.
+    # WARNING: ensure sufficient ram/page-file/swap if changing buffer_size. ensure _proc_max suits your system.
     _db_recognized_files = './db/database_file_recognition.txt'
-    # mode = '--learn'
-    mode = '--de-scan'
+    mode = '--learn'
+    # mode = '--de-scan'
     _target = 'D:\\TEST\\'
     _proc_max = 32
+    buffer_size = 1024
 
     # mode = str(sys.argv[1])
     # _target = str(sys.argv[2])
     # _proc_max = int(sys.argv[3])
+    # buffer_size = int(sys.argv[4])
 
     # basic sys.argv checks
     allow_x = perform_checks(mode, _target, _proc_max)
 
     if allow_x is True:
         print('\n[OmegaFind v2]')
+
         # create datetime tag
         dt = str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
@@ -204,17 +210,21 @@ if __name__ == '__main__':
         chunks = chunk_handler.chunk_data(files, _proc_max)
         print('[Expected Number Of Chunks]', len(chunks))
 
+        # prepare a dictionary of useful things for each child process
+        multiproc_dict = {'files_recognized': recognized_files,
+                          'buff_size': buffer_size}
+
         # run the async multiprocess operation(s)
         print(f'[Scanning Target]')
         t = time.perf_counter()
-        results = asyncio.run(main(chunks, recognized_files, mode))
+        results = asyncio.run(main(chunks, multiproc_dict, mode))
         print(f'[Chunks of Results] {len(results)}')
         print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
 
         # un-chunk results
         results = chunk_handler.un_chunk_data(results, depth=1)
         print(f'[Results] {len(results)}')
-        # print('[Results]', results)
+        print('[Results]', results)
 
         if mode == '--learn':
             print(f'[New Definitions] {len(results)}')
