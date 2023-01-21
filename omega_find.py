@@ -180,7 +180,6 @@ if __name__ == '__main__':
     else:
         # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure _proc_max suits your system.
-        _db_recognized_files = './db/database_file_recognition.txt'
 
         mode, learn, de_scan = omega_find_sysargv.mode()
         _target = omega_find_sysargv.target(mode)
