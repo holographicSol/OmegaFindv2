@@ -170,10 +170,6 @@ if __name__ == '__main__':
         _db_recognized_files = omega_find_sysargv.database()
         verbose = omega_find_sysargv.verbosity()
 
-        verbose = False
-        if '-v' in sys.argv:
-            verbose = True
-
         if os.path.exists(_target):
             print('\n[OmegaFind v2] Version 2. Multi-processed async for better performance.')
 
