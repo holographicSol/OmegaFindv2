@@ -19,7 +19,6 @@ import omega_find_help
 import re
 
 
-
 def get_dt() -> str:
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
@@ -61,7 +60,6 @@ def file_sub_ops(_bytes: str) -> str:
 async def read_bytes(file: str, _buffer_max: int) -> bytes:
     async with aiofiles.open(file, mode='rb') as handle:
         _bytes = await handle.read(_buffer_max)
-        await handle.close()
     return await asyncio.to_thread(file_sub_ops, _bytes)
 
 
@@ -74,8 +72,7 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
     try:
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(get_suffix, file)
-        x = await scan_learn_check(suffix, buffer, _recognized_files)
-        return x
+        return await scan_learn_check(suffix, buffer, _recognized_files)
     except:
         pass
 
@@ -100,22 +97,23 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, digits: 
 
 async def entry_point_learn(chunk: list, **kwargs) -> list:
     _recognized_files = kwargs.get('files_recognized')
-    _buffer_max = int(kwargs.get('buffer_max'))
-    return [await scan_learn(item, _recognized_files, _buffer_max) for item in chunk]
+    buffer_max = int(kwargs.get('buffer_max'))
+    return [await scan_learn(item, _recognized_files, buffer_max) for item in chunk]
 
 
 async def entry_point_de_scan(chunk: list, **kwargs) -> list:
     _recognized_files = kwargs.get('files_recognized')
-    _buffer_max = int(kwargs.get('buffer_max'))
-    _digits = bool(kwargs.get('digits'))
-    return [await de_scan(item, _recognized_files, _buffer_max, _digits) for item in chunk]
+    buffer_max = int(kwargs.get('buffer_max'))
+    digits = bool(kwargs.get('digits'))
+    return [await de_scan(item, _recognized_files, buffer_max, digits) for item in chunk]
 
 
 async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
-    async with Pool() as pool:
-        if mode == '--learn':
+    if mode == '--learn':
+        async with Pool() as pool:
             _results = await pool.map(entry_point_learn, _chunks, _multiproc_dict)
-        elif mode == '--de-scan':
+    elif mode == '--de-scan':
+        async with Pool() as pool:
             _results = await pool.map(entry_point_de_scan, _chunks, _multiproc_dict)
     return _results
 
@@ -185,11 +183,10 @@ if __name__ == '__main__':
 
     else:
         # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
-        # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure _proc_max suits your system.
 
         mode, learn, de_scan = omega_find_sysargv.mode()
         _target = omega_find_sysargv.target(mode)
-        _proc_max = omega_find_sysargv.proc_max()
+        _chunk_max = omega_find_sysargv.chunk_max()
         _buffer_max = omega_find_sysargv.buffer_max()
         _db_recognized_files = omega_find_sysargv.database()
         _digits = omega_find_sysargv.digits()
@@ -219,7 +216,7 @@ if __name__ == '__main__':
             asyncio.run(async_write_scan_results(*x_files, file='pre_scan_x_files_'+dt+'.txt', _dt=dt))
 
             # chunk data ready for async multiprocess
-            chunks = chunk_handler.chunk_data(files, _proc_max)
+            chunks = chunk_handler.chunk_data(files, _chunk_max)
             if verbose is True:
                 print('[Expected Number Of Chunks]', len(chunks))
 
