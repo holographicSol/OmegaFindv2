@@ -22,11 +22,25 @@ import re
 learn_seen_before = []
 
 
+def get_dt() -> str:
+    return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
+
+
 def pre_scan_handler(_target: str) -> list:
     scan_results = prescan.scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
     return _files, _x_files
+
+
+def read_db():
+    _recognized_files, _suffixes = [], []
+    if os.path.exists(_db_recognized_files):
+        if learn is False:
+            _recognized_files, _suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files, digits=_digits))
+        elif learn is True:
+            _recognized_files, _suffixes = asyncio.run(async_read_definitions_learn_mode(fname=_db_recognized_files))
+    return _recognized_files, _suffixes
 
 
 def get_suffix(file: str) -> str:
@@ -192,20 +206,14 @@ if __name__ == '__main__':
         if os.path.exists(_target):
             print('\n[OmegaFind v2] Version 2. Multi-processed async for better performance.')
 
-            # create datetime tag
-            dt = str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
+            dt = get_dt()
 
-            # read recognized files
-            recognized_files, suffixes = [], []
-            if os.path.exists(_db_recognized_files):
-                if learn is False:
-                    recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files, digits=_digits))
-                elif learn is True:
-                    recognized_files, suffixes = asyncio.run(async_read_definitions_learn_mode(fname=_db_recognized_files))
+            recognized_files, suffixes = read_db()
+
             if verbose is True:
                 print(f'[Recognized Buffers] {len(recognized_files)}')
                 print(f'[Known Suffixes] {len(suffixes)}')
-            # print(recognized_files)
+                # print(recognized_files)
 
             # pre-scan
             print('[Pre-Scanning] ..')
