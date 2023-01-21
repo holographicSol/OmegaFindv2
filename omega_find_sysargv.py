@@ -20,8 +20,8 @@ def target(mode) -> str:
     return sys.argv[sys.argv.index(mode) + 1]
 
 
-def proc_max() -> int:
-    return int(sys.argv[sys.argv.index('--proc-max') + 1])
+def chunk_max() -> int:
+    return int(sys.argv[sys.argv.index('--chunk-max') + 1])
 
 
 def buffer_max() -> int:
