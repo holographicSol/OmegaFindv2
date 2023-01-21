@@ -162,7 +162,6 @@ if __name__ == '__main__':
         _target = omega_find_sysargv.target(mode)
         _chunk_max = omega_find_sysargv.chunk_max()
         _buffer_max = omega_find_sysargv.buffer_max()
-        print(f'[buffer-max] {_buffer_max}')
         _db_recognized_files = omega_find_sysargv.database()
         verbose = omega_find_sysargv.verbosity()
 
