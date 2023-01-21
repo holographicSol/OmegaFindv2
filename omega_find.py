@@ -10,6 +10,8 @@ import magic
 import codecs
 import asyncio
 from aiomultiprocess import Pool
+
+import omega_find_sysargv
 import prescan
 import chunk_handler
 import pathlib
@@ -180,29 +182,13 @@ if __name__ == '__main__':
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure _proc_max suits your system.
         _db_recognized_files = './db/database_file_recognition.txt'
 
-        # sys.argv
-        modes = ['--learn', '--de-scan']
-        mode = ''
-        for m in modes:
-            if m in sys.argv:
-                mode = m
-        if mode == '--learn':
-            learn = True
-            de_scan = False
-        elif mode == '--de-scan':
-            learn = False
-            de_scan = True
-        _target = sys.argv[sys.argv.index(mode)+1]
-        _proc_max = int(sys.argv[sys.argv.index('--proc-max')+1])
-        _buffer_max = int(sys.argv[sys.argv.index('--buffer-max')+1])
-        if '--database' in sys.argv:
-            _db_recognized_files = sys.argv[sys.argv.index('--database') + 1]
-        _digits = False
-        if '--digits' in sys.argv:
-            _digits = True
-        verbose = False
-        if '-v' in sys.argv:
-            verbose = True
+        mode, learn, de_scan = omega_find_sysargv.mode()
+        _target = omega_find_sysargv.target(mode)
+        _proc_max = omega_find_sysargv.proc_max()
+        _buffer_max = omega_find_sysargv.buffer_max()
+        _db_recognized_files = omega_find_sysargv.database()
+        _digits = omega_find_sysargv.digits()
+        verbose = omega_find_sysargv.verbosity()
 
         if os.path.exists(_target):
             print('\n[OmegaFind v2] Version 2. Multi-processed async for better performance.')
