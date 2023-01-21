@@ -29,7 +29,7 @@ def omega_help():
     print('                                      [web]')
     print('')
     # print(' [Learn and Scan Technique(s) should be followed by a directory path]')
-    print(' [Example]          [omega_find --type-scan PATH --group-suffix image --chunk-max 16 --buffer-max 1024 -v]')
+    print(' [Example]  [omega_find --type-scan PATH --group-suffix image --chunk-max 16 --buffer-max 1024 -v]')
     print('')
     print(' [-v]  [Verbosity]  [Increase verbosity]')
     print(' [-h]  [Help]       [Displays this help message]')
