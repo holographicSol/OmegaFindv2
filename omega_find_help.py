@@ -2,8 +2,8 @@
 
 def omega_help():
     print('')
-    print(' [OmegaFind v2]  [Version 2. Multi-processed async for better performance]')
-    print('                 [Forensics tool. Search differently]')
+    print(' [OmegaFind v2]     [Version 2. Multi-processed async for better performance]')
+    print('                    [Forensics tool. Search differently]')
     print('')
     print(' [--learn]          [Learn]           [Scans and learns from specified target location]')
     print(' [--proc-max]       [Max Processes]   [Maximum number of child processes]')
@@ -27,6 +27,9 @@ def omega_help():
     print('                                      [text]')
     print('                                      [video]')
     print('                                      [web]')
+    print('')
+    # print(' [Learn and Scan Technique(s) should be followed by a directory path]')
+    print(' [Example]          [omega_find --type-scan PATH --group-suffix image --chunk-max 16 --buffer-max 1024 -v]')
     print('')
     print(' [-v]  [Verbosity]  [Increase verbosity]')
     print(' [-h]  [Help]       [Displays this help message]')
