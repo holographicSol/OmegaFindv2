@@ -3,8 +3,7 @@
 def omega_help():
     print('')
     print(' [OmegaFind v2]    [Version 2. Multi-processed async for better performance]')
-    # print('')
-    print(' [Forensics tool]  [Search differently by reading files]')
+    print('                   [Forensics tool. Search differently]')
     print('')
     print(' [--learn]       [Learn]          [Scans and learns from specified target location]')
     print(' [--proc-max]    [Max Processes]  [Maximum number of child processes]')
