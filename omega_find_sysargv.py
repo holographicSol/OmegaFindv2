@@ -34,6 +34,7 @@ def database() -> str:
         _db_recognized_files = sys.argv[sys.argv.index('--database')+1]
     return _db_recognized_files
 
+
 def digits() -> bool:
     _digits = False
     if '--digits' in sys.argv:
