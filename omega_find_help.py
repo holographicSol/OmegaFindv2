@@ -11,5 +11,7 @@ def omega_help():
     print(' [--proc-max]    [Max Processes]  [Maximum number of child processes]')
     print(' [--buffer-max]  [Max Buffer]     [Maximum number of bytes read from each file during a scan]')
     print(' [--database]    [Database]       [Specify a database file to use for scanning. (Compiled by --learn)]')
+    print(' [--digits]      [Digits]         [Specify a more strict scan which includes digits. (Ignored in learn mode)]')
+    print('                                  [Digits may include datetime, geometries, timestamps etc.]')
     print(' [-h]            [Help]           [Displays this help message]')
     print('')
