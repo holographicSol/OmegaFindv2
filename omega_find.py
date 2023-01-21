@@ -54,7 +54,7 @@ async def read_bytes(file: str, _buffer_size: int) -> bytes:
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
     global learn_seen_before
     digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))   # todo optional digit-less matching
+    buffer = re.sub(digi_str, '', str(buffer))
     if [suffix, buffer] not in _recognized_files:
         if [suffix, buffer] not in learn_seen_before:
             learn_seen_before.append([suffix, buffer])
@@ -73,7 +73,7 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_size: int) -> l
 
 async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files):
     digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))   # todo optional digit-less matching
+    buffer = re.sub(digi_str, '', str(buffer))
     if [suffix, buffer] not in _recognized_files:
         return [file, suffix, buffer]
 
@@ -122,7 +122,7 @@ async def async_read_definitions(fname):
         idx = datas.find(' ')
         suffix = datas[:idx]
         buffer = datas[idx+1:]
-        buffer = re.sub(digi_str, '', buffer)  # todo optional digitless matching
+        buffer = re.sub(digi_str, '', buffer)
         _file_recognition_store.append([suffix, buffer])
         if suffix not in _suffixes:
             _suffixes.append(suffix)
