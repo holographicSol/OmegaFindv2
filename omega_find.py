@@ -14,6 +14,7 @@ import prescan
 import chunk_handler
 import pathlib
 import aiofiles
+import omega_find_help
 
 
 learn_seen_before = []
@@ -145,100 +146,94 @@ async def async_write_scan_results(*args, file: str, _dt: str):
         await handle.write('\n'.join(str(arg) for arg in args))
 
 
-def perform_checks(_mode: str, _target: str, _proc_max: int) -> bool:
-    modes = ['--learn', '--de-scan']
-    _allow_x = False
-    if mode:
-        if mode in modes:
-            if _target:
-                if os.path.exists(_target):
-                    if _proc_max:
-                        if str(_proc_max).isdigit():
-                            _allow_x = True
-    return _allow_x
-
-
 if __name__ == '__main__':
-    # Requires the aiomultiprocess pool file that I personally modified or this will not work.
-
-    # WARNING: ensure sufficient ram/page-file/swap if changing buffer_size. ensure _proc_max suits your system.
-    _db_recognized_files = './db/database_file_recognition.txt'
-    mode = '--learn'
-    # mode = '--de-scan'
-    _target = 'D:\\TEST\\'
-    _proc_max = 32
-    buffer_size = 1024
-
-    # mode = str(sys.argv[1])
-    # _target = str(sys.argv[2])
-    # _proc_max = int(sys.argv[3])
-    # buffer_size = int(sys.argv[4])
-
-    # basic sys.argv checks
-    allow_x = perform_checks(mode, _target, _proc_max)
-
-    if allow_x is True:
-        print('\n[OmegaFind v2]')
-
-        # create datetime tag
-        dt = str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
-
-        # read recognized files
-        recognized_files, suffixes = [], []
-        if os.path.exists(_db_recognized_files):
-            recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files))
-        else:
-            open(_db_recognized_files, 'w').close()
-        print(f'[Recognized Buffers] {len(recognized_files)}')
-        print(f'[Known Suffixes] {len(suffixes)}')
-
-        # pre-scan
-        print('[Pre-Scanning]')
-        t = time.perf_counter()
-        files, x_files = pre_scan_handler(_target=_target)
-        print(f'[Files] {len(files)}')
-        print(f'[Skipping Files] {len(x_files)}')
-        print(f'[Pre-Scan Time] {time.perf_counter() - t}')
-
-        # log all paths
-        asyncio.run(async_write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
-
-        # log paths that encountered an error
-        asyncio.run(async_write_scan_results(*x_files, file='pre_scan_x_files_'+dt+'.txt', _dt=dt))
-
-        # chunk data ready for async multiprocess
-        chunks = chunk_handler.chunk_data(files, _proc_max)
-        print('[Expected Number Of Chunks]', len(chunks))
-
-        # prepare a dictionary of useful things for each child process
-        multiproc_dict = {'files_recognized': recognized_files,
-                          'buff_size': buffer_size}
-
-        # run the async multiprocess operation(s)
-        print(f'[Scanning Target]')
-        t = time.perf_counter()
-        results = asyncio.run(main(chunks, multiproc_dict, mode))
-        print(f'[Chunks of Results] {len(results)}')
-        print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
-
-        # un-chunk results
-        results = chunk_handler.un_chunk_data(results, depth=1)
-        print(f'[Results] {len(results)}')
-        # print('[Results]', results)
-
-        if mode == '--learn':
-            print(f'[New Definitions] {len(results)}')
-            if len(results) >= 1:
-                print('[Updating Definitions]')
-                asyncio.run(async_write_definitions(*results, file=_db_recognized_files))
-
-        elif mode == '--de-scan':
-            print(f'[Unrecognized Files] {len(results)}')
-            if len(results) >= 1:
-                print('[Writing Scan Results]')
-                asyncio.run(async_write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
-
-        print('[Complete]')
+    if '-h' in sys.argv:
+        omega_find_help.omega_help()
 
     else:
-        print('[invalid input]')
+        # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
+        # WARNING: ensure sufficient ram/page-file/swap if changing buffer_size. ensure _proc_max suits your system.
+        _db_recognized_files = './db/database_file_recognition.txt'
+        modes = ['--learn', '--de-scan']
+        mode = ''
+        for m in modes:
+            if m in sys.argv:
+                mode = m
+        _target = sys.argv[sys.argv.index(mode)+1]
+        _proc_max = int(sys.argv[sys.argv.index('--proc-max')+1])
+        _buffer_size = int(sys.argv[sys.argv.index('--buffer-max')+1])
+        if '--database' in sys.argv:
+            _db_recognized_files = sys.argv[sys.argv.index('--database') + 1]
+
+        verbose = False
+        if '-v' in sys.argv:
+            verbose = True
+
+        if os.path.exists(_target) and os.path.exists(_db_recognized_files):
+            print('\n[OmegaFind v2] Version 2. Multi-processed async for better performance.')
+
+            # create datetime tag
+            dt = str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
+
+            # read recognized files
+            recognized_files, suffixes = [], []
+            if os.path.exists(_db_recognized_files):
+                recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files))
+            if verbose is True:
+                print(f'[Recognized Buffers] {len(recognized_files)}')
+                print(f'[Known Suffixes] {len(suffixes)}')
+
+            # pre-scan
+            print('[Pre-Scanning] ..')
+            t = time.perf_counter()
+            files, x_files = pre_scan_handler(_target=_target)
+            print(f'[Files] {len(files)}')
+            print(f'[Skipping Files] {len(x_files)}')
+            if verbose is True:
+                print(f'[Pre-Scan Time] {time.perf_counter() - t}')
+            asyncio.run(async_write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
+            asyncio.run(async_write_scan_results(*x_files, file='pre_scan_x_files_'+dt+'.txt', _dt=dt))
+
+            # chunk data ready for async multiprocess
+            chunks = chunk_handler.chunk_data(files, _proc_max)
+            if verbose is True:
+                print('[Expected Number Of Chunks]', len(chunks))
+
+            # prepare a dictionary of useful things for each child process
+            multiproc_dict = {'files_recognized': recognized_files,
+                              'buff_size': _buffer_size}
+
+            # run the async multiprocess operation(s)
+            print(f'[Scanning Target] ..')
+            t = time.perf_counter()
+            results = asyncio.run(main(chunks, multiproc_dict, mode))
+            if verbose is True:
+                print(f'[Chunks of Results] {len(results)}')
+                print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
+            results = chunk_handler.un_chunk_data(results, depth=1)
+            print(f'[Results] {len(results)}')
+            # print('[Results]', results)
+
+            if mode == '--learn':
+                print(f'[New Definitions] {len(results)}')
+                if len(results) >= 1:
+                    print('[Updating Definitions] ..')
+                    asyncio.run(async_write_definitions(*results, file=_db_recognized_files))
+
+            elif mode == '--de-scan':
+                print(f'[Unrecognized Files] {len(results)}')
+                if len(results) >= 1:
+                    print('[Writing Scan Results] ..')
+                    asyncio.run(async_write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
+
+            print('[Complete]')
+            print('')
+
+        else:
+            # if os.path.exists(_target) and os.path.exists(_db_recognized_files):
+            print('[Invalid Input]')
+            if not os.path.exists(_target):
+                print('[Invalid Target]', _target)
+            if not os.path.exists(_db_recognized_files):
+                print('[Invalid Database]', _db_recognized_files)
+            omega_find_help.omega_help()
