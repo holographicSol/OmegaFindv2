@@ -2,8 +2,8 @@
 
 def omega_help():
     print('')
-    print(' [OmegaFind v2]     [Version 2. Multi-processed async for better performance]')
-    print('                    [Forensics tool. Search differently]')
+    print(' [OmegaFind v2]  [Version 2. Multi-processed async for better performance]')
+    print('                 [Forensics tool. Search differently]')
     print('')
     print(' [--learn]             [Learn]                    [Scans and learns from specified target location]')
     print(' [--chunk-max]         [Chunk Max]                [Maximum items in each chunk. (Default 16)]')
