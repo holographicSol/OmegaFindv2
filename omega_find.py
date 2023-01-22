@@ -198,6 +198,10 @@ if __name__ == '__main__':
     if '-h' in sys.argv:
         omega_find_help.omega_help()
 
+    elif '--new-suffix-group' in sys.argv:
+        print('\n[OmegaFind v2]')
+        omega_find_sysargv.make_suffix_group()
+
     else:
         # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure _chunk_max suits your system.
@@ -260,6 +264,7 @@ if __name__ == '__main__':
                                   'suffix': type_suffix}
 
             # run the async multiprocess operation(s)
+            print('')
             print(f'[Scanning Target] ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
