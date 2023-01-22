@@ -287,7 +287,7 @@ if __name__ == '__main__':
                 i = 0
                 print('[Suffixes]')
                 for _ in chunk_suffix:
-                    print('         ' + str(_))
+                    print('          ' + str(_))
                     i += 1
                 multiproc_dict = {'files_recognized': recognized_files,
                                   'buffer_max': _buffer_max,
