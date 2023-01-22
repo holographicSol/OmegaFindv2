@@ -1,8 +1,4 @@
-# OmegaFindv2
-Multiprocessed and Asynced.
-
-Forensics Tool. Are file(s) what the suffix claims to be? Search Differenlty.
-
+# [OmegaFindv2] Multiprocessed and Asynced.
 
  [OmegaFind v2]     [Version 2. Multi-processed async for better performance]
                     [Forensics tool. Search differently]
