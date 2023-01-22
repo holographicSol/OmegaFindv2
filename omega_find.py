@@ -186,7 +186,7 @@ async def async_clean_database(fname):
         else:
             _i_empty += 1
     async with aiofiles.open(fname, mode='w', encoding='utf8') as handle:
-        await handle.write('\n'.join(str(datas) for datas in _data))
+        await handle.write('\n'.join(str(entry) for entry in clean_db_store))
         await handle.write('\n')
     return _i_dups, _i_empty
 
