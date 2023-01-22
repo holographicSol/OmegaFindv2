@@ -4,8 +4,8 @@
                     [Forensics tool. Search differently]
 
  [--learn]             [Learn]                    [Scans and learns from specified target location]
- [--proc-max]          [Max Processes]            [Maximum number of child processes]
- [--buffer-max]        [Max Buffer]               [Maximum number of bytes read from each file during a scan]
+ [--chunk-max]         [Chunk Max]                [Maximum items in each chunk. (Default 16)]
+ [--buffer-max]        [Max Buffer]               [Maximum bytes read. (Default 1024)]
  [--database]          [Database]                 [Specify a database file to use for scanning]
  [--new-suffix-group]  [Create New Suffix Group]
 
@@ -29,7 +29,7 @@
                                        [web]
 
  [Example]  [omega_find --type-scan PATH --group-suffix image --chunk-max 16 --buffer-max 1024 -v]
- [Example]  [omega_find --type-scan PATH --custom-suffix --chunk-max 16 --buffer-max 1024 -v]
+ [Example]  [omega_find --type-scan PATH --custom-suffix -v]
 
  [-v]  [Verbosity]  [Increase verbosity]
  [-h]  [Help]       [Displays this help message]
