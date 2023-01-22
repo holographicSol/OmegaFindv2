@@ -40,7 +40,7 @@ Forensics Tool. Are file(s) what the suffix claims to be? Search Differenlty.
 
 
 Note: Requires pool.py be placed in aiomultiprocessing. backup original pool first.
-My edit marked '# my edit' on line 339 in pool.py enables variables to be passed into
-the child processes when using pool.map() as there is no manager.dict and
-obviously no previously set globals for the child processes.
+My edit marked '# my edit' on line 339 in pool.py enables a dictionary to be passed into
+the child processes when using pool.map() along with the initial iterables as there
+is no manager.dict and obviously no previously set globals for the child processes.
 Lines edited: 337, 339, 345.
