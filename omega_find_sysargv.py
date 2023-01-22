@@ -89,11 +89,17 @@ def target(mode) -> str:
 
 
 def chunk_max() -> int:
-    return int(sys.argv[sys.argv.index('--chunk-max') + 1])
+    _chunk_max = 16
+    if '--chunk-max' in sys.argv:
+        _chunk_max = int(sys.argv[sys.argv.index('--chunk-max') + 1])
+    return _chunk_max
 
 
 def buffer_max() -> int:
-    return int(sys.argv[sys.argv.index('--buffer-max')+1])
+    _buffer_max = 1024
+    if '--buffer-max' in sys.argv:
+        _buffer_max = int(sys.argv[sys.argv.index('--buffer-max')+1])
+    return _buffer_max
 
 
 def database() -> str:
