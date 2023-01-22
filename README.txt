@@ -1,4 +1,4 @@
-# [OmegaFindv2] Multiprocessed and Asynced.
+[OmegaFindv2] Multiprocessed and Asynced.
 
  [OmegaFind v2]     [Version 2. Multi-processed async for better performance]
                     [Forensics tool. Search differently]
