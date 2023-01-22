@@ -134,6 +134,13 @@ def make_suffix_group():
             print('')
 
 
+def clean_db() -> str:
+    _db_recognized_files = './db/database_file_recognition.txt'
+    if '--database' in sys.argv:
+        _db_recognized_files = sys.argv[sys.argv.index('--database')+1]
+    return _db_recognized_files
+
+
 def verbosity() -> bool:
     verbose = False
     if '-v' in sys.argv:

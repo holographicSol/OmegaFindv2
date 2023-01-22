@@ -170,6 +170,27 @@ async def async_read_type_definitions(fname, _type_suffix):
     return _file_recognition_store, _suffixes
 
 
+async def async_clean_database(fname):
+    async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
+        _data = await handle.read()
+    _data = _data.split('\n')
+    clean_db_store = []
+    _i_dups = 0
+    _i_empty = 0
+    for datas in _data:
+        if datas != '':
+            if datas not in clean_db_store:
+                clean_db_store.append(datas)
+            else:
+                _i_dups += 1
+        else:
+            _i_empty += 1
+    async with aiofiles.open(fname, mode='w', encoding='utf8') as handle:
+        await handle.write('\n'.join(str(datas) for datas in _data))
+        await handle.write('\n')
+    return _i_dups, _i_empty
+
+
 async def async_write_definitions(*args, file: str):
     if not os.path.exists('./db/'):
         os.mkdir('./db/')
@@ -197,6 +218,15 @@ if __name__ == '__main__':
 
     if '-h' in sys.argv:
         omega_find_help.omega_help()
+
+    elif '--clean-db' in sys.argv:
+        print('\n[OmegaFind v2]')
+        _db_recognized_files = omega_find_sysargv.clean_db()
+        print(f'[Clean Database] {_db_recognized_files}')
+        i_dups, i_empty = asyncio.run(async_clean_database(fname=_db_recognized_files))
+        print(f'[Removed {str(i_dups)} duplicates]')
+        print(f'[Removed {str(i_empty)} empty lines]')
+        print('')
 
     elif '--new-suffix-group' in sys.argv:
         print('\n[OmegaFind v2]')

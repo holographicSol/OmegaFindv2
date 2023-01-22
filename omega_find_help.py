@@ -10,6 +10,7 @@ def omega_help():
     print(' [--buffer-max]        [Max Buffer]               [Maximum bytes read. (Default 1024)]')
     print(' [--database]          [Database]                 [Specify a database file to use for scanning]')
     print(' [--new-suffix-group]  [Create New Suffix Group]')
+    print(' [--clean-db]          [Clean Database]           [Removes any duplicates and empty lines]')
     print('')
     print(' [Scan Techniques]')
     print(' [--de-scan]        [Deobfuscation]    [Attempt to ascertain if file(s) suffix matches its contents]')
