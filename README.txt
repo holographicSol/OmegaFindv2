@@ -28,9 +28,12 @@
                                        [video]
                                        [web]
 
- [Example]  [omega_find --type-scan PATH --group-suffix image --chunk-max 16 --buffer-max 1024 -v]
+ [Example]  [omega_find --learn PATH --chunk-max 16 --buffer-max 1024 -v]
+ [Example]  [omega_find --de-scan PATH --chunk-max 16 --buffer-max 1024 -v]
+ [Example]  [omega_find --type-scan PATH --suffix sh -v]
  [Example]  [omega_find --type-scan PATH --custom-suffix -v]
-
+ [Example]  [omega_find --type-scan PATH --group-suffix image --chunk-max 16 --buffer-max 1024 -v]
+ 
  [-v]  [Verbosity]  [Increase verbosity]
  [-h]  [Help]       [Displays this help message]
 
