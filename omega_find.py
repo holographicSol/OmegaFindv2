@@ -10,6 +10,8 @@ import magic
 import codecs
 import asyncio
 from aiomultiprocess import Pool
+import aiomultiprocess
+import multiprocessing
 import prescan
 import chunk_handler
 import pathlib
@@ -17,6 +19,9 @@ import aiofiles
 import omega_find_help
 import re
 import omega_find_sysargv
+from pathlib import Path
+
+x_learn = []
 
 
 def get_dt():
@@ -55,10 +60,13 @@ async def read_bytes(file: str, _buffer_max: int) -> bytes:
 
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
+    global x_learn
     digi_str = r'[0-9]'
     buffer = re.sub(digi_str, '', str(buffer))
-    if [suffix, buffer] not in _recognized_files:
-        return [suffix, buffer]
+    if [suffix, buffer] not in x_learn:
+        x_learn.append([suffix, buffer])
+        if [suffix, buffer] not in _recognized_files:
+            return [suffix, buffer]
 
 
 async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
@@ -215,20 +223,37 @@ async def async_write_scan_results(*args, file: str, _dt: str):
 
 
 if __name__ == '__main__':
+    if sys.platform.startswith('win'):
+        multiprocessing.freeze_support()
 
-    if '-h' in sys.argv:
+    STDIN = sys.argv
+    STDIN = list(STDIN)
+
+    if '-h' in STDIN:
         omega_find_help.omega_help()
 
-    elif '--clean-db' in sys.argv:
-        print('\n[OmegaFind v2]')
-        _db_recognized_files = omega_find_sysargv.clean_db()
+    elif '--clean-db' in STDIN:
+        print('\n[OmegaFind v2] Multi-processed async for better performance.')
+        _db_recognized_files = omega_find_sysargv.clean_db(STDIN)
         print(f'[Clean Database] {_db_recognized_files}')
         i_dups, i_empty = asyncio.run(async_clean_database(fname=_db_recognized_files))
         print(f'[Removed {str(i_dups)} duplicates]')
         print(f'[Removed {str(i_empty)} empty lines]')
         print('')
 
-    elif '--new-suffix-group' in sys.argv:
+    elif '--recognized' in STDIN:
+        print('\n[OmegaFind v2] Multi-processed async for better performance.')
+        _db_recognized_files = omega_find_sysargv.display_recognized(STDIN)
+        recognized_files, suffixes = [], []
+        if os.path.exists(_db_recognized_files):
+            recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files))
+        else:
+            print(f'[Database] {recognized_files} not found')
+        print(f'[Recognized Buffers] {len(recognized_files)}')
+        print(f'[Known Suffixes] {len(suffixes)}')
+        print('')
+
+    elif '--new-suffix-group' in STDIN:
         print('\n[OmegaFind v2]')
         omega_find_sysargv.make_suffix_group()
 
@@ -236,30 +261,29 @@ if __name__ == '__main__':
         # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure _chunk_max suits your system.
 
-        mode, learn, de_scan, type_scan, type_suffix = omega_find_sysargv.mode()
-        _target = omega_find_sysargv.target(mode)
-        _chunk_max = omega_find_sysargv.chunk_max()
-        _buffer_max = omega_find_sysargv.buffer_max()
-        _db_recognized_files = omega_find_sysargv.database()
-        verbose = omega_find_sysargv.verbosity()
+        mode, learn, _de_scan, _type_scan, type_suffix = omega_find_sysargv.mode(STDIN)
+        _target = omega_find_sysargv.target(STDIN, mode)
+        _chunk_max = omega_find_sysargv.chunk_max(STDIN)
+        _buffer_max = omega_find_sysargv.buffer_max(STDIN)
+        _db_recognized_files = omega_find_sysargv.database(STDIN)
+        verbose = omega_find_sysargv.verbosity(STDIN)
 
         if os.path.exists(_target):
-            print('\n[OmegaFind v2] Version 2. Multi-processed async for better performance.')
+            print('\n[OmegaFind v2] Multi-processed async for better performance.')
 
             dt = get_dt()
 
             # read recognized files
             recognized_files, suffixes = [], []
             if os.path.exists(_db_recognized_files):
-                if learn is True or de_scan is True:
+                if learn is True or _de_scan is True:
                     recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files))
-                elif type_scan is True:
+                elif _type_scan is True:
                     recognized_files, suffixes = asyncio.run(async_read_type_definitions(fname=_db_recognized_files,
                                                                                          _type_suffix=type_suffix))
             if verbose is True:
                 print(f'[Recognized Buffers] {len(recognized_files)}')
                 print(f'[Known Suffixes] {len(suffixes)}')
-            # print(recognized_files)
 
             # pre-scan
             print('[Pre-Scanning] ..')
@@ -279,10 +303,10 @@ if __name__ == '__main__':
 
             # prepare a dictionary of useful things for each child process
             multiproc_dict = {}
-            if learn is True or de_scan is True:
+            if learn is True or _de_scan is True:
                 multiproc_dict = {'files_recognized': recognized_files,
                                   'buffer_max': _buffer_max}
-            elif type_scan is True:
+            elif _type_scan is True:
                 chunk_suffix = list(chunk_handler.chunk_data(data=type_suffix, chunk_size=10))
                 i = 0
                 print('[Suffixes]')
@@ -295,7 +319,7 @@ if __name__ == '__main__':
 
             # run the async multiprocess operation(s)
             print('')
-            print(f'[Scanning Target] ..')
+            print('[Scanning Target] ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             if verbose is True:
@@ -311,13 +335,13 @@ if __name__ == '__main__':
                     print('[Updating Definitions] ..')
                     asyncio.run(async_write_definitions(*results, file=_db_recognized_files))
 
-            elif de_scan is True:
+            elif _de_scan is True:
                 print(f'[Unrecognized Files] {len(results)}')
                 if len(results) >= 1:
                     print('[Writing Scan Results] ..')
                     asyncio.run(async_write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
 
-            elif type_scan is True:
+            elif _type_scan is True:
                 print(f'[Found Files] {len(results)}')
                 if len(results) >= 1:
                     print('[Writing Scan Results] ..')

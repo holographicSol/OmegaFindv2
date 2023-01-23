@@ -4,8 +4,7 @@ import ext_module
 import string
 
 
-def mode():
-
+def mode(stdin):
     modes = ['--learn', '--de-scan', '--type-scan']
     _mode = ''
     learn = False
@@ -13,7 +12,7 @@ def mode():
     type_scan = False
     suffix = []
     for m in modes:
-        if m in sys.argv:
+        if m in stdin:
             _mode = m
     if _mode == '--learn':
         learn = True
@@ -21,12 +20,12 @@ def mode():
         de_scan = True
     elif _mode == '--type-scan':
         type_scan = True
-        if '--suffix' in sys.argv:
-            idx = sys.argv.index('--suffix')
-            suffix.append(sys.argv[idx + 1].strip())
-        elif '--group-suffix' in sys.argv:
-            idx = sys.argv.index('--group-suffix')
-            suffix_ = sys.argv[idx + 1]
+        if '--suffix' in stdin:
+            idx = stdin.index('--suffix')
+            suffix.append(stdin[idx + 1].strip())
+        elif '--group-suffix' in stdin:
+            idx = stdin.index('--group-suffix')
+            suffix_ = stdin[idx + 1]
             if suffix_ == 'archive':
                 suffix = ext_module.ext_archive
             elif suffix_ == 'audio':
@@ -51,7 +50,7 @@ def mode():
                 suffix = ext_module.ext_video
             elif suffix_ == 'web':
                 suffix = ext_module.ext_web
-        elif '--custom-suffix' in sys.argv:
+        elif '--custom-suffix' in stdin:
             print('\n[OmegaFind v2]')
             print('[Searching for Custom Suffix Groups] ..')
             if os.path.exists('./suffix_group.txt'):
@@ -80,32 +79,31 @@ def mode():
             else:
                 print('[Did not find any Custom Suffix Groups] ..')
                 print('')
-
     return _mode, learn, de_scan, type_scan, suffix
 
 
-def target(mode) -> str:
-    return sys.argv[sys.argv.index(mode) + 1]
+def target(stdin, _mode) -> str:
+    return stdin[stdin.index(_mode)+1]
 
 
-def chunk_max() -> int:
+def chunk_max(stdin) -> int:
     _chunk_max = 16
-    if '--chunk-max' in sys.argv:
-        _chunk_max = int(sys.argv[sys.argv.index('--chunk-max') + 1])
+    if '--chunk-max' in stdin:
+        _chunk_max = int(stdin[stdin.index('--chunk-max') + 1])
     return _chunk_max
 
 
-def buffer_max() -> int:
+def buffer_max(stdin) -> int:
     _buffer_max = 1024
-    if '--buffer-max' in sys.argv:
-        _buffer_max = int(sys.argv[sys.argv.index('--buffer-max')+1])
+    if '--buffer-max' in stdin:
+        _buffer_max = int(stdin[stdin.index('--buffer-max')+1])
     return _buffer_max
 
 
-def database() -> str:
+def database(stdin) -> str:
     _db_recognized_files = './db/database_file_recognition.txt'
-    if '--database' in sys.argv:
-        _db_recognized_files = sys.argv[sys.argv.index('--database')+1]
+    if '--database' in stdin:
+        _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files
 
 
@@ -134,15 +132,22 @@ def make_suffix_group():
             print('')
 
 
-def clean_db() -> str:
+def clean_db(stdin) -> str:
     _db_recognized_files = './db/database_file_recognition.txt'
-    if '--database' in sys.argv:
-        _db_recognized_files = sys.argv[sys.argv.index('--database')+1]
+    if '--database' in stdin:
+        _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files
 
 
-def verbosity() -> bool:
+def display_recognized(stdin) -> str:
+    _db_recognized_files = './db/database_file_recognition.txt'
+    if '--database' in stdin:
+        _db_recognized_files = stdin[stdin.index('--database')+1]
+    return _db_recognized_files
+
+
+def verbosity(stdin) -> bool:
     verbose = False
-    if '-v' in sys.argv:
+    if '-v' in stdin:
         verbose = True
     return verbose
