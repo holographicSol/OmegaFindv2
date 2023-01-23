@@ -1,4 +1,4 @@
- [OmegaFind v2]  [2.0. Multi-processed async for better performance]
+ [OmegaFind v2]  [Multiprocess async for better performance]
                  [Forensics tool. Search differently]
                  [Developed and written by Benjamin Jack Cullen]
 
