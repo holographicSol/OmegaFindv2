@@ -4,7 +4,7 @@ import ext_module
 import string
 
 
-def mode(stdin):
+def mode(stdin: list) -> tuple:
     modes = ['--learn', '--de-scan', '--type-scan']
     _mode = ''
     learn = False
@@ -82,25 +82,25 @@ def mode(stdin):
     return _mode, learn, de_scan, type_scan, suffix
 
 
-def target(stdin, _mode) -> str:
+def target(stdin: list, _mode) -> str:
     return stdin[stdin.index(_mode)+1]
 
 
-def chunk_max(stdin) -> int:
+def chunk_max(stdin: list) -> int:
     _chunk_max = 16
     if '--chunk-max' in stdin:
         _chunk_max = int(stdin[stdin.index('--chunk-max') + 1])
     return _chunk_max
 
 
-def buffer_max(stdin) -> int:
+def buffer_max(stdin: list) -> int:
     _buffer_max = 1024
     if '--buffer-max' in stdin:
         _buffer_max = int(stdin[stdin.index('--buffer-max')+1])
     return _buffer_max
 
 
-def database(stdin) -> str:
+def database(stdin: list) -> str:
     _db_recognized_files = './db/database_file_recognition.txt'
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
@@ -132,21 +132,21 @@ def make_suffix_group():
             print('')
 
 
-def clean_db(stdin) -> str:
+def clean_db(stdin: list) -> str:
     _db_recognized_files = './db/database_file_recognition.txt'
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files
 
 
-def display_recognized(stdin) -> str:
+def display_recognized(stdin: list) -> str:
     _db_recognized_files = './db/database_file_recognition.txt'
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files
 
 
-def verbosity(stdin) -> bool:
+def verbosity(stdin: list) -> bool:
     verbose = False
     if '-v' in stdin:
         verbose = True

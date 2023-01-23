@@ -4,22 +4,20 @@ Setup: Multiprocess + Async.
 """
 import os
 import sys
+import re
 import time
-from datetime import datetime
 import magic
 import codecs
+from datetime import datetime
+import pathlib
 import asyncio
-from aiomultiprocess import Pool
+import aiofiles
 import aiomultiprocess
 import multiprocessing
 import prescan
 import chunk_handler
-import pathlib
-import aiofiles
 import omega_find_help
-import re
 import omega_find_sysargv
-from pathlib import Path
 
 x_learn = []
 
@@ -28,7 +26,7 @@ def get_dt():
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
-def pre_scan_handler(_target: str) -> list:
+def pre_scan_handler(_target: str) -> tuple:
     scan_results = prescan.scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
@@ -131,7 +129,7 @@ async def entry_point_type_scan(chunk: list, **kwargs) -> list:
 
 
 async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
-    async with Pool() as pool:
+    async with aiomultiprocess.Pool() as pool:
         if mode == '--learn':
             _results = await pool.map(entry_point_learn, _chunks, _multiproc_dict)
         elif mode == '--de-scan':
@@ -141,7 +139,7 @@ async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
     return _results
 
 
-async def async_read_definitions(fname):
+async def async_read_definitions(fname: str) -> tuple:
     digi_str = r'[0-9]'
     async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
         _data = await handle.read()
@@ -159,7 +157,7 @@ async def async_read_definitions(fname):
     return _file_recognition_store, _suffixes
 
 
-async def async_read_type_definitions(fname, _type_suffix):
+async def async_read_type_definitions(fname: str, _type_suffix: list) -> tuple:
     digi_str = r'[0-9]'
     async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
         _data = await handle.read()
@@ -178,7 +176,7 @@ async def async_read_type_definitions(fname, _type_suffix):
     return _file_recognition_store, _suffixes
 
 
-async def async_clean_database(fname):
+async def async_clean_database(fname: str) -> tuple:
     async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
         _data = await handle.read()
     _data = _data.split('\n')
