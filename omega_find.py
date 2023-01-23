@@ -57,7 +57,7 @@ async def read_bytes(file: str, _buffer_max: int) -> bytes:
     return await asyncio.to_thread(file_sub_ops, _bytes)
 
 
-async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files):
+async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
     global x_learn
     digi_str = r'[0-9]'
     buffer = re.sub(digi_str, '', str(buffer))
@@ -77,7 +77,7 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
         pass
 
 
-async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files):
+async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
     digi_str = r'[0-9]'
     buffer = re.sub(digi_str, '', str(buffer))
     if [suffix, buffer] not in _recognized_files:
