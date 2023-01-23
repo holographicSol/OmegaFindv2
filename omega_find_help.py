@@ -2,7 +2,7 @@
 
 def omega_help():
     print('')
-    print(' [OmegaFind v2]  [2.0. Multi-processed async for better performance]')
+    print(' [OmegaFind v2]  [Multiprocess async for better performance]')
     print('                 [Forensics tool. Search differently]')
     print('                 [Developed and written by Benjamin Jack Cullen]')
     print('')
