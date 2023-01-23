@@ -22,7 +22,7 @@ import omega_find_sysargv
 x_learn = []
 
 
-def get_dt():
+def get_dt() -> str:
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
