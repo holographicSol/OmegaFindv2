@@ -9,7 +9,7 @@ def omega_help():
     print(' [--recognized]        [Display number of recognized buffers and suffixes]')
     print(' [--learn]             [Scans and learns from specified target location]')
     print(' [--chunk-max]         [Maximum items in each chunk. Default 16]')
-    print(' [--buffer-max]        [Maximum bytes read. Default 1024]')
+    print(' [--buffer-max]        [Maximum bytes read. Default 2048]')
     print(' [--database]          [Specify a database file to use for scanning]')
     print(' [--new-suffix-group]  [Create a new suffix group]')
     print('')

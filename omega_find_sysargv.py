@@ -94,7 +94,7 @@ def chunk_max(stdin: list) -> int:
 
 
 def buffer_max(stdin: list) -> int:
-    _buffer_max = 1024
+    _buffer_max = 2048
     if '--buffer-max' in stdin:
         _buffer_max = int(stdin[stdin.index('--buffer-max')+1])
     return _buffer_max
