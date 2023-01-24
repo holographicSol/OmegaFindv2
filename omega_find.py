@@ -177,6 +177,7 @@ async def async_read_type_definitions(fname: str, _type_suffix: list) -> tuple:
 
 
 async def async_clean_database(fname: str) -> tuple:
+    print(f'[Clean Database] {_db_recognized_files}')
     async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
         _data = await handle.read()
     _data = _data.split('\n')
@@ -197,7 +198,9 @@ async def async_clean_database(fname: str) -> tuple:
     async with aiofiles.open(fname, mode='w', encoding='utf8') as handle:
         await handle.write('\n'.join(str(entry) for entry in db_store_new))
         await handle.write('\n')
-    return _i_dups, _i_empty
+    print(f'[Removed {str(_i_dups)} duplicates]')
+    print(f'[Removed {str(_i_empty)} empty lines]')
+    print('')
 
 
 async def async_write_definitions(*args, file: str):
@@ -232,15 +235,6 @@ if __name__ == '__main__':
 
     if '-h' in STDIN:
         omega_find_help.omega_help()
-
-    elif '--clean-db' in STDIN:
-        print('\n[OmegaFind v2] Multi-processed async for better performance.')
-        _db_recognized_files = omega_find_sysargv.clean_db(STDIN)
-        print(f'[Clean Database] {_db_recognized_files}')
-        i_dups, i_empty = asyncio.run(async_clean_database(fname=_db_recognized_files))
-        print(f'[Removed {str(i_dups)} duplicates]')
-        print(f'[Removed {str(i_empty)} empty lines]')
-        print('')
 
     elif '--recognized' in STDIN:
         print('\n[OmegaFind v2] Multi-processed async for better performance.')
@@ -328,13 +322,14 @@ if __name__ == '__main__':
                 print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
             results = chunk_handler.un_chunk_data(results, depth=1)
             print(f'[Results] {len(results)}')
-            # print('[Results]', results)
 
             if learn is True:
                 print(f'[New Definitions] {len(results)}')
                 if len(results) >= 1:
                     print('[Updating Definitions] ..')
                     asyncio.run(async_write_definitions(*results, file=_db_recognized_files))
+                    # clean db to keep the program optimized
+                    asyncio.run(async_clean_database(fname=_db_recognized_files))
 
             elif _de_scan is True:
                 print(f'[Unrecognized Files] {len(results)}')
