@@ -30,8 +30,8 @@
  [-v]  [Verbosity]  [Increase verbosity]
  [-h]  [Help]       [Displays this help message]
 
- [omega_find --learn PATH --chunk-max 16 --buffer-max 1024 -v]
- [omega_find --de-scan PATH --chunk-max 16 --buffer-max 1024 -v]
+ [omega_find --learn PATH --chunk-max 16 --buffer-max 2048 -v]
+ [omega_find --de-scan PATH --chunk-max 16 --buffer-max 2048 -v]
  [omega_find --type-scan PATH --suffix sh -v]
  [omega_find --type-scan PATH --custom-suffix -v]
  [omega_find --type-scan PATH --group-suffix image]
