@@ -8,7 +8,7 @@
  [--buffer-max]        [Maximum bytes read. Default 1024]
  [--database]          [Specify a database file to use for scanning]
  [--new-suffix-group]  [Create a new suffix group]
- [--clean-db]          [Removes any duplicates and empty lines]
+ [--clean-db]          [Removes duplicates, empty lines. Sorts]
 
  [--de-scan]    [Attempt to ascertain if suffix match contents]
  [--type-scan]  [Scan file type]
