@@ -45,8 +45,9 @@ def file_sub_ops(_bytes: str) -> str:
     buff = ''
     try:
         buff = magic.from_buffer(_bytes)
-    except:
-        pass
+    except Exception as e:
+        # todo return e: log
+        print(e)
     return buff
 
 
@@ -74,6 +75,7 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
         x = await scan_learn_check(suffix, buffer, _recognized_files)
         return x
     except Exception as e:
+        # todo return e: log
         print(e)
 
 
@@ -90,6 +92,7 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int) -> list:
         suffix = await asyncio.to_thread(get_suffix, file)
         return await de_scan_check(file, suffix, buffer, _recognized_files)
     except Exception as e:
+        # todo return e: log
         print(e)
 
 
@@ -106,6 +109,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
         suffix = await asyncio.to_thread(get_suffix, file)
         return await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
     except Exception as e:
+        # todo return e: log
         print(e)
 
 
