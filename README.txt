@@ -37,6 +37,9 @@
  [omega_find --type-scan PATH --group-suffix image]
 
 
+Python 3.9+
+Multiplatform.
+
 Note: Requires pool.py be placed in aiomultiprocessing. backup original pool first.
 My edit marked '# my edit' on line 339 in pool.py enables a dictionary to be passed into
 the child processes when using pool.map() along with the initial iterables as there
