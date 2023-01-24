@@ -5,7 +5,7 @@
  [--recognized]        [Display number of recognized buffers and suffixes]
  [--learn]             [Scans and learns from specified target location]
  [--chunk-max]         [Maximum items in each chunk. Default 16]
- [--buffer-max]        [Maximum bytes read. Default 1024]
+ [--buffer-max]        [Maximum bytes read. Default 2048]
  [--database]          [Specify a database file to use for scanning]
  [--new-suffix-group]  [Create a new suffix group]
 
@@ -36,9 +36,6 @@
  [omega_find --type-scan PATH --custom-suffix -v]
  [omega_find --type-scan PATH --group-suffix image]
 
-
-Python 3.9+
-Multiplatform.
 
 Note: Requires pool.py be placed in aiomultiprocessing. backup original pool first.
 My edit marked '# my edit' on line 339 in pool.py enables a dictionary to be passed into
