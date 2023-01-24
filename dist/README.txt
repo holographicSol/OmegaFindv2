@@ -5,7 +5,7 @@
  [--recognized]        [Display number of recognized buffers and suffixes]
  [--learn]             [Scans and learns from specified target location]
  [--chunk-max]         [Maximum items in each chunk. Default 16]
- [--buffer-max]        [Maximum bytes read. Default 1024]
+ [--buffer-max]        [Maximum bytes read. Default 2048]
  [--database]          [Specify a database file to use for scanning]
  [--new-suffix-group]  [Create a new suffix group]
 
