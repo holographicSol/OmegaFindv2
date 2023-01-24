@@ -191,8 +191,11 @@ async def async_clean_database(fname: str) -> tuple:
                 _i_dups += 1
         else:
             _i_empty += 1
+    print('[Sorting] ..')
+    db_store_new = sorted(clean_db_store)
+    print(f'[Sorted {len(db_store_new)} items]')
     async with aiofiles.open(fname, mode='w', encoding='utf8') as handle:
-        await handle.write('\n'.join(str(entry) for entry in clean_db_store))
+        await handle.write('\n'.join(str(entry) for entry in db_store_new))
         await handle.write('\n')
     return _i_dups, _i_empty
 
