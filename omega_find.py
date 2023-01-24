@@ -73,8 +73,8 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
         suffix = await asyncio.to_thread(get_suffix, file)
         x = await scan_learn_check(suffix, buffer, _recognized_files)
         return x
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
 
 async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
@@ -89,8 +89,8 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int) -> list:
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(get_suffix, file)
         return await de_scan_check(file, suffix, buffer, _recognized_files)
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
 
 async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list, _type_suffix: list):
@@ -105,8 +105,8 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(get_suffix, file)
         return await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
 
 async def entry_point_learn(chunk: list, **kwargs) -> list:
@@ -224,6 +224,22 @@ async def async_write_scan_results(*args, file: str, _dt: str):
         codecs.open(file, "w", encoding='utf8').close()
     async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
         await handle.write('\n'.join(str(arg) for arg in args))
+
+
+def result_handler(_results: list):
+    if len(_results) <= 12:
+        print('[Unrecognized files]:')
+        for result in _results:
+            print(' ', result)
+    else:
+        print('[Unrecognized files]:')
+        i = 0
+        for result in _results:
+            if i <= 12:
+                print(' ', result)
+                i += 1
+            else:
+                break
 
 
 if __name__ == '__main__':
