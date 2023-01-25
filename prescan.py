@@ -1,5 +1,6 @@
 """ Written by Benjamin Jack Cullen """
 import os
+import exception_handler
 
 x_files = []
 
@@ -13,15 +14,10 @@ def scantree(path: str) -> str:
             else:
                 yield entry
     except Exception as e:
-        e = str(e)
-        e = e.split(': ')
-        e1 = e[0]
-        e2 = e[1].replace('\\\\', '\\')
-        e2 = e2.replace("'", "")
-        x_files.append([e1, e2])
+        x_files.append(exception_handler.exception_format(e))
 
 
-def scan(path: str) -> list:
+def scan(path: str) -> tuple:
     global x_files
     x_files = []
     fp = []

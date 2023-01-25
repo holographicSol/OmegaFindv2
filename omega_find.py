@@ -14,6 +14,8 @@ import asyncio
 import aiofiles
 import aiomultiprocess
 import multiprocessing
+
+import exception_handler
 import prescan
 import chunk_handler
 import omega_find_help
@@ -44,10 +46,9 @@ def get_suffix(file: str) -> str:
 def file_sub_ops(_bytes: str) -> str:
     buff = ''
     try:
-        buff = magic.from_buffer(_bytes)
+        buff = magic.from_buffer(str(_bytes))
     except Exception as e:
-        # todo return e: log
-        print(e)
+        print(f'[FROM BUFFER] {e}')
     return buff
 
 
@@ -56,27 +57,6 @@ async def read_bytes(file: str, _buffer_max: int) -> bytes:
         _bytes = await handle.read(_buffer_max)
         await handle.close()
     return await asyncio.to_thread(file_sub_ops, _bytes)
-
-
-async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
-    global x_learn
-    digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))
-    if [suffix, buffer] not in x_learn:
-        x_learn.append([suffix, buffer])
-        if [suffix, buffer] not in _recognized_files:
-            return [suffix, buffer]
-
-
-async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
-    try:
-        buffer = await read_bytes(file, _buffer_max)
-        suffix = await asyncio.to_thread(get_suffix, file)
-        x = await scan_learn_check(suffix, buffer, _recognized_files)
-        return x
-    except Exception as e:
-        # todo return e: log
-        print(e)
 
 
 async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
@@ -103,7 +83,7 @@ async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_fil
         return [file, suffix, buffer]
 
 
-async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list) -> list:
+async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list):
     try:
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(get_suffix, file)
@@ -111,6 +91,26 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
     except Exception as e:
         # todo return e: log
         print(e)
+
+
+async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
+    global x_learn
+    digi_str = r'[0-9]'
+    buffer = re.sub(digi_str, '', str(buffer))
+    if [suffix, buffer] not in x_learn:
+        x_learn.append([suffix, buffer])
+        if [suffix, buffer] not in _recognized_files:
+            return [suffix, buffer]
+
+
+async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
+    try:
+        buffer = await read_bytes(file, _buffer_max)
+        suffix = await asyncio.to_thread(get_suffix, file)
+        _result = await scan_learn_check(suffix, buffer, _recognized_files)
+    except Exception as e:
+        _result = exception_handler.exception_format(e)
+    return _result
 
 
 async def entry_point_learn(chunk: list, **kwargs) -> list:
@@ -230,6 +230,19 @@ async def async_write_scan_results(*args, file: str, _dt: str):
         await handle.write('\n'.join(str(arg) for arg in args))
 
 
+async def async_write_exception_log(*args, file: str, _dt: str):
+    target_dir = './log/' + _dt + '/'
+    if not os.path.exists('./log/'):
+        os.mkdir('./log/')
+    if not os.path.exists(target_dir):
+        os.mkdir(target_dir)
+    file = target_dir + file
+    if not os.path.exists(file):
+        codecs.open(file, "w", encoding='utf8').close()
+    async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
+        await handle.write('\n'.join(str(arg[0] + ' ' + arg[1]) for arg in args))
+
+
 def result_handler(_results: list):
     if len(_results) <= 12:
         print('[Unrecognized files]:')
@@ -309,7 +322,7 @@ if __name__ == '__main__':
             if verbose is True:
                 print(f'[Pre-Scan Time] {time.perf_counter() - t}')
             asyncio.run(async_write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
-            asyncio.run(async_write_scan_results(*x_files, file='pre_scan_x_files_'+dt+'.txt', _dt=dt))
+            asyncio.run(async_write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
             # chunk data ready for async multiprocess
             chunks = chunk_handler.chunk_data(files, _chunk_max)
@@ -341,6 +354,13 @@ if __name__ == '__main__':
                 print(f'[Chunks of Results] {len(results)}')
                 print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
             results = chunk_handler.un_chunk_data(results, depth=1)
+
+            exc, results = exception_handler.separate_exception(results)
+            # print(f'[Exceptions] {exc}')
+            print(f'[Exceptions] {len(exc)}')
+            asyncio.run(async_write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
+
+            # print(f'[Results] {results}')
             print(f'[Results] {len(results)}')
 
             if learn is True:
