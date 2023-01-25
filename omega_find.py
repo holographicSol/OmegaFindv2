@@ -300,7 +300,7 @@ if __name__ == '__main__':
         verbose = omega_find_sysargv.verbosity(STDIN)
 
         if os.path.exists(_target):
-            print('\n[OmegaFind v2] Multi-processed async for better performance.')
+            print('\n[OmegaFind v2] Multi-processed async for better performance.\n')
 
             dt = get_dt()
 
@@ -321,9 +321,9 @@ if __name__ == '__main__':
             t = time.perf_counter()
             files, x_files = pre_scan_handler(_target=_target)
             print(f'[Files] {len(files)}')
-            print(f'[Skipping Files] {len(x_files)}')
-            if verbose is True:
-                print(f'[Pre-Scan Time] {time.perf_counter() - t}')
+            print(f'[Errors] {len(x_files)}')
+            # if verbose is True:
+            print(f'[Pre-Scan Time] {time.perf_counter() - t}')
             asyncio.run(async_write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
             asyncio.run(async_write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
@@ -355,12 +355,12 @@ if __name__ == '__main__':
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             if verbose is True:
                 print(f'[Chunks of Results] {len(results)}')
-                print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
+            print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
             results = chunk_handler.un_chunk_data(results, depth=1)
 
             exc, results = exception_handler.separate_exception(results)
             # print(f'[Exceptions] {exc}')
-            print(f'[Exceptions] {len(exc)}')
+            print(f'[Errors] {len(exc)}')
             asyncio.run(async_write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # print(f'[Results] {results}')
@@ -386,7 +386,6 @@ if __name__ == '__main__':
                     print('[Writing Scan Results] ..')
                     asyncio.run(async_write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
 
-            print('[Complete]')
             print('')
 
         else:
