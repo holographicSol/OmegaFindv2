@@ -70,10 +70,10 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int) -> list:
     try:
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(get_suffix, file)
-        return await de_scan_check(file, suffix, buffer, _recognized_files)
+        _result = await de_scan_check(file, suffix, buffer, _recognized_files)
     except Exception as e:
-        # todo return e: log
-        print(e)
+        _result = exception_handler.exception_format(e)
+    return _result
 
 
 async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list, _type_suffix: list):
@@ -87,10 +87,10 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
     try:
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(get_suffix, file)
-        return await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
+        _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
     except Exception as e:
-        # todo return e: log
-        print(e)
+        _result = exception_handler.exception_format(e)
+    return _result
 
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
