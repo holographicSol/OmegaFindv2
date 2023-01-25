@@ -240,7 +240,10 @@ async def async_write_exception_log(*args, file: str, _dt: str):
     if not os.path.exists(file):
         codecs.open(file, "w", encoding='utf8').close()
     async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
-        await handle.write('\n'.join(str(arg[0] + ' ' + arg[1]) for arg in args))
+        # if mode == '2args':
+        #     await handle.write('\n'.join(str(arg[0] + ' ' + arg[1]) for arg in args))
+        # if mode == '1args':
+        await handle.write('\n'.join(str(arg) for arg in args))
 
 
 def result_handler(_results: list):

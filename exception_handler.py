@@ -2,17 +2,13 @@
 
 def exception_format(e: Exception) -> list:
     e = str(e)
-    e = e.split(': ')
-    e1 = e[0]
-    e2 = e[1].replace('\\\\', '\\')
-    e2 = e2.replace("'", "")
-    return [e1.strip(), e2.strip()]
+    return [e]
 
 
-def separate_exception(l: list):
+def separate_exception(_list: list) -> tuple:
     e = []
     new_l = []
-    for item in l:
+    for item in _list:
         if str(item[0]).startswith('[Errno '):
             e.append(item)
         else:
