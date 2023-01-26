@@ -1,5 +1,4 @@
 import os
-import sys
 import ext_module
 import string
 

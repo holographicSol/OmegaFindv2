@@ -13,13 +13,13 @@ import asyncio
 import aiofiles
 import aiomultiprocess
 import multiprocessing
-import exception_handler
-import omega_find_dict_maker
-import chunk_handler
+import handler_exception
+import handler_dict
+import handler_chunk
 import omega_find_help
 import omega_find_sysargv
-import file_handler
-import results_handler
+import handler_file
+import handler_results
 
 debug = False
 x_learn = []
@@ -67,7 +67,7 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int) -> list:
         suffix = await asyncio.to_thread(get_suffix, file)
         _result = await de_scan_check(file, suffix, buffer, _recognized_files)
     except Exception as e:
-        _result = exception_handler.exception_format(e)
+        _result = handler_exception.exception_format(e)
     return _result
 
 
@@ -84,7 +84,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
         suffix = await asyncio.to_thread(get_suffix, file)
         _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
     except Exception as e:
-        _result = exception_handler.exception_format(e)
+        _result = handler_exception.exception_format(e)
     return _result
 
 
@@ -104,7 +104,7 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
         suffix = await asyncio.to_thread(get_suffix, file)
         _result = await scan_learn_check(suffix, buffer, _recognized_files)
     except Exception as e:
-        _result = exception_handler.exception_format(e)
+        _result = handler_exception.exception_format(e)
     return _result
 
 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     elif '--recognized' in STDIN:
         print('\n[OmegaFind v2] Multi-processed async for better performance.')
         db_recognized_files = omega_find_sysargv.display_recognized(STDIN)
-        recognized_files, suffixes = asyncio.run(file_handler.read_definitions(fname=db_recognized_files))
+        recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         print(f'[Recognized File Types] {len(recognized_files)}')
         print(f'[Suffixes] {len(suffixes)}\n')
 
@@ -178,51 +178,51 @@ if __name__ == '__main__':
             # read recognized files
             recognized_files, suffixes = [], []
             if learn_bool is True or de_scan_bool is True:
-                recognized_files, suffixes = asyncio.run(file_handler.read_definitions(fname=db_recognized_files))
+                recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
             elif type_scan_bool is True:
-                recognized_files, suffixes = asyncio.run(file_handler.read_type_definitions(fname=db_recognized_files,
+                recognized_files, suffixes = asyncio.run(handler_file.read_type_definitions(fname=db_recognized_files,
                                                                                             _type_suffix=type_suffix))
 
             # pre-scan
-            files, x_files = file_handler.pre_scan_handler(_target=target)
-            asyncio.run(file_handler.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
-            asyncio.run(file_handler.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
+            files, x_files = handler_file.pre_scan_handler(_target=target)
+            asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
+            asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
             # chunk data ready for async multiprocess
-            chunks = chunk_handler.chunk_data(files, chunk_max)
+            chunks = handler_chunk.chunk_data(files, chunk_max)
 
             # prepare a dictionary of useful things for each child process
-            multiproc_dict = omega_find_dict_maker.dict_maker(_recognized_files=recognized_files,
-                                                              _buffer_max=buffer_max,
-                                                              _type_suffix=type_suffix, _learn=learn_bool,
-                                                              _de_scan=de_scan_bool, _type_scan=type_scan_bool)
+            multiproc_dict = handler_dict.dict_maker(_recognized_files=recognized_files,
+                                                     _buffer_max=buffer_max,
+                                                     _type_suffix=type_suffix, _learn=learn_bool,
+                                                     _de_scan=de_scan_bool, _type_scan=type_scan_bool)
 
             # run the async multiprocess operation(s)
             print('[Scanning Target] ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
-            results = chunk_handler.un_chunk_data(results, depth=1)
-            exc, results = exception_handler.separate_exception(results)
+            results = handler_chunk.un_chunk_data(results, depth=1)
+            exc, results = handler_exception.separate_exception(results)
             print(f'[Errors] {len(exc)}')
-            asyncio.run(file_handler.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
+            asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # post-scan
             if len(results) >= 1:
                 if learn_bool is True:
                     print(f'[New Definitions] {len(results)}')
                     print('[Updating Definitions] ..')
-                    asyncio.run(file_handler.write_definitions(*results, file=db_recognized_files))
-                    asyncio.run(file_handler.clean_database(fname=db_recognized_files))
+                    asyncio.run(handler_file.write_definitions(*results, file=db_recognized_files))
+                    asyncio.run(handler_file.clean_database(fname=db_recognized_files))
                 elif de_scan_bool is True:
                     print(f'[Unrecognized Files] {len(results)}')
                     print('[Writing Scan Results] ..')
-                    asyncio.run(file_handler.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
-                    results_handler.result_handler(_results=results)
+                    asyncio.run(handler_file.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
+                    handler_results.result_handler(_results=results)
                 elif type_scan_bool is True:
                     print(f'[Found Files] {len(results)}')
                     print('[Writing Scan Results] ..')
-                    asyncio.run(file_handler.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
+                    asyncio.run(handler_file.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
             else:
                 print('[Zero Results]')
             print('')
