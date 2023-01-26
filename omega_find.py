@@ -181,7 +181,7 @@ async def async_read_type_definitions(fname: str, _type_suffix: list) -> tuple:
     return _file_recognition_store, _suffixes
 
 
-async def async_clean_database(fname: str) -> tuple:
+async def async_clean_database(fname: str):
     print(f'[Clean Database] {_db_recognized_files}')
     async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
         _data = await handle.read()
@@ -288,27 +288,27 @@ if __name__ == '__main__':
 
     else:
         # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
-        # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure _chunk_max suits your system.
+        # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
 
         mode, learn, _de_scan, _type_scan, type_suffix = omega_find_sysargv.mode(STDIN)
-        _target = omega_find_sysargv.target(STDIN, mode)
-        _chunk_max = omega_find_sysargv.chunk_max(STDIN)
-        _buffer_max = omega_find_sysargv.buffer_max(STDIN)
-        _db_recognized_files = omega_find_sysargv.database(STDIN)
+        target = omega_find_sysargv.target(STDIN, mode)
+        chunk_max = omega_find_sysargv.chunk_max(STDIN)
+        buffer_max = omega_find_sysargv.buffer_max(STDIN)
+        db_recognized_files = omega_find_sysargv.database(STDIN)
         verbose = omega_find_sysargv.verbosity(STDIN)
 
-        if os.path.exists(_target):
+        if os.path.exists(target):
             print('\n[OmegaFind v2] Multi-processed async for better performance.\n')
 
             dt = get_dt()
 
             # read recognized files
             recognized_files, suffixes = [], []
-            if os.path.exists(_db_recognized_files):
+            if os.path.exists(db_recognized_files):
                 if learn is True or _de_scan is True:
-                    recognized_files, suffixes = asyncio.run(async_read_definitions(fname=_db_recognized_files))
+                    recognized_files, suffixes = asyncio.run(async_read_definitions(fname=db_recognized_files))
                 elif _type_scan is True:
-                    recognized_files, suffixes = asyncio.run(async_read_type_definitions(fname=_db_recognized_files,
+                    recognized_files, suffixes = asyncio.run(async_read_type_definitions(fname=db_recognized_files,
                                                                                          _type_suffix=type_suffix))
             if verbose is True:
                 print(f'[Recognized Buffers] {len(recognized_files)}')
@@ -317,7 +317,7 @@ if __name__ == '__main__':
             # pre-scan
             print('[Pre-Scanning] ..')
             t = time.perf_counter()
-            files, x_files = pre_scan_handler(_target=_target)
+            files, x_files = pre_scan_handler(_target=target)
             print(f'[Files] {len(files)}')
             print(f'[Errors] {len(x_files)}')
             print(f'[Pre-Scan Time] {time.perf_counter() - t}')
@@ -325,7 +325,7 @@ if __name__ == '__main__':
             asyncio.run(async_write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
             # chunk data ready for async multiprocess
-            chunks = chunk_handler.chunk_data(files, _chunk_max)
+            chunks = chunk_handler.chunk_data(files, chunk_max)
             if verbose is True:
                 print('[Expected Number Of Chunks]', len(chunks))
 
@@ -333,7 +333,7 @@ if __name__ == '__main__':
             multiproc_dict = {}
             if learn is True or _de_scan is True:
                 multiproc_dict = {'files_recognized': recognized_files,
-                                  'buffer_max': _buffer_max}
+                                  'buffer_max': buffer_max}
             elif _type_scan is True:
                 chunk_suffix = list(chunk_handler.chunk_data(data=type_suffix, chunk_size=10))
                 i = 0
@@ -342,7 +342,7 @@ if __name__ == '__main__':
                     print('          ' + str(_))
                     i += 1
                 multiproc_dict = {'files_recognized': recognized_files,
-                                  'buffer_max': _buffer_max,
+                                  'buffer_max': buffer_max,
                                   'suffix': type_suffix}
 
             # run the async multiprocess operation(s)
@@ -367,9 +367,9 @@ if __name__ == '__main__':
                 print(f'[New Definitions] {len(results)}')
                 if len(results) >= 1:
                     print('[Updating Definitions] ..')
-                    asyncio.run(async_write_definitions(*results, file=_db_recognized_files))
+                    asyncio.run(async_write_definitions(*results, file=db_recognized_files))
                     # clean db to keep the program optimized
-                    asyncio.run(async_clean_database(fname=_db_recognized_files))
+                    asyncio.run(async_clean_database(fname=db_recognized_files))
 
             elif _de_scan is True:
                 print(f'[Unrecognized Files] {len(results)}')
@@ -389,8 +389,8 @@ if __name__ == '__main__':
 
         else:
             print('[Invalid Input]')
-            if not os.path.exists(_target):
-                print('[Invalid Target]', _target)
-            if not os.path.exists(_db_recognized_files):
-                print('[Invalid Database]', _db_recognized_files)
+            if not os.path.exists(target):
+                print('[Invalid Target]', target)
+            if not os.path.exists(db_recognized_files):
+                print('[Invalid Database]', db_recognized_files)
             omega_find_help.omega_help()
