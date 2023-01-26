@@ -15,39 +15,41 @@ async def read_definitions(fname: str) -> tuple:
             _data = await handle.read()
         _data = _data.split('\n')
         recognized_files = []
-        _suffixes = []
+        suffixes = []
         for datas in _data:
             idx = datas.find(' ')
             suffix = datas[:idx]
             buffer = datas[idx+1:]
             buffer = re.sub(digi_str, '', buffer)
             recognized_files.append([suffix, buffer])
-            if suffix not in _suffixes:
-                _suffixes.append(suffix)
+            if suffix not in suffixes:
+                suffixes.append(suffix)
     else:
         print(f'[Database] {fname} not found')
     print(f'[Recognized Buffers] {len(recognized_files)}')
     print(f'[Known Suffixes] {len(suffixes)}')
-    return recognized_files, _suffixes
+    return recognized_files, suffixes
 
 
 async def read_type_definitions(fname: str, _type_suffix: list) -> tuple:
-    digi_str = r'[0-9]'
-    async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
-        _data = await handle.read()
-    _data = _data.split('\n')
-    _file_recognition_store = []
-    _suffixes = []
-    for datas in _data:
-        idx = datas.find(' ')
-        suffix = datas[:idx]
-        if suffix in _type_suffix:
-            buffer = datas[idx+1:]
-            buffer = re.sub(digi_str, '', buffer)
-            _file_recognition_store.append([buffer])
-            if suffix not in _suffixes:
-                _suffixes.append(suffix)
-    return _file_recognition_store, _suffixes
+    recognized_files, suffixes = [], []
+    if os.path.exists(fname):
+        digi_str = r'[0-9]'
+        async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
+            _data = await handle.read()
+        _data = _data.split('\n')
+        recognized_files = []
+        suffixes = []
+        for datas in _data:
+            idx = datas.find(' ')
+            suffix = datas[:idx]
+            if suffix in _type_suffix:
+                buffer = datas[idx+1:]
+                buffer = re.sub(digi_str, '', buffer)
+                recognized_files.append([buffer])
+                if suffix not in suffixes:
+                    suffixes.append(suffix)
+    return recognized_files, suffixes
 
 
 async def write_definitions(*args, file: str):

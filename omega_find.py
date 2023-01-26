@@ -218,7 +218,6 @@ if __name__ == '__main__':
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
             results = chunk_handler.un_chunk_data(results, depth=1)
-
             exc, results = exception_handler.separate_exception(results)
             print(f'[Errors] {len(exc)}')
             asyncio.run(file_handler.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
@@ -242,7 +241,6 @@ if __name__ == '__main__':
                 if len(results) >= 1:
                     print('[Writing Scan Results] ..')
                     asyncio.run(file_handler.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
-                    result_handler(_results=results)
 
             print('')
 
