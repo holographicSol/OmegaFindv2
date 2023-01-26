@@ -146,8 +146,7 @@ if __name__ == '__main__':
         multiprocessing.freeze_support()
 
     # get input
-    STDIN = sys.argv
-    STDIN = list(STDIN)
+    STDIN = list(sys.argv)
 
     if omega_find_sysargv.run_and_exit(stdin=STDIN) is False:
         # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
