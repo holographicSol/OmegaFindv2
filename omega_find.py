@@ -151,7 +151,9 @@ if __name__ == '__main__':
     elif '--recognized' in STDIN:
         print('\n[OmegaFind v2] Multi-processed async for better performance.')
         db_recognized_files = omega_find_sysargv.display_recognized(STDIN)
-        asyncio.run(file_handler.read_definitions(fname=db_recognized_files))
+        recognized_files, suffixes = asyncio.run(file_handler.read_definitions(fname=db_recognized_files))
+        print(f'[Recognized File Types] {len(recognized_files)}')
+        print(f'[Suffixes] {len(suffixes)}\n')
 
     elif '--new-suffix-group' in STDIN:
         print('\n[OmegaFind v2]')
