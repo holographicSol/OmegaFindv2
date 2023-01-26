@@ -16,6 +16,7 @@ import multiprocessing
 import handler_exception
 import handler_dict
 import handler_chunk
+import omega_find_banner
 import omega_find_help
 import omega_find_sysargv
 import handler_file
@@ -148,21 +149,7 @@ if __name__ == '__main__':
     STDIN = sys.argv
     STDIN = list(STDIN)
 
-    if '-h' in STDIN:
-        omega_find_help.omega_help()
-
-    elif '--recognized' in STDIN:
-        print('\n[OmegaFind v2] Multi-processed async for better performance.')
-        db_recognized_files = omega_find_sysargv.display_recognized(STDIN)
-        recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
-        print(f'[Recognized File Types] {len(recognized_files)}')
-        print(f'[Suffixes] {len(suffixes)}\n')
-
-    elif '--new-suffix-group' in STDIN:
-        print('\n[OmegaFind v2] Multi-processed async for better performance.')
-        omega_find_sysargv.make_suffix_group()
-
-    else:
+    if omega_find_sysargv.run_and_exit(stdin=STDIN) is False:
         # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
 
@@ -176,7 +163,7 @@ if __name__ == '__main__':
         verbose = omega_find_sysargv.verbosity(STDIN)
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
-            print('\n[OmegaFind v2] Multi-processed async for better performance.')
+            omega_find_banner.banner()
 
             dt = get_dt()
 

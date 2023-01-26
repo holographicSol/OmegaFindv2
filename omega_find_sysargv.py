@@ -1,6 +1,11 @@
 import os
 import ext_module
 import string
+import omega_find_banner
+import omega_find_help
+import omega_find_sysargv
+import handler_file
+import asyncio
 
 
 def mode(stdin: list) -> tuple:
@@ -50,7 +55,7 @@ def mode(stdin: list) -> tuple:
             elif suffix_ == 'web':
                 suffix = ext_module.ext_web
         elif '--custom-suffix' in stdin:
-            print('\n[OmegaFind v2] Multi-processed async for better performance.')
+            omega_find_banner.banner()
             print('[Searching for Custom Suffix Groups] ..')
             if os.path.exists('./suffix_group.txt'):
                 custom_suffix_groups = []
@@ -148,3 +153,22 @@ def verbosity(stdin: list) -> bool:
     if '-v' in stdin:
         verbose = True
     return verbose
+
+
+def run_and_exit(stdin: list):
+    if '-h' in stdin:
+        omega_find_help.omega_help()
+
+    elif '--recognized' in stdin:
+        omega_find_banner.banner()
+        db_recognized_files = omega_find_sysargv.display_recognized(stdin)
+        recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
+        print(f'[Recognized File Types] {len(recognized_files)}')
+        print(f'[Suffixes] {len(suffixes)}\n')
+
+    elif '--new-suffix-group' in stdin:
+        omega_find_banner.banner()
+        omega_find_sysargv.make_suffix_group()
+
+    else:
+        return False
