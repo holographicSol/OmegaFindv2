@@ -20,6 +20,7 @@ import chunk_handler
 import omega_find_help
 import omega_find_sysargv
 
+debug = False
 x_learn = []
 
 
@@ -47,7 +48,8 @@ def file_sub_ops(_bytes: bytes) -> str:
     try:
         buff = magic.from_buffer(_bytes)
     except Exception as e:
-        print(f'[FROM BUFFER] {e}')
+        if debug is True:
+            print(f'[FROM BUFFER] {e}')
     return buff
 
 
