@@ -186,7 +186,7 @@ if __name__ == '__main__':
                 recognized_files, suffixes = asyncio.run(handler_file.read_type_definitions(fname=db_recognized_files,
                                                                                             _type_suffix=type_suffix))
                 if not len(suffixes) >= 1:
-                    exit()
+                    sys.exit('[Exiting] ..\n')
 
             # pre-scan
             files, x_files = handler_file.pre_scan_handler(_target=target)

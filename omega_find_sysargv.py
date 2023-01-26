@@ -50,7 +50,7 @@ def mode(stdin: list) -> tuple:
             elif suffix_ == 'web':
                 suffix = ext_module.ext_web
         elif '--custom-suffix' in stdin:
-            print('\n[OmegaFind v2]')
+            print('\n[OmegaFind v2] Multi-processed async for better performance.')
             print('[Searching for Custom Suffix Groups] ..')
             if os.path.exists('./suffix_group.txt'):
                 custom_suffix_groups = []
