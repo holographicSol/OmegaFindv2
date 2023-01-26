@@ -74,7 +74,6 @@ def mode(stdin: list) -> tuple:
                     print(f'    [Suffix Group Name] {sfx_name}')
                     print(f'    [Suffix Group] {sfx_group}')
                     suffix = sfx_group
-                    print('')
             else:
                 print('[Did not find any Custom Suffix Groups] ..')
                 print('')
