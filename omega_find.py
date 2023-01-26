@@ -19,6 +19,7 @@ import chunk_handler
 import omega_find_help
 import omega_find_sysargv
 import file_handler
+import results_handler
 
 debug = False
 x_learn = []
@@ -137,22 +138,6 @@ async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
     return _results
 
 
-def result_handler(_results: list):
-    if len(_results) <= 12:
-        print('[Unrecognized files]:')
-        for result in _results:
-            print(' ', result)
-    else:
-        print('[Unrecognized files]:')
-        i_result = 0
-        for result in _results:
-            if i_result <= 12:
-                print(' ', result)
-                i_result += 1
-            else:
-                break
-
-
 if __name__ == '__main__':
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
@@ -231,7 +216,7 @@ if __name__ == '__main__':
                     print(f'[Unrecognized Files] {len(results)}')
                     print('[Writing Scan Results] ..')
                     asyncio.run(file_handler.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
-                    result_handler(_results=results)
+                    results_handler.result_handler(_results=results)
                 elif type_scan_bool is True:
                     print(f'[Found Files] {len(results)}')
                     print('[Writing Scan Results] ..')
