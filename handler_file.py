@@ -108,7 +108,7 @@ async def clean_database(fname: str):
 def pre_scan_handler(_target: str) -> tuple:
     print('[Pre-Scanning] ..')
     t = time.perf_counter()
-    scan_results = prescan.scan(path=_target)
+    scan_results = scanfs.scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
     print(f'[Files] {len(_files)}')
