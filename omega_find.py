@@ -156,7 +156,7 @@ if __name__ == '__main__':
         print(f'[Suffixes] {len(suffixes)}\n')
 
     elif '--new-suffix-group' in STDIN:
-        print('\n[OmegaFind v2]')
+        print('\n[OmegaFind v2] Multi-processed async for better performance.')
         omega_find_sysargv.make_suffix_group()
 
     else:
@@ -171,7 +171,7 @@ if __name__ == '__main__':
         verbose = omega_find_sysargv.verbosity(STDIN)
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
-            print('\n[OmegaFind v2] Multi-processed async for better performance.\n')
+            print('\n[OmegaFind v2] Multi-processed async for better performance.')
 
             dt = get_dt()
 
