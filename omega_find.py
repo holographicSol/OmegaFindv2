@@ -191,6 +191,7 @@ if __name__ == '__main__':
             dt = get_dt()
 
             # read recognized files
+            recognized_files, suffixes = [], []
             if learn_bool is True or de_scan_bool is True:
                 recognized_files, suffixes = asyncio.run(file_handler.read_definitions(fname=db_recognized_files))
             elif type_scan_bool is True:
