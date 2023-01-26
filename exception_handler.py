@@ -1,3 +1,4 @@
+""" Written by Benjamin Jack Cullen """
 
 
 def exception_format(e: Exception) -> list:
