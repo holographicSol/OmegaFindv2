@@ -119,7 +119,6 @@ def make_suffix_group():
             break
     if bool_valid_chars is True:
         sfx_group = input('[Enter suffix(s) (space delimited example: sh exe)]: ')
-        sfx_group = sfx_group.split(' ')
         print(f'[New Suffix Group Name] {sfx_name}')
         print(f'[New Suffix Group] {sfx_group}')
         create_new_suffix_group = input('[Save?]: ')
