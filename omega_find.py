@@ -185,7 +185,7 @@ if __name__ == '__main__':
         db_recognized_files = omega_find_sysargv.database(STDIN)
         verbose = omega_find_sysargv.verbosity(STDIN)
 
-        if os.path.exists(target):
+        if os.path.exists(target) and os.path.exists(db_recognized_files):
             print('\n[OmegaFind v2] Multi-processed async for better performance.\n')
 
             dt = get_dt()
@@ -213,7 +213,6 @@ if __name__ == '__main__':
                                                               _de_scan=de_scan_bool, _type_scan=type_scan_bool)
 
             # run the async multiprocess operation(s)
-            print('')
             print('[Scanning Target] ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))

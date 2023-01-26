@@ -102,6 +102,8 @@ def buffer_max(stdin: list) -> int:
 
 def database(stdin: list) -> str:
     _db_recognized_files = './db/database_file_recognition.txt'
+    if not os.path.exists('./db/database_file_recognition.txt'):
+        open('./db/database_file_recognition.txt', 'w').close()
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files

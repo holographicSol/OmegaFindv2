@@ -24,10 +24,6 @@ async def read_definitions(fname: str) -> tuple:
             recognized_files.append([suffix, buffer])
             if suffix not in suffixes:
                 suffixes.append(suffix)
-    else:
-        print(f'[Database] {fname} not found')
-    print(f'[Recognized Buffers] {len(recognized_files)}')
-    print(f'[Known Suffixes] {len(suffixes)}')
     return recognized_files, suffixes
 
 
@@ -89,7 +85,6 @@ async def write_exception_log(*args, file: str, _dt: str):
 
 
 async def clean_database(fname: str):
-    print(f'[Clean Database] {fname}')
     async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
         _data = await handle.read()
     _data = _data.split('\n')
@@ -104,15 +99,10 @@ async def clean_database(fname: str):
                 _i_dups += 1
         else:
             _i_empty += 1
-    print('[Sorting] ..')
     db_store_new = sorted(clean_db_store)
-    print(f'[Sorted {len(db_store_new)} items]')
     async with aiofiles.open(fname, mode='w', encoding='utf8') as handle:
         await handle.write('\n'.join(str(entry) for entry in db_store_new))
         await handle.write('\n')
-    print(f'[Removed {str(_i_dups)} duplicates]')
-    print(f'[Removed {str(_i_empty)} empty lines]')
-    print('')
 
 
 def pre_scan_handler(_target: str) -> tuple:

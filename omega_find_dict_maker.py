@@ -15,7 +15,7 @@ def dict_maker(_recognized_files: list, _buffer_max: int, _type_suffix: list,
         i = 0
         print('[Suffixes]')
         for _ in chunk_suffix:
-            print('          ' + str(_))
+            print('    ' + str(_))
             i += 1
         multiproc_dict = {'files_recognized': _recognized_files,
                           'buffer_max': _buffer_max,
