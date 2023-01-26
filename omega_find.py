@@ -7,7 +7,6 @@ import sys
 import re
 import time
 import magic
-import codecs
 from datetime import datetime
 import pathlib
 import asyncio
@@ -16,7 +15,6 @@ import aiomultiprocess
 import multiprocessing
 import exception_handler
 import omega_find_dict_maker
-import prescan
 import chunk_handler
 import omega_find_help
 import omega_find_sysargv
@@ -222,26 +220,24 @@ if __name__ == '__main__':
             print(f'[Errors] {len(exc)}')
             asyncio.run(file_handler.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
-            if learn_bool is True:
-                print(f'[New Definitions] {len(results)}')
-                if len(results) >= 1:
+            # post-scan
+            if len(results) >= 1:
+                if learn_bool is True:
+                    print(f'[New Definitions] {len(results)}')
                     print('[Updating Definitions] ..')
                     asyncio.run(file_handler.write_definitions(*results, file=db_recognized_files))
                     asyncio.run(file_handler.clean_database(fname=db_recognized_files))
-
-            elif de_scan_bool is True:
-                print(f'[Unrecognized Files] {len(results)}')
-                if len(results) >= 1:
+                elif de_scan_bool is True:
+                    print(f'[Unrecognized Files] {len(results)}')
                     print('[Writing Scan Results] ..')
                     asyncio.run(file_handler.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
                     result_handler(_results=results)
-
-            elif type_scan_bool is True:
-                print(f'[Found Files] {len(results)}')
-                if len(results) >= 1:
+                elif type_scan_bool is True:
+                    print(f'[Found Files] {len(results)}')
                     print('[Writing Scan Results] ..')
                     asyncio.run(file_handler.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
-
+            else:
+                print('[Zero Results]')
             print('')
 
         else:
