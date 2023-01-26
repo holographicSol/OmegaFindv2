@@ -139,9 +139,12 @@ async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
 
 
 if __name__ == '__main__':
+
+    # used for compile time
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
 
+    # get input
     STDIN = sys.argv
     STDIN = list(STDIN)
 
@@ -182,6 +185,8 @@ if __name__ == '__main__':
             elif type_scan_bool is True:
                 recognized_files, suffixes = asyncio.run(handler_file.read_type_definitions(fname=db_recognized_files,
                                                                                             _type_suffix=type_suffix))
+                if not len(suffixes) >= 1:
+                    exit()
 
             # pre-scan
             files, x_files = handler_file.pre_scan_handler(_target=target)
