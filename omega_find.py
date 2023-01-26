@@ -30,13 +30,6 @@ def get_dt() -> str:
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
-def pre_scan_handler(_target: str) -> tuple:
-    scan_results = prescan.scan(path=_target)
-    _files = scan_results[0]
-    _x_files = scan_results[1]
-    return _files, _x_files
-
-
 def get_suffix(file: str) -> str:
     sfx = pathlib.Path(file).suffix
     sfx = sfx.replace('.', '').lower()
@@ -205,12 +198,7 @@ if __name__ == '__main__':
                                                                                             _type_suffix=type_suffix))
 
             # pre-scan
-            print('[Pre-Scanning] ..')
-            t = time.perf_counter()
-            files, x_files = pre_scan_handler(_target=target)
-            print(f'[Files] {len(files)}')
-            print(f'[Errors] {len(x_files)}')
-            print(f'[Pre-Scan Time] {time.perf_counter() - t}')
+            files, x_files = file_handler.pre_scan_handler(_target=target)
             asyncio.run(file_handler.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
             asyncio.run(file_handler.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 

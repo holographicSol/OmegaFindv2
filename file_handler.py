@@ -1,8 +1,10 @@
 """ Written by Benjamin Jack Cullen """
 import os
 import re
+import time
 import codecs
 import aiofiles
+import prescan
 
 
 async def read_definitions(fname: str) -> tuple:
@@ -109,3 +111,15 @@ async def clean_database(fname: str):
     print(f'[Removed {str(_i_dups)} duplicates]')
     print(f'[Removed {str(_i_empty)} empty lines]')
     print('')
+
+
+def pre_scan_handler(_target: str) -> tuple:
+    print('[Pre-Scanning] ..')
+    t = time.perf_counter()
+    scan_results = prescan.scan(path=_target)
+    _files = scan_results[0]
+    _x_files = scan_results[1]
+    print(f'[Files] {len(_files)}')
+    print(f'[Errors] {len(_x_files)}')
+    print(f'[Pre-Scan Time] {time.perf_counter() - t}')
+    return _files, _x_files
