@@ -42,10 +42,10 @@ def get_suffix(file: str) -> str:
     return sfx
 
 
-def file_sub_ops(_bytes: str) -> str:
+def file_sub_ops(_bytes: bytes) -> str:
     buff = ''
     try:
-        buff = magic.from_buffer(str(_bytes))
+        buff = magic.from_buffer(_bytes)
     except Exception as e:
         print(f'[FROM BUFFER] {e}')
     return buff
@@ -318,7 +318,6 @@ if __name__ == '__main__':
             files, x_files = pre_scan_handler(_target=_target)
             print(f'[Files] {len(files)}')
             print(f'[Errors] {len(x_files)}')
-            # if verbose is True:
             print(f'[Pre-Scan Time] {time.perf_counter() - t}')
             asyncio.run(async_write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
             asyncio.run(async_write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
@@ -375,12 +374,14 @@ if __name__ == '__main__':
                 if len(results) >= 1:
                     print('[Writing Scan Results] ..')
                     asyncio.run(async_write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
+                    result_handler(_results=results)
 
             elif _type_scan is True:
                 print(f'[Found Files] {len(results)}')
                 if len(results) >= 1:
                     print('[Writing Scan Results] ..')
                     asyncio.run(async_write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
+                    result_handler(_results=results)
 
             print('')
 
