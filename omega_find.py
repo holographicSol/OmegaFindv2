@@ -167,6 +167,8 @@ if __name__ == '__main__':
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
 
         mode, learn_bool, de_scan_bool, type_scan_bool, type_suffix = omega_find_sysargv.mode(STDIN)
+        if type_scan_bool is True and not len(type_suffix) >= 1:
+            sys.exit('[Exiting] ..\n')
         target = omega_find_sysargv.target(STDIN, mode)
         chunk_max = omega_find_sysargv.chunk_max(STDIN)
         buffer_max = omega_find_sysargv.buffer_max(STDIN)
@@ -185,8 +187,6 @@ if __name__ == '__main__':
             elif type_scan_bool is True:
                 recognized_files, suffixes = asyncio.run(handler_file.read_type_definitions(fname=db_recognized_files,
                                                                                             _type_suffix=type_suffix))
-                if not len(suffixes) >= 1:
-                    sys.exit('[Exiting] ..\n')
 
             # pre-scan
             files, x_files = handler_file.pre_scan_handler(_target=target)
