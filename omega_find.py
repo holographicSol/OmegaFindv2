@@ -14,7 +14,6 @@ import asyncio
 import aiofiles
 import aiomultiprocess
 import multiprocessing
-
 import exception_handler
 import prescan
 import chunk_handler
@@ -240,9 +239,6 @@ async def async_write_exception_log(*args, file: str, _dt: str):
     if not os.path.exists(file):
         codecs.open(file, "w", encoding='utf8').close()
     async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
-        # if mode == '2args':
-        #     await handle.write('\n'.join(str(arg[0] + ' ' + arg[1]) for arg in args))
-        # if mode == '1args':
         await handle.write('\n'.join(str(arg) for arg in args))
 
 
@@ -253,11 +249,11 @@ def result_handler(_results: list):
             print(' ', result)
     else:
         print('[Unrecognized files]:')
-        i = 0
+        i_result = 0
         for result in _results:
-            if i <= 12:
+            if i_result <= 12:
                 print(' ', result)
-                i += 1
+                i_result += 1
             else:
                 break
 
@@ -364,7 +360,7 @@ if __name__ == '__main__':
             asyncio.run(async_write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # print(f'[Results] {results}')
-            print(f'[Results] {len(results)}')
+            # print(f'[Results] {len(results)}')
 
             if learn is True:
                 print(f'[New Definitions] {len(results)}')
