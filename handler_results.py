@@ -18,7 +18,7 @@ def result_handler(_results: list):
                 break
 
 
-def post_scan_results(_results: list, _db_recognized_files: list,
+def post_scan_results(_results: list, _db_recognized_files: str,
                       _learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool, _dt: str):
     if len(_results) >= 1:
         if _learn_bool is True:
