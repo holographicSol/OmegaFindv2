@@ -3,9 +3,8 @@ OmegaFind v2. Multi-processed async for better performance.
 
 Overview:
 
-    Learn - Uses python-magic during a filesystem scan(s) to compile a database of
-    'trusted' suffix, buffer associations which can be used when performing various
-    scan techniques.
+    Learn - Compiles a database of 'trusted' suffix, buffer associations which can
+    be used when performing various scan techniques.
 
     Deobfuscation - This scan technique attempts to expose files that may have been
     obfuscated. Attempted exposition is performed by comparing suffixes and buffers
