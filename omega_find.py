@@ -190,7 +190,7 @@ if __name__ == '__main__':
             print('[Scanning Target] ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
-            print(f'[Async Multi-Process Time] {time.perf_counter()-t}')
+            print(f'[Multi-Process Async Time] {time.perf_counter()-t}')
             results = handler_chunk.un_chunk_data(results, depth=1)
             exc, results = handler_exception.separate_exception(results)
             print(f'[Errors] {len(exc)}')
