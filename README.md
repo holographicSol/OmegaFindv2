@@ -1,4 +1,4 @@
-OmegaFind v2. Multi-processed & asynced for better performance.
+OmegaFind v2. Multi-processed async for better performance.
 
 
 Overview:
