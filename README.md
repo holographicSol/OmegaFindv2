@@ -60,7 +60,7 @@ Help:
 Developer:
 
     Python Version: 3.9+
-    OS: Testing and running on Windows 10 and Linux.
+    OS: Tested and running on Windows 10 and Linux.
     
     Running the source code: Requires pool.py be placed in aiomultiprocessing.
     Backup original pool.py first.
