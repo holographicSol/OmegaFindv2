@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
         mode, learn_bool, de_scan_bool, type_scan_bool, type_suffix = omega_find_sysargv.mode(STDIN)
         if type_scan_bool is True and not len(type_suffix) >= 1:
-            sys.exit('[Exiting] ..\n')
+            sys.exit('-- exiting ...\n')
         target = omega_find_sysargv.target(STDIN, mode)
         chunk_max = omega_find_sysargv.chunk_max(STDIN)
         buffer_max = omega_find_sysargv.buffer_max(STDIN)
