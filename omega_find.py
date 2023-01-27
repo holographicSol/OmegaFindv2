@@ -13,14 +13,14 @@ import asyncio
 import aiofiles
 import aiomultiprocess
 import multiprocessing
-import handler_exception
 import handler_dict
 import handler_chunk
+import handler_file
+import handler_results
+import handler_exception
 import omega_find_banner
 import omega_find_help
 import omega_find_sysargv
-import handler_file
-import handler_results
 
 debug = False
 x_learn = []
@@ -167,12 +167,11 @@ if __name__ == '__main__':
             dt = get_dt()
 
             # read recognized files
-            recognized_files, suffixes = [], []
-            if learn_bool is True or de_scan_bool is True:
-                recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
-            elif type_scan_bool is True:
-                recognized_files, suffixes = asyncio.run(handler_file.read_type_definitions(fname=db_recognized_files,
-                                                                                            _type_suffix=type_suffix))
+            recognized_files, suffixes = handler_file.db_read_handler(_learn_bool=learn_bool,
+                                                                      _de_scan_bool=de_scan_bool,
+                                                                      _type_scan_bool=type_scan_bool,
+                                                                      _db_recognized_files=db_recognized_files,
+                                                                      _type_suffix=type_suffix)
 
             # pre-scan
             files, x_files = handler_file.pre_scan_handler(_target=target)
