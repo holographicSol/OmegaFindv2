@@ -71,7 +71,7 @@ Developer:
     set globals for the child processes. Lines edited: 337, 339, 345.
 
 
-Gratitude and thanks:
+Gratitude and Thanks:
 
     Powered by asyncio, aiomultiprocess, aiofiles, python-magic and of course
     the python standard library.
