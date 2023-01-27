@@ -63,13 +63,15 @@ Developer:
     Python Version: 3.9+
     OS: Testing and running on Windows 10 and Linux.
     
-    Running the source code: Requires pool.py be placed in aiomultiprocessing. backup original pool first.
-    My edit marked '# my edit' on line 339 in pool.py enables a dictionary to be passed into
-    the child processes when using pool.map() along with the initial iterables as there
-    is no manager.dict and obviously no previously set globals for the child processes.
-    Lines edited: 337, 339, 345.
+    Running the source code: Requires pool.py be placed in aiomultiprocessing.
+    Backup original pool.py first.
+    My edit marked '# my edit' on line 339 in pool.py enables a dictionary to
+    be passed into the child processes when using pool.map() along with the
+    initial iterables as there is no manager.dict and obviously no previously
+    set globals for the child processes. Lines edited: 337, 339, 345.
 
 
 Gratitude and thanks:
 
-    Powered by asyncio, aiomultiprocess, aiofiles, python-magic and of course the python standard library.
+    Powered by asyncio, aiomultiprocess, aiofiles, python-magic and of course
+    the python standard library.
