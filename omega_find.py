@@ -44,7 +44,7 @@ def file_sub_ops(_bytes: bytes) -> str:
         buff = magic.from_buffer(_bytes)
     except Exception as e:
         if debug is True:
-            print(f'[FROM BUFFER] {e}')
+            print(f'-- exception: {e}')
     return buff
 
 
@@ -187,24 +187,24 @@ if __name__ == '__main__':
                                                      _de_scan=de_scan_bool, _type_scan=type_scan_bool)
 
             # run the async multiprocess operation(s)
-            print('[Scanning Target] ..')
+            print('-- scanning target ...')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
-            print(f'[Multi-Process Async Time] {time.perf_counter()-t}')
+            print(f'-- scan time: {time.perf_counter()-t}')
             results = handler_chunk.un_chunk_data(results, depth=1)
             exc, results = handler_exception.separate_exception(results)
-            print(f'[Errors] {len(exc)}')
+            print(f'-- errors {len(exc)}')
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
-            # post-scan
+            # post-scan results
             handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
                                               _type_scan_bool=type_scan_bool, _dt=dt)
 
         else:
-            print('[Invalid Input]')
+            print('-- invalid input')
             if not os.path.exists(target):
-                print('[Invalid Target]', target)
+                print(f'-- invalid path: {target}')
             if not os.path.exists(db_recognized_files):
-                print('[Invalid Database]', db_recognized_files)
+                print(f'-- invalid database {db_recognized_files}')
             omega_find_help.omega_help()

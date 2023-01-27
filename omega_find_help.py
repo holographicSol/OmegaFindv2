@@ -3,8 +3,6 @@ import omega_find_banner
 
 def omega_help():
     omega_find_banner.banner()
-    print('                 [Forensics tool. Search differently]')
-    print('                 [Developed and written by Benjamin Jack Cullen]')
     print('')
     print(' [--recognized]        [Display number of recognized buffers and suffixes]')
     print(' [--learn]             [Scans and learns from specified target location]')

@@ -4,6 +4,7 @@ import re
 import time
 import codecs
 import aiofiles
+import asyncio
 import scanfs
 
 
@@ -106,12 +107,23 @@ async def clean_database(fname: str):
 
 
 def pre_scan_handler(_target: str) -> tuple:
-    print('[Pre-Scanning] ..')
+    print('-- performing pre-scan ..')
     t = time.perf_counter()
     scan_results = scanfs.scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
-    print(f'[Files] {len(_files)}')
-    print(f'[Errors] {len(_x_files)}')
-    print(f'[Pre-Scan Time] {time.perf_counter() - t}')
+    print(f'-- files: {len(_files)}')
+    print(f'-- errors: {len(_x_files)}')
+    print(f'-- pre-scan time: {time.perf_counter() - t}')
     return _files, _x_files
+
+
+def db_read_handler(_learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool,
+                    _db_recognized_files: str, _type_suffix: list) -> tuple:
+    recognized_files, suffixes = [], []
+    if _learn_bool is True or _de_scan_bool is True:
+        recognized_files, suffixes = asyncio.run(read_definitions(fname=_db_recognized_files))
+    elif _type_scan_bool is True:
+        recognized_files, suffixes = asyncio.run(read_type_definitions(fname=_db_recognized_files,
+                                                                       _type_suffix=_type_suffix))
+    return recognized_files, suffixes
