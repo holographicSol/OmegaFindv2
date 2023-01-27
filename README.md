@@ -1,15 +1,23 @@
 OmegaFind v2.
 
-Learn - Uses python-magic during a filesystem scan(s) to compile a database of 'trusted' suffix, buffer associations
-which can be used when performing various scan techniques.
 
-Deobfuscation - This scan technique attempts to expose files that may have been obfuscated. Attempted exposition is
-performed by comparing suffixes and buffers of files during deobfuscation scans to 'trusted' buffer, suffix associations
-in the database.
+Overview:
 
-Type scanning - Aggregates all file types specified. Again not by suffix but by known suffix, buffer associations
-according to the database. Useful in different situations including where file(s) may be evading a deobfuscation scan.
+    Learn - Uses python-magic during a filesystem scan(s) to compile a database of
+    'trusted' suffix, buffer associations which can be used when performing various
+    scan techniques.
+
+    Deobfuscation - This scan technique attempts to expose files that may have been
+    obfuscated. Attempted exposition is performed by comparing suffixes and buffers
+    of files during deobfuscation scans to 'trusted' buffer, suffix associations
+    in the database.
+
+    Type scanning - Aggregates all file types specified. Again not by suffix but by
+    known suffix, buffer associations according to the database. Useful in different
+    situations including where file(s) may be evading a deobfuscation scan.
  
+
+Help:
 
     [OmegaFind v2]  [Multiprocess async for better performance]
                      [Forensics tool. Search differently]
@@ -50,13 +58,18 @@ according to the database. Useful in different situations including where file(s
      [omega_find --type-scan PATH --group-suffix image]
 
 
-Python Version: 3.9+
-OS: Testing and running on Windows 10 and Linux.
+Developer:
 
-Running the source code: Requires pool.py be placed in aiomultiprocessing. backup original pool first.
-My edit marked '# my edit' on line 339 in pool.py enables a dictionary to be passed into
-the child processes when using pool.map() along with the initial iterables as there
-is no manager.dict and obviously no previously set globals for the child processes.
-Lines edited: 337, 339, 345.
+    Python Version: 3.9+
+    OS: Testing and running on Windows 10 and Linux.
+    
+    Running the source code: Requires pool.py be placed in aiomultiprocessing. backup original pool first.
+    My edit marked '# my edit' on line 339 in pool.py enables a dictionary to be passed into
+    the child processes when using pool.map() along with the initial iterables as there
+    is no manager.dict and obviously no previously set globals for the child processes.
+    Lines edited: 337, 339, 345.
 
-Powered by asyncio, aiomultiprocess and aiofiles.
+
+Gratitude and thanks:
+
+    Powered by asyncio, aiomultiprocess, aiofiles, python-magic and of course the python standard library.
