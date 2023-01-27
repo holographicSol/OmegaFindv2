@@ -56,7 +56,7 @@ def mode(stdin: list) -> tuple:
                 suffix = ext_module.ext_web
         elif '--custom-suffix' in stdin:
             omega_find_banner.banner()
-            print('[Searching for Custom Suffix Groups] ..')
+            print('-- searching for custom suffix groups ...')
             if os.path.exists('./suffix_group.txt'):
                 custom_suffix_groups = []
                 with open('./suffix_group.txt', 'r', encoding='utf8') as fo:
@@ -78,7 +78,7 @@ def mode(stdin: list) -> tuple:
                     sfx_group = sfx_group.split(' ')
                     suffix = sfx_group
             else:
-                print('[Did not find any Custom Suffix Groups] ..')
+                print('-- no custom suffix groups found ...')
                 print('')
     return _mode, learn, de_scan, type_scan, suffix
 
@@ -111,26 +111,26 @@ def database(stdin: list) -> str:
 
 
 def make_suffix_group():
-    sfx_name = input('[Enter new suffix group name (alpha numeric)]: ')
+    sfx_name = input('-- enter new a suffix group name (alpha numeric): ')
     valid_chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
     bool_valid_chars = True
     for char in sfx_name:
         if char not in valid_chars:
             bool_valid_chars = False
-            print(f'[Invalid Character] {char}')
+            print(f'-- invalid character: {char}')
             break
     if bool_valid_chars is True:
-        sfx_group = input('[Enter suffix(s) (space delimited example: sh exe)]: ')
-        print(f'[New Suffix Group Name] {sfx_name}')
-        print(f'[New Suffix Group] {sfx_group}')
+        sfx_group = input('-- enter suffix(s) (space delimited example: sh exe): ')
+        print(f'-- new suffix group name: {sfx_name}')
+        print(f'-- new suffix group: {sfx_group}')
         create_new_suffix_group = input('[Save?]: ')
         if create_new_suffix_group == 'Y' or create_new_suffix_group == 'y':
-            print('[Saving] ..')
+            print('-- saving ...')
             if not os.path.exists('./suffix_group.txt'):
                 open('./suffix_group.txt', 'w').close()
             with open('./suffix_group.txt', 'a', encoding='utf8') as fo:
                 fo.write(sfx_name + ' ' + str(sfx_group) + '\n')
-            print('[Done]')
+            print('-- done.')
             print('')
 
 
@@ -163,8 +163,8 @@ def run_and_exit(stdin: list):
         omega_find_banner.banner()
         db_recognized_files = omega_find_sysargv.display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
-        print(f'[Recognized File Types] {len(recognized_files)}')
-        print(f'[Suffixes] {len(suffixes)}\n')
+        print(f'-- recognized file types: {len(recognized_files)}')
+        print(f'-- recognized suffixes: {len(suffixes)}\n')
 
     elif '--new-suffix-group' in stdin:
         omega_find_banner.banner()

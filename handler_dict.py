@@ -13,7 +13,7 @@ def dict_maker(_recognized_files: list, _buffer_max: int, _type_suffix: list,
     elif _type_scan is True:
         chunk_suffix = list(handler_chunk.chunk_data(data=_type_suffix, chunk_size=10))
         i = 0
-        print('[Suffixes]')
+        print('-- suffixes:')
         for _ in chunk_suffix:
             print('    ' + str(_))
             i += 1
