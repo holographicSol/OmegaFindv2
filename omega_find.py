@@ -180,7 +180,7 @@ if __name__ == '__main__':
             # chunk data ready for async multiprocess
             chunks = handler_chunk.chunk_data(files, chunk_max)
 
-            # prepare a dictionary of useful things for each child process (requires my modified aiomulti. pool.py)
+            # prepare a dictionary for each child process (requires my modified aiomultiprocess pool.py)
             multiproc_dict = handler_dict.dict_maker(_recognized_files=recognized_files,
                                                      _buffer_max=buffer_max,
                                                      _type_suffix=type_suffix, _learn=learn_bool,
