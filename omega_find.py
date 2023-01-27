@@ -193,7 +193,7 @@ if __name__ == '__main__':
             print(f'-- scan time: {time.perf_counter()-t}')
             results = handler_chunk.un_chunk_data(results, depth=1)
             exc, results = handler_exception.separate_exception(results)
-            print(f'-- errors {len(exc)}')
+            print(f'-- errors: {len(exc)}')
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # post-scan results
@@ -206,5 +206,5 @@ if __name__ == '__main__':
             if not os.path.exists(target):
                 print(f'-- invalid path: {target}')
             if not os.path.exists(db_recognized_files):
-                print(f'-- invalid database {db_recognized_files}')
+                print(f'-- invalid database: {db_recognized_files}')
             omega_find_help.omega_help()
