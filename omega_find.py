@@ -198,24 +198,9 @@ if __name__ == '__main__':
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # post-scan
-            if len(results) >= 1:
-                if learn_bool is True:
-                    print(f'[New Definitions] {len(results)}')
-                    print('[Updating Definitions] ..')
-                    asyncio.run(handler_file.write_definitions(*results, file=db_recognized_files))
-                    asyncio.run(handler_file.clean_database(fname=db_recognized_files))
-                elif de_scan_bool is True:
-                    print(f'[Unrecognized Files] {len(results)}')
-                    print('[Writing Scan Results] ..')
-                    asyncio.run(handler_file.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
-                    handler_results.result_handler(_results=results)
-                elif type_scan_bool is True:
-                    print(f'[Found Files] {len(results)}')
-                    print('[Writing Scan Results] ..')
-                    asyncio.run(handler_file.write_scan_results(*results, file='scan_results__'+dt+'.txt', _dt=dt))
-            else:
-                print('[Zero Results]')
-            print('')
+            handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
+                                              _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
+                                              _type_scan_bool=type_scan_bool, _dt=dt)
 
         else:
             print('[Invalid Input]')
