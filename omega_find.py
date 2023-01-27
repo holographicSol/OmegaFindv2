@@ -149,7 +149,6 @@ if __name__ == '__main__':
     STDIN = list(sys.argv)
 
     if omega_find_sysargv.run_and_exit(stdin=STDIN) is False:
-        # Notice: Requires the aiomultiprocess pool file that I personally modified or this will not work.
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
 
         mode, learn_bool, de_scan_bool, type_scan_bool, type_suffix = omega_find_sysargv.mode(STDIN)
@@ -181,7 +180,7 @@ if __name__ == '__main__':
             # chunk data ready for async multiprocess
             chunks = handler_chunk.chunk_data(files, chunk_max)
 
-            # prepare a dictionary of useful things for each child process
+            # prepare a dictionary of useful things for each child process (requires my modified aiomulti. pool.py)
             multiproc_dict = handler_dict.dict_maker(_recognized_files=recognized_files,
                                                      _buffer_max=buffer_max,
                                                      _type_suffix=type_suffix, _learn=learn_bool,
