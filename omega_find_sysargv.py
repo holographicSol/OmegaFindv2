@@ -123,7 +123,7 @@ def make_suffix_group():
         sfx_group = input('-- enter suffix(s) (space delimited example: sh exe): ')
         print(f'-- new suffix group name: {sfx_name}')
         print(f'-- new suffix group: {sfx_group}')
-        create_new_suffix_group = input('[Save?]: ')
+        create_new_suffix_group = input('-- save?: ')
         if create_new_suffix_group == 'Y' or create_new_suffix_group == 'y':
             print('-- saving ...')
             if not os.path.exists('./suffix_group.txt'):
