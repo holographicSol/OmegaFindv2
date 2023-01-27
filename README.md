@@ -19,8 +19,8 @@ Overview:
 Help:
 
     [OmegaFind v2]  [Multiprocess async for better performance]
-                     [Forensics tool. Search differently]
-                     [Developed and written by Benjamin Jack Cullen]
+                    [Forensics tool. Search differently]
+                    [Developed and written by Benjamin Jack Cullen]
     
      [--recognized]        [Display number of recognized buffers and suffixes]
      [--learn]             [Scans and learns from specified target location]
