@@ -3,17 +3,21 @@ OmegaFind v2. Multi-processed async for better performance.
 
 Overview:
 
-    Learn - Compiles a database of 'trusted' suffix, buffer associations which can
+    Learn: Compiles a database of 'trusted' suffix, buffer associations which can
     be used when performing various scan techniques.
 
-    Deobfuscation - This scan technique attempts to expose files that may have been
+    Deobfuscation: This scan technique attempts to expose files that may have been
     obfuscated. Attempted exposition is performed by comparing suffixes and buffers
     of files during deobfuscation scans to 'trusted' buffer, suffix associations
     in the database.
 
-    Type scanning - Aggregates all file types specified. Again not by suffix but by
+    Type scanning: Aggregates all file types specified. Again not by suffix but by
     known suffix, buffer associations according to the database. Useful in different
     situations including where file(s) may be evading a deobfuscation scan.
+
+    Extract: --extract argument enables discovery of nested compressed files that can
+    also be extracted and scanned during various scan techniques if --extract argument
+    is used.
  
 
 Help:
