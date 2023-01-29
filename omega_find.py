@@ -75,12 +75,12 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
                 if handler_file.extract_nested_compressed(file=file, temp_directory=_tmp, remove_zipped=False) is True:
                     sub_files = scanfs.scan(_tmp)
                     sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
-                    print(f'-- files: {sub_files}')
+                    # print(f'-- files: {sub_files}')
                     for sub_file in sub_files:
                         buffer = await read_bytes(sub_file, _buffer_max)
                         suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
                         _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
-                    print(f'-- removing temporary directory: {_tmp}')
+                    # print(f'-- removing temporary directory: {_tmp}')
                     shutil.rmtree(_tmp)
     except Exception as e:
         _result = handler_exception.exception_format(e)
