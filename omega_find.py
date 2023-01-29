@@ -94,11 +94,21 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await de_scan_check(file, suffix, buffer, _recognized_files)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
-            _result.append(await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
-                                                 _recognized_files=_recognized_files))
+            _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
+                                            _recognized_files=_recognized_files)
     except Exception as e:
+        print('de_scan', e)
         _result = handler_exception.exception_format(e)
     return _result
+
+
+async def entry_point_de_scan(chunk: list, **kwargs) -> list:
+    _recognized_files = kwargs.get('files_recognized')
+    _buffer_max = int(kwargs.get('buffer_max'))
+    _extract = False
+    if 'extract' in kwargs.keys():
+        _extract = kwargs.get('extract')
+    return [await de_scan(item, _recognized_files, _buffer_max, _extract) for item in chunk]
 
 
 async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list, _type_suffix: list):
@@ -114,6 +124,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
+            print('extracting')
             _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                               _recognized_files=_recognized_files, _type_suffix=_type_suffix)
     except Exception as e:
@@ -145,15 +156,6 @@ async def entry_point_learn(chunk: list, **kwargs) -> list:
     _recognized_files = kwargs.get('files_recognized')
     _buffer_max = int(kwargs.get('buffer_max'))
     return [await scan_learn(item, _recognized_files, _buffer_max) for item in chunk]
-
-
-async def entry_point_de_scan(chunk: list, **kwargs) -> list:
-    _recognized_files = kwargs.get('files_recognized')
-    _buffer_max = int(kwargs.get('buffer_max'))
-    _extract = False
-    if 'extract' in kwargs.keys():
-        _extract = kwargs.get('extract')
-    return [await de_scan(item, _recognized_files, _buffer_max, _extract) for item in chunk]
 
 
 async def entry_point_type_scan(chunk: list, **kwargs) -> list:
@@ -212,7 +214,6 @@ if __name__ == '__main__':
                                                                       _type_scan_bool=type_scan_bool,
                                                                       _db_recognized_files=db_recognized_files,
                                                                       _type_suffix=type_suffix)
-
             # pre-scan
             files, x_files = handler_file.pre_scan_handler(_target=target)
             asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))

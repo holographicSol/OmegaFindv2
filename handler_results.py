@@ -3,23 +3,18 @@ import handler_file
 
 
 def result_handler(_results: list):
-    if len(_results) <= 12:
-        print('-- unrecognized files:')
-        for result in _results:
+    print('-- unrecognized files:')
+    i_result = 0
+    for result in _results:
+        if i_result <= 12:
             print(' ', result)
-    else:
-        print('-- unrecognized files:')
-        i_result = 0
-        for result in _results:
-            if i_result <= 12:
-                print(' ', result)
-                i_result += 1
-            else:
-                break
+            i_result += 1
+        else:
+            break
 
 
-def post_scan_results(_results: list, _db_recognized_files: str,
-                      _learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool, _dt: str):
+def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bool, _de_scan_bool: bool,
+                      _type_scan_bool: bool, _dt: str):
     if len(_results) >= 1:
         if _learn_bool is True:
             print(f'-- new definitions {len(_results)}')
@@ -29,12 +24,16 @@ def post_scan_results(_results: list, _db_recognized_files: str,
         elif _de_scan_bool is True:
             print(f'-- unrecognized files: {len(_results)}')
             print('-- writing results ...')
-            asyncio.run(handler_file.write_scan_results(*_results, file='scan_results__' + _dt + '.txt', _dt=_dt))
+            asyncio.run(handler_file.write_scan_results(*_results,
+                                                        file='scan_results__' + _dt + '.txt',
+                                                        _dt=_dt))
             result_handler(_results=_results)
         elif _type_scan_bool is True:
             print(f'-- found files: {len(_results)}')
             print('-- writing results ...')
-            asyncio.run(handler_file.write_scan_results(*_results, file='scan_results__' + _dt + '.txt', _dt=_dt))
+            asyncio.run(handler_file.write_scan_results(*_results,
+                                                        file='scan_results__' + _dt + '.txt',
+                                                        _dt=_dt))
     else:
         print('-- zero results.')
     print('')

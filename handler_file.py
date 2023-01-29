@@ -116,7 +116,6 @@ def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: boo
     try:
         if 'Zip archive' in file_sub_ops(read_bytes(file=file)):
             with zipfile.ZipFile(file, 'r') as zfile:
-                # print(f'-- extracting: {file}')
                 zfile.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
             for root, dirs, files in os.walk(temp_directory):
                 for filename in files:
@@ -129,7 +128,7 @@ def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: boo
                 os.remove(file)
             result = True
     except Exception as e:
-        print(e)
+        print('extract_nested_compressed', e)
     return result
 
 
