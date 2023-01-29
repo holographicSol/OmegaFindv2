@@ -23,6 +23,8 @@ import omega_find_help
 import omega_find_sysargv
 import scanfs
 import shutil
+import string
+import random
 
 debug = False
 x_learn = []
@@ -32,9 +34,13 @@ def get_dt() -> str:
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
+def randStr(chars=string.ascii_uppercase + string.digits, N=32):
+    return ''.join(random.choice(chars) for _ in range(N))
+
+
 async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _type_suffix: list):
     _result = [_file]
-    _tmp = '.\\tmp\\'+_file.replace(':', '')+'\\'  # todo: add randstring
+    _tmp = '.\\tmp\\'+str(randStr())+'\\'
     if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
         sub_files = scanfs.scan(_tmp)
         sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
@@ -48,7 +54,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list):
     _result = [_file]
-    _tmp = '.\\tmp\\'+_file.replace(':', '')+'\\'  # todo: add randstring
+    _tmp = '.\\tmp\\'+str(randStr())+'\\'
     if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
         sub_files = scanfs.scan(_tmp)
         sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
