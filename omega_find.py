@@ -123,7 +123,6 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
-            print('extracting')
             _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                               _recognized_files=_recognized_files, _type_suffix=_type_suffix)
     except Exception as e:
