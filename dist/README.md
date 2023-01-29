@@ -58,6 +58,13 @@ Help:
      [omega_find --type-scan PATH --group-suffix image]
 
 
+User:
+
+    * Recommended only currently running omega_find from within omega_find directory.
+    * Ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system while also considering buffer_max.
+    * If using --extract then ensure sufficient storage in working directory while also considering buffer_max and chunk_max.
+
+
 Developer:
 
     Python Version: 3.9+
