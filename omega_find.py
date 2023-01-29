@@ -34,11 +34,12 @@ def get_dt() -> str:
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
-def randStr(chars=string.ascii_uppercase + string.digits, N=32):
-    return ''.join(random.choice(chars) for _ in range(N))
+def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
+    return ''.join(random.choice(chars) for _ in range(n))
 
 
-async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _type_suffix: list):
+async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
+                            _type_suffix: list) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
     if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
@@ -52,7 +53,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
     return _result
 
 
-async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list):
+async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
     if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
@@ -66,7 +67,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
     return _result
 
 
-async def check_extract(_extract: bool, _buffer: bytes):
+async def check_extract(_extract: bool, _buffer: bytes) -> bool:
     # currently only supports zip archives. this includes many archive suffixes.
     # todo: add support for other archive formats.
     if _extract is True:

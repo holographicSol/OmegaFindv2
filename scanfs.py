@@ -17,9 +17,9 @@ def scantree(path: str) -> str:
         x_files.append(handler_exception.exception_format(e))
 
 
-def scan(path: str) -> tuple:
+def scan(path: str) -> list:
     global x_files
     x_files = []
     fp = []
     [fp.append(entry.path) for entry in scantree(path) if entry.is_file()]
-    return fp, x_files
+    return [fp, x_files]
