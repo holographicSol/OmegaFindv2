@@ -18,14 +18,15 @@ Overview:
 
 Help:
 
-    [OmegaFind v2]  [Multiprocess async for better performance]
-                    [Forensics tool. Search differently]
-                    [Developed and written by Benjamin Jack Cullen]
+    [OmegaFind v2] Multi-processed async for better performance.
+                   Forensics tool. Search differently.
+                   Developed and written by Benjamin Jack Cullen.
     
      [--recognized]        [Display number of recognized buffers and suffixes]
      [--learn]             [Scans and learns from specified target location]
      [--chunk-max]         [Maximum items in each chunk. Default 16]
      [--buffer-max]        [Maximum bytes read. Default 2048]
+     [--extract]           [Extract Zip Archives while scanning]
      [--database]          [Specify a database file to use for scanning]
      [--new-suffix-group]  [Create a new suffix group]
     
