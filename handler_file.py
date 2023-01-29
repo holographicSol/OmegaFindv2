@@ -111,24 +111,6 @@ async def clean_database(fname: str):
         await handle.write('\n')
 
 
-def db_read_handler(_learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool,
-                    _db_recognized_files: str, _type_suffix: list) -> tuple:
-    recognized_files, suffixes = [], []
-    if _learn_bool is True or _de_scan_bool is True:
-        recognized_files, suffixes = asyncio.run(read_definitions(fname=_db_recognized_files))
-    elif _type_scan_bool is True:
-        recognized_files, suffixes = asyncio.run(read_type_definitions(fname=_db_recognized_files,
-                                                                       _type_suffix=_type_suffix))
-    return recognized_files, suffixes
-
-
-def read_bytes(file: str) -> bytes:
-    with open(file, 'rb') as fo:
-        _bytes = fo.read(2048)
-    fo.close()
-    return _bytes
-
-
 def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: bool) -> bool:
     result = False
     try:
@@ -149,6 +131,24 @@ def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: boo
     except Exception as e:
         print(e)
     return result
+
+
+def db_read_handler(_learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool,
+                    _db_recognized_files: str, _type_suffix: list) -> tuple:
+    recognized_files, suffixes = [], []
+    if _learn_bool is True or _de_scan_bool is True:
+        recognized_files, suffixes = asyncio.run(read_definitions(fname=_db_recognized_files))
+    elif _type_scan_bool is True:
+        recognized_files, suffixes = asyncio.run(read_type_definitions(fname=_db_recognized_files,
+                                                                       _type_suffix=_type_suffix))
+    return recognized_files, suffixes
+
+
+def read_bytes(file: str) -> bytes:
+    with open(file, 'rb') as fo:
+        _bytes = fo.read(2048)
+    fo.close()
+    return _bytes
 
 
 def get_suffix(file: str) -> str:

@@ -32,7 +32,7 @@ def get_dt() -> str:
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
-async def extract(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _type_suffix: list):
+async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _type_suffix: list):
     _result = [_file]
     if 'Zip archive' in str(_buffer):
         _tmp = '.\\tmp\\'  # todo: add randstring
@@ -43,6 +43,21 @@ async def extract(_buffer: bytes, _file: str, _buffer_max: int, _recognized_file
                 buffer = await read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
                 _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
+            shutil.rmtree(_tmp)
+    return _result
+
+
+async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list):
+    _result = [_file]
+    if 'Zip archive' in str(_buffer):
+        _tmp = '.\\tmp\\'  # todo: add randstring
+        if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
+            sub_files = scanfs.scan(_tmp)
+            sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
+            for sub_file in sub_files:
+                buffer = await read_bytes(sub_file, _buffer_max)
+                suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
+                _result.append(await de_scan_check(sub_file, suffix, buffer, _recognized_files))
             shutil.rmtree(_tmp)
     return _result
 
@@ -61,11 +76,15 @@ async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files
         return [file, suffix, buffer]
 
 
-async def de_scan(file: str, _recognized_files: list, _buffer_max: int) -> list:
+async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract: bool) -> list:
     try:
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await de_scan_check(file, suffix, buffer, _recognized_files)
+        if _extract is True:
+            if 'Zip archive' in str(buffer):
+                _result.append(await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
+                                                     _recognized_files=_recognized_files))
     except Exception as e:
         _result = handler_exception.exception_format(e)
     return _result
@@ -84,8 +103,9 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
         if _extract is True:
-            _result = await extract(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
-                                    _recognized_files=_recognized_files, _type_suffix=_type_suffix)
+            if 'Zip archive' in str(buffer):
+                _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
+                                                  _recognized_files=_recognized_files, _type_suffix=_type_suffix)
     except Exception as e:
         _result = handler_exception.exception_format(e)
     return _result
@@ -120,7 +140,10 @@ async def entry_point_learn(chunk: list, **kwargs) -> list:
 async def entry_point_de_scan(chunk: list, **kwargs) -> list:
     _recognized_files = kwargs.get('files_recognized')
     _buffer_max = int(kwargs.get('buffer_max'))
-    return [await de_scan(item, _recognized_files, _buffer_max) for item in chunk]
+    _extract = False
+    if 'extract' in kwargs.keys():
+        _extract = kwargs.get('extract')
+    return [await de_scan(item, _recognized_files, _buffer_max, _extract) for item in chunk]
 
 
 async def entry_point_type_scan(chunk: list, **kwargs) -> list:
