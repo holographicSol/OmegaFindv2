@@ -34,32 +34,36 @@ def get_dt() -> str:
 
 async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _type_suffix: list):
     _result = [_file]
-    if 'Zip archive' in str(_buffer):
-        _tmp = '.\\tmp\\'  # todo: add randstring
-        if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
-            sub_files = scanfs.scan(_tmp)
-            sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
-            for sub_file in sub_files:
-                buffer = await read_bytes(sub_file, _buffer_max)
-                suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-                _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
-            shutil.rmtree(_tmp)
+    _tmp = '.\\tmp\\'  # todo: add randstring
+    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
+        sub_files = scanfs.scan(_tmp)
+        sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
+        for sub_file in sub_files:
+            buffer = await read_bytes(sub_file, _buffer_max)
+            suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
+            _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
+        shutil.rmtree(_tmp)
     return _result
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list):
     _result = [_file]
-    if 'Zip archive' in str(_buffer):
-        _tmp = '.\\tmp\\'  # todo: add randstring
-        if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
-            sub_files = scanfs.scan(_tmp)
-            sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
-            for sub_file in sub_files:
-                buffer = await read_bytes(sub_file, _buffer_max)
-                suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-                _result.append(await de_scan_check(sub_file, suffix, buffer, _recognized_files))
-            shutil.rmtree(_tmp)
+    _tmp = '.\\tmp\\'  # todo: add randstring
+    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
+        sub_files = scanfs.scan(_tmp)
+        sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
+        for sub_file in sub_files:
+            buffer = await read_bytes(sub_file, _buffer_max)
+            suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
+            _result.append(await de_scan_check(sub_file, suffix, buffer, _recognized_files))
+        shutil.rmtree(_tmp)
     return _result
+
+
+async def check_extract(_extract: bool, _buffer: bytes):
+    if _extract is True:
+        if 'Zip archive' in str(_buffer):
+            return True
 
 
 async def read_bytes(file: str, _buffer_max: int) -> bytes:
@@ -81,10 +85,9 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await de_scan_check(file, suffix, buffer, _recognized_files)
-        if _extract is True:
-            if 'Zip archive' in str(buffer):
-                _result.append(await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
-                                                     _recognized_files=_recognized_files))
+        if await check_extract(_extract=_extract, _buffer=buffer) is True:
+            _result.append(await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
+                                                 _recognized_files=_recognized_files))
     except Exception as e:
         _result = handler_exception.exception_format(e)
     return _result
@@ -102,10 +105,9 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
         buffer = await read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
-        if _extract is True:
-            if 'Zip archive' in str(buffer):
-                _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
-                                                  _recognized_files=_recognized_files, _type_suffix=_type_suffix)
+        if await check_extract(_extract=_extract, _buffer=buffer) is True:
+            _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
+                                              _recognized_files=_recognized_files, _type_suffix=_type_suffix)
     except Exception as e:
         _result = handler_exception.exception_format(e)
     return _result
