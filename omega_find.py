@@ -97,7 +97,6 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
             _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                             _recognized_files=_recognized_files)
     except Exception as e:
-        print('de_scan', e)
         _result = handler_exception.exception_format(e)
     return _result
 
