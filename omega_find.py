@@ -61,6 +61,8 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 
 
 async def check_extract(_extract: bool, _buffer: bytes):
+    # currently only supports zip archives. this includes many archive suffixes.
+    # todo: add support for other archive formats.
     if _extract is True:
         if 'Zip archive' in str(_buffer):
             return True
