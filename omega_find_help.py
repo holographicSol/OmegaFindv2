@@ -3,11 +3,11 @@ import omega_find_banner
 
 def omega_help():
     omega_find_banner.banner()
-    print('')
     print(' [--recognized]        [Display number of recognized buffers and suffixes]')
     print(' [--learn]             [Scans and learns from specified target location]')
     print(' [--chunk-max]         [Maximum items in each chunk. Default 16]')
     print(' [--buffer-max]        [Maximum bytes read. Default 2048]')
+    print(' [--extract]           [Extract Zip Archives while scanning]')
     print(' [--database]          [Specify a database file to use for scanning]')
     print(' [--new-suffix-group]  [Create a new suffix group]')
     print('')

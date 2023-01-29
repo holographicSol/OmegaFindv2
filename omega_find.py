@@ -21,6 +21,8 @@ import handler_exception
 import omega_find_banner
 import omega_find_help
 import omega_find_sysargv
+import scanfs
+import shutil
 
 debug = False
 x_learn = []
@@ -30,29 +32,11 @@ def get_dt() -> str:
     return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
 
 
-def get_suffix(file: str) -> str:
-    sfx = pathlib.Path(file).suffix
-    sfx = sfx.replace('.', '').lower()
-    if sfx == '':
-        sfx = 'no_file_extension'
-    return sfx
-
-
-def file_sub_ops(_bytes: bytes) -> str:
-    buff = ''
-    try:
-        buff = magic.from_buffer(_bytes)
-    except Exception as e:
-        if debug is True:
-            print(f'-- exception: {e}')
-    return buff
-
-
 async def read_bytes(file: str, _buffer_max: int) -> bytes:
     async with aiofiles.open(file, mode='rb') as handle:
         _bytes = await handle.read(_buffer_max)
         await handle.close()
-    return await asyncio.to_thread(file_sub_ops, _bytes)
+    return await asyncio.to_thread(handler_file.file_sub_ops, _bytes)
 
 
 async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
@@ -65,7 +49,7 @@ async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files
 async def de_scan(file: str, _recognized_files: list, _buffer_max: int) -> list:
     try:
         buffer = await read_bytes(file, _buffer_max)
-        suffix = await asyncio.to_thread(get_suffix, file)
+        suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await de_scan_check(file, suffix, buffer, _recognized_files)
     except Exception as e:
         _result = handler_exception.exception_format(e)
@@ -79,11 +63,25 @@ async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_fil
         return [file, suffix, buffer]
 
 
-async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list):
+async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list, _extract: bool):
+    _tmp = '.\\tmp\\'
     try:
         buffer = await read_bytes(file, _buffer_max)
-        suffix = await asyncio.to_thread(get_suffix, file)
+        suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
+        if _extract is True:
+            if 'Zip archive' in str(buffer):
+                _result = [file]
+                if handler_file.extract_nested_compressed(file=file, temp_directory=_tmp, remove_zipped=False) is True:
+                    sub_files = scanfs.scan(_tmp)
+                    sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
+                    print(f'-- files: {sub_files}')
+                    for sub_file in sub_files:
+                        buffer = await read_bytes(sub_file, _buffer_max)
+                        suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
+                        _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
+                    print(f'-- removing temporary directory: {_tmp}')
+                    shutil.rmtree(_tmp)
     except Exception as e:
         _result = handler_exception.exception_format(e)
     return _result
@@ -102,7 +100,7 @@ async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) 
 async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
     try:
         buffer = await read_bytes(file, _buffer_max)
-        suffix = await asyncio.to_thread(get_suffix, file)
+        suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await scan_learn_check(suffix, buffer, _recognized_files)
     except Exception as e:
         _result = handler_exception.exception_format(e)
@@ -125,7 +123,10 @@ async def entry_point_type_scan(chunk: list, **kwargs) -> list:
     _recognized_files = kwargs.get('files_recognized')
     _buffer_max = int(kwargs.get('buffer_max'))
     _type_suffix = kwargs.get('suffix')
-    return [await type_scan(item, _recognized_files, _buffer_max, _type_suffix) for item in chunk]
+    _extract = False
+    if 'extract' in kwargs.keys():
+        _extract = kwargs.get('extract')
+    return [await type_scan(item, _recognized_files, _buffer_max, _type_suffix, _extract) for item in chunk]
 
 
 async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
@@ -148,9 +149,10 @@ if __name__ == '__main__':
     # get input
     STDIN = list(sys.argv)
 
+    # check for light requests.
     if omega_find_sysargv.run_and_exit(stdin=STDIN) is False:
-        # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
 
+        # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
         mode, learn_bool, de_scan_bool, type_scan_bool, type_suffix = omega_find_sysargv.mode(STDIN)
         if type_scan_bool is True and not len(type_suffix) >= 1:
             sys.exit('-- exiting ...\n')
@@ -158,11 +160,13 @@ if __name__ == '__main__':
         chunk_max = omega_find_sysargv.chunk_max(STDIN)
         buffer_max = omega_find_sysargv.buffer_max(STDIN)
         db_recognized_files = omega_find_sysargv.database(STDIN)
+        extract = omega_find_sysargv.extract(STDIN)
         verbose = omega_find_sysargv.verbosity(STDIN)
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
             omega_find_banner.banner()
 
+            # datetime used for timestamping files/directories
             dt = get_dt()
 
             # read recognized files
@@ -184,8 +188,11 @@ if __name__ == '__main__':
             multiproc_dict = handler_dict.dict_maker(_recognized_files=recognized_files,
                                                      _buffer_max=buffer_max,
                                                      _type_suffix=type_suffix, _learn=learn_bool,
-                                                     _de_scan=de_scan_bool, _type_scan=type_scan_bool)
+                                                     _de_scan=de_scan_bool, _type_scan=type_scan_bool,
+                                                     _extract=extract)
 
+            for k in multiproc_dict.keys():
+                print(k)
             # run the async multiprocess operation(s)
             print('-- scanning target ...')
             t = time.perf_counter()

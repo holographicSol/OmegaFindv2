@@ -79,7 +79,6 @@ def mode(stdin: list) -> tuple:
                     suffix = sfx_group
             else:
                 print('-- no custom suffix groups found ...')
-                print('')
     return _mode, learn, de_scan, type_scan, suffix
 
 
@@ -146,6 +145,13 @@ def display_recognized(stdin: list) -> str:
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files
+
+
+def extract(stdin: list) -> bool:
+    _extract = False
+    if '--extract' in stdin:
+        _extract = True
+    return _extract
 
 
 def verbosity(stdin: list) -> bool:

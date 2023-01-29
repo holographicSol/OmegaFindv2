@@ -6,6 +6,11 @@ import codecs
 import aiofiles
 import asyncio
 import scanfs
+import magic
+import pathlib
+import zipfile
+
+debug = False
 
 
 async def read_definitions(fname: str) -> tuple:
@@ -106,6 +111,64 @@ async def clean_database(fname: str):
         await handle.write('\n')
 
 
+def db_read_handler(_learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool,
+                    _db_recognized_files: str, _type_suffix: list) -> tuple:
+    recognized_files, suffixes = [], []
+    if _learn_bool is True or _de_scan_bool is True:
+        recognized_files, suffixes = asyncio.run(read_definitions(fname=_db_recognized_files))
+    elif _type_scan_bool is True:
+        recognized_files, suffixes = asyncio.run(read_type_definitions(fname=_db_recognized_files,
+                                                                       _type_suffix=_type_suffix))
+    return recognized_files, suffixes
+
+
+def read_bytes(file: str) -> bytes:
+    with open(file, 'rb') as fo:
+        _bytes = fo.read(2048)
+    fo.close()
+    return _bytes
+
+
+def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: bool) -> bool:
+    result = False
+    try:
+        if 'Zip archive' in file_sub_ops(read_bytes(file=file)):
+            with zipfile.ZipFile(file, 'r') as zfile:
+                print(f'-- extracting: {file}')
+                zfile.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
+            for root, dirs, files in os.walk(temp_directory):
+                for filename in files:
+                    if 'Zip archive' in file_sub_ops(read_bytes(file=file)):
+                        fileSpec = os.path.join(root, filename)
+                        extract_nested_compressed(file=fileSpec,
+                                                  temp_directory=fileSpec.replace(pathlib.Path(file).suffix, ''),
+                                                  remove_zipped=True)
+            if remove_zipped is True:
+                os.remove(file)
+            result = True
+    except Exception as e:
+        print(e)
+    return result
+
+
+def get_suffix(file: str) -> str:
+    sfx = pathlib.Path(file).suffix
+    sfx = sfx.replace('.', '').lower()
+    if sfx == '':
+        sfx = 'no_file_extension'
+    return sfx
+
+
+def file_sub_ops(_bytes: bytes) -> str:
+    buff = ''
+    try:
+        buff = magic.from_buffer(_bytes)
+    except Exception as e:
+        if debug is True:
+            print(f'-- exception: {e}')
+    return buff
+
+
 def pre_scan_handler(_target: str) -> tuple:
     print('-- performing pre-scan ..')
     t = time.perf_counter()
@@ -117,13 +180,3 @@ def pre_scan_handler(_target: str) -> tuple:
     print(f'-- pre-scan time: {time.perf_counter() - t}')
     return _files, _x_files
 
-
-def db_read_handler(_learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool,
-                    _db_recognized_files: str, _type_suffix: list) -> tuple:
-    recognized_files, suffixes = [], []
-    if _learn_bool is True or _de_scan_bool is True:
-        recognized_files, suffixes = asyncio.run(read_definitions(fname=_db_recognized_files))
-    elif _type_scan_bool is True:
-        recognized_files, suffixes = asyncio.run(read_type_definitions(fname=_db_recognized_files,
-                                                                       _type_suffix=_type_suffix))
-    return recognized_files, suffixes
