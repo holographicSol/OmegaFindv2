@@ -191,8 +191,6 @@ if __name__ == '__main__':
                                                      _de_scan=de_scan_bool, _type_scan=type_scan_bool,
                                                      _extract=extract)
 
-            for k in multiproc_dict.keys():
-                print(k)
             # run the async multiprocess operation(s)
             print('-- scanning target ...')
             t = time.perf_counter()
