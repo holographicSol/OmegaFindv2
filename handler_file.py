@@ -121,15 +121,12 @@ def extract_nested_compressed(file: str, temp_directory: str):
         if 'Zip archive' in buffer:
             with zipfile.ZipFile(file, 'r') as zfile:
                 zfile.extractall(path=temp_directory+'\\')
-                result = True
         elif '7-zip archive' in buffer:
             with py7zr.SevenZipFile(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
-                result = True
         elif 'gzip compressed' in buffer:
             with tarfile.open(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
-            result = True
         else:
             result = ['incompatible archive', file, buffer]
         for root, dirs, files in os.walk(temp_directory):
@@ -139,6 +136,7 @@ def extract_nested_compressed(file: str, temp_directory: str):
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
+        result = True
     except Exception as e:
         if 'Password is required' in str(e):
             print(f'-- password required: {file}')
