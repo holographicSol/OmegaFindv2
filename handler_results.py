@@ -2,8 +2,8 @@ import asyncio
 import handler_file
 
 
-def result_handler(_results: list):
-    print('-- unrecognized files:')
+def result_handler(_results: list, msg: str):
+    print(f'-- {msg} files:')
     i_result = 0
     for result in _results:
         if i_result <= 12:
@@ -27,14 +27,14 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
             asyncio.run(handler_file.write_scan_results(*_results,
                                                         file='scan_results__' + _dt + '.txt',
                                                         _dt=_dt))
-            result_handler(_results=_results)
+            result_handler(_results=_results, msg='unrecognized')
         elif _type_scan_bool is True:
             print(f'-- found files: {len(_results)}')
             print('-- writing results ...')
             asyncio.run(handler_file.write_scan_results(*_results,
                                                         file='scan_results__' + _dt + '.txt',
                                                         _dt=_dt))
-            result_handler(_results=_results)
+            result_handler(_results=_results, msg='found')
     else:
         print('-- zero results.')
     print('')
