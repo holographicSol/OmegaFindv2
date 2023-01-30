@@ -9,6 +9,7 @@ import scanfs
 import magic
 import pathlib
 import zipfile
+import py7zr
 
 debug = False
 
@@ -114,21 +115,32 @@ async def clean_database(fname: str):
 def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: bool) -> bool:
     result = False
     try:
+        # print('buffer:', file_sub_ops(read_bytes(file=file)))
+
         if 'Zip archive' in file_sub_ops(read_bytes(file=file)):
+            # print(f'-- extracting ZIP: {file}')
             with zipfile.ZipFile(file, 'r') as zfile:
                 zfile.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
-            for root, dirs, files in os.walk(temp_directory):
-                for filename in files:
-                    if 'Zip archive' in file_sub_ops(read_bytes(file=file)):
-                        fileSpec = os.path.join(root, filename)
-                        extract_nested_compressed(file=fileSpec,
-                                                  temp_directory=fileSpec.replace(pathlib.Path(file).suffix, ''),
-                                                  remove_zipped=True)
+
+        elif '7-zip archive' in file_sub_ops(read_bytes(file=file)):
+            # print(f'-- extracting 7ZIP: {file}')
+            with py7zr.SevenZipFile(file, 'r') as archive:
+                archive.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
+
+        for root, dirs, files in os.walk(temp_directory):
+            for filename in files:
+                # print('sub_loop buffer:', file_sub_ops(read_bytes(file=file)))
+
+                if 'Zip archive' in file_sub_ops(read_bytes(file=file)) or '7-zip archive' in file_sub_ops(read_bytes(file=file)):
+                    fileSpec = os.path.join(root, filename)
+                    extract_nested_compressed(file=fileSpec,
+                                              temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
+                                              remove_zipped=True)
             if remove_zipped is True:
                 os.remove(file)
             result = True
     except Exception as e:
-        print('extract_nested_compressed', e)
+        print('-- error in extract_nested_compressed', e)
     return result
 
 
