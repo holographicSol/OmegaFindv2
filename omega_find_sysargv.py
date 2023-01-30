@@ -3,17 +3,17 @@ import ext_module
 import string
 import omega_find_banner
 import omega_find_help
-import omega_find_sysargv
 import handler_file
 import asyncio
 
 
 def mode(stdin: list) -> tuple:
-    modes = ['--learn', '--de-scan', '--type-scan']
+    modes = ['--learn', '--de-scan', '--type-scan', '--p-scan']
     _mode = ''
     learn = False
     de_scan = False
     type_scan = False
+    p_scan = False
     suffix = []
     for m in modes:
         if m in stdin:
@@ -22,6 +22,8 @@ def mode(stdin: list) -> tuple:
         learn = True
     elif _mode == '--de-scan':
         de_scan = True
+    elif _mode == '--p-scan':
+        p_scan = True
     elif _mode == '--type-scan':
         type_scan = True
         if '--suffix' in stdin:
@@ -79,7 +81,7 @@ def mode(stdin: list) -> tuple:
                     suffix = sfx_group
             else:
                 print('-- no custom suffix groups found ...')
-    return _mode, learn, de_scan, type_scan, suffix
+    return _mode, learn, de_scan, type_scan, p_scan, suffix
 
 
 def target(stdin: list, _mode) -> str:

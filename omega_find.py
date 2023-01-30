@@ -165,6 +165,43 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
     return _result
 
 
+async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int) -> list:
+    _result = [_file]
+    _tmp = '.\\tmp\\'+str(randStr())+'\\'
+    extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp)
+    if extraction is True:
+        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+        for sub_file in sub_files:
+            buffer = await read_bytes(sub_file, _buffer_max)
+            if buffer is not None:
+                _result.append(buffer)
+            else:
+                if [_file, _buffer] not in _result:
+                    _result.append([_file, _buffer])
+    else:
+        _result = extraction
+    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
+    if 'Password required' in _result:
+        return _result
+
+
+async def p_scan(file: str, _buffer_max: int, _extract: bool) -> list:
+    _result = []
+    try:
+        buffer = await read_bytes(file, _buffer_max)
+        if await check_extract(_extract=_extract, _buffer=buffer) is True:
+            _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max)
+    except Exception as e:
+        _result = handler_exception.exception_format(e)
+    return _result
+
+
+async def entry_point_p_scan(chunk: list, **kwargs) -> list:
+    _buffer_max = int(kwargs.get('buffer_max'))
+    return [await p_scan(item, _buffer_max, _extract=True) for item in chunk]
+
+
 async def entry_point_learn(chunk: list, **kwargs) -> list:
     _recognized_files = kwargs.get('files_recognized')
     _buffer_max = int(kwargs.get('buffer_max'))
@@ -189,6 +226,8 @@ async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
             _results = await pool.map(entry_point_de_scan, _chunks, _multiproc_dict)
         elif mode == '--type-scan':
             _results = await pool.map(entry_point_type_scan, _chunks, _multiproc_dict)
+        elif mode == '--p-scan':
+            _results = await pool.map(entry_point_p_scan, _chunks, _multiproc_dict)
     return _results
 
 
@@ -205,7 +244,7 @@ if __name__ == '__main__':
     if omega_find_sysargv.run_and_exit(stdin=STDIN) is False:
 
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
-        mode, learn_bool, de_scan_bool, type_scan_bool, type_suffix = omega_find_sysargv.mode(STDIN)
+        mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix = omega_find_sysargv.mode(STDIN)
         if type_scan_bool is True and not len(type_suffix) >= 1:
             sys.exit('-- exiting ...\n')
         target = omega_find_sysargv.target(STDIN, mode)
@@ -222,11 +261,13 @@ if __name__ == '__main__':
             dt = get_dt()
 
             # read recognized files
-            recognized_files, suffixes = handler_file.db_read_handler(_learn_bool=learn_bool,
-                                                                      _de_scan_bool=de_scan_bool,
-                                                                      _type_scan_bool=type_scan_bool,
-                                                                      _db_recognized_files=db_recognized_files,
-                                                                      _type_suffix=type_suffix)
+            recognized_files, suffixes = [], []
+            if p_scan is False:
+                recognized_files, suffixes = handler_file.db_read_handler(_learn_bool=learn_bool,
+                                                                          _de_scan_bool=de_scan_bool,
+                                                                          _type_scan_bool=type_scan_bool,
+                                                                          _db_recognized_files=db_recognized_files,
+                                                                          _type_suffix=type_suffix)
             # pre-scan
             files, x_files = handler_file.pre_scan_handler(_target=target)
             asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
@@ -240,6 +281,7 @@ if __name__ == '__main__':
                                                      _buffer_max=buffer_max,
                                                      _type_suffix=type_suffix, _learn=learn_bool,
                                                      _de_scan=de_scan_bool, _type_scan=type_scan_bool,
+                                                     _p_scan=p_scan_bool,
                                                      _extract=extract)
 
             # run the async multiprocess operation(s)
@@ -255,7 +297,8 @@ if __name__ == '__main__':
             # post-scan results
             handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
-                                              _type_scan_bool=type_scan_bool, _dt=dt)
+                                              _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
+                                              _dt=dt)
 
         else:
             print('-- invalid input')
