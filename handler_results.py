@@ -34,6 +34,7 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
             asyncio.run(handler_file.write_scan_results(*_results,
                                                         file='scan_results__' + _dt + '.txt',
                                                         _dt=_dt))
+            result_handler(_results=_results)
     else:
         print('-- zero results.')
     print('')
