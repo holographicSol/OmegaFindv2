@@ -119,19 +119,20 @@ def extract_nested_compressed(file: str, temp_directory: str):
     result = False
     try:
         buffer = file_sub_ops(read_bytes(file=file))
-        if 'Zip archive' in buffer:
+        buffer = str(buffer).strip()
+        if buffer.startswith('Zip archive'):
             with zipfile.ZipFile(file, 'r') as zfile:
                 zfile.extractall(path=temp_directory+'\\')
                 result = True
-        elif '7-zip archive' in buffer:
+        elif buffer.startswith('7-zip archive'):
             with py7zr.SevenZipFile(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
                 result = True
-        elif 'gzip compressed' in buffer:
+        elif buffer.startswith('gzip compressed'):
             with tarfile.open(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
                 result = True
-        elif 'bzip2 compressed' in buffer:
+        elif buffer.startswith('bzip2 compressed'):
             with tarfile.open(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
                 result = True
