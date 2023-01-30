@@ -28,6 +28,7 @@ def omega_help():
     print('                                   [text]')
     print('                                   [video]')
     print('                                   [web]')
+    print(' [--p-scan]     [Attempt to find only password protected archives]')
     print('')
     print(' [-v]  [Verbosity]  [Increase verbosity]')
     print(' [-h]  [Help]       [Displays this help message]')
