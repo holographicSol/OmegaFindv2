@@ -73,6 +73,8 @@ Developer:
 
     Python Version: 3.9+
     OS: Tested and running on Windows 10 and Linux.
+
+    Install modules run: requirements.bat
     
     Running the source code: Requires pool.py be placed in aiomultiprocessing.
     Backup original pool.py first.
