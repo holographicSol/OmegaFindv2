@@ -6,9 +6,7 @@ import os
 import sys
 import re
 import time
-import magic
 from datetime import datetime
-import pathlib
 import asyncio
 import aiofiles
 import aiomultiprocess
