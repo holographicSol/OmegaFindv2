@@ -151,7 +151,7 @@ def extract_nested_compressed(file: str, temp_directory: str):
     except Exception as e:
         if 'Password is required' in str(e):
             print(f'-- password required: {file}')
-            result = ['Password required', str(file)]
+            result = ['Password required', str(file), buffer]
         else:
             print('-- error in extract_nested_compressed', e)
     return result
