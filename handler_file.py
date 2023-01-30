@@ -10,6 +10,7 @@ import magic
 import pathlib
 import zipfile
 import py7zr
+import shutil
 
 debug = False
 
@@ -174,6 +175,11 @@ def file_sub_ops(_bytes: bytes) -> str:
         if debug is True:
             print(f'-- exception: {e}')
     return buff
+
+
+def rem_dir(path: str):
+    if os.path.exists(path):
+        shutil.rmtree(path)
 
 
 def pre_scan_handler(_target: str) -> tuple:
