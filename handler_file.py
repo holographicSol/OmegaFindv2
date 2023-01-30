@@ -12,7 +12,7 @@ import zipfile
 import py7zr
 import shutil
 import tarfile
-import bz2
+import compatible_archives
 
 debug = False
 
@@ -122,26 +122,31 @@ def extract_nested_compressed(file: str, temp_directory: str):
         if 'Zip archive' in buffer:
             with zipfile.ZipFile(file, 'r') as zfile:
                 zfile.extractall(path=temp_directory+'\\')
+                result = True
         elif '7-zip archive' in buffer:
             with py7zr.SevenZipFile(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
+                result = True
         elif 'gzip compressed' in buffer:
             with tarfile.open(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
+                result = True
         elif 'bzip2 compressed' in buffer:
             with tarfile.open(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
+                result = True
         else:
             result = ['incompatible archive', file, buffer]
+
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
                 buffer = file_sub_ops(read_bytes(file=file))
-                if 'Zip archive' in buffer or '7-zip archive' in buffer or 'gzip compressed' in buffer\
-                        or 'bzip2 compressed' in buffer:
+                buffer = str(buffer).strip()
+                if buffer.startswith(tuple(compatible_archives.compatible_arch)):
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
-        result = True
+
     except Exception as e:
         if 'Password is required' in str(e):
             print(f'-- password required: {file}')

@@ -19,6 +19,7 @@ import handler_exception
 import omega_find_banner
 import omega_find_help
 import omega_find_sysargv
+import compatible_archives
 import scanfs
 import string
 import random
@@ -81,10 +82,10 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 
 
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
-    # print(f'check_extract {_buffer}')
+    # print(f'check_extract {_buffer}')  # dev check compatibility
     if _extract is True:
-        if 'Zip archive' in str(_buffer) or '7-zip archive' in str(_buffer) or 'gzip compressed' in str(_buffer)\
-                or 'bzip2 compressed' in str(_buffer):
+        _buffer = str(_buffer).strip()
+        if _buffer.startswith(tuple(compatible_archives.compatible_arch)):
             return True
 
 
