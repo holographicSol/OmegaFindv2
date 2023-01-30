@@ -17,7 +17,8 @@ Overview:
 
     Extract: --extract argument enables discovery of nested compressed files that can
     also be extracted and scanned during various scan techniques if --extract argument
-    is used.
+    is used. Password protected archives can also be detected when using --extract,
+    password protected files will be added to the results files for further analysis.
  
 
 Help:
