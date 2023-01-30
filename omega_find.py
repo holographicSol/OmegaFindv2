@@ -42,7 +42,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
                             _type_suffix: list) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
+    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp) is True:
         sub_files = scanfs.scan(_tmp)
         sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
         for sub_file in sub_files:
@@ -56,7 +56,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp, remove_zipped=False) is True:
+    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp) is True:
         sub_files = scanfs.scan(_tmp)
         sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
         for sub_file in sub_files:

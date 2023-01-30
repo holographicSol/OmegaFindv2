@@ -112,30 +112,23 @@ async def clean_database(fname: str):
         await handle.write('\n')
 
 
-def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: bool) -> bool:
+def extract_nested_compressed(file: str, temp_directory: str) -> bool:
     result = False
     try:
-        # print('buffer:', file_sub_ops(read_bytes(file=file)))
-
-        if 'Zip archive' in file_sub_ops(read_bytes(file=file)):
-            # print(f'-- extracting ZIP: {file}')
+        buffer = file_sub_ops(read_bytes(file=file))
+        if 'Zip archive' in buffer:
             with zipfile.ZipFile(file, 'r') as zfile:
                 zfile.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
-
-        elif '7-zip archive' in file_sub_ops(read_bytes(file=file)):
-            # print(f'-- extracting 7ZIP: {file}')
+        elif '7-zip archive' in buffer:
             with py7zr.SevenZipFile(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
-
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
-                # print('sub_loop buffer:', file_sub_ops(read_bytes(file=file)))
-
-                if 'Zip archive' in file_sub_ops(read_bytes(file=file)) or '7-zip archive' in file_sub_ops(read_bytes(file=file)):
+                buffer = file_sub_ops(read_bytes(file=file))
+                if 'Zip archive' in buffer or '7-zip archive' in buffer:
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
-                                              temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
-                                              remove_zipped=False)
+                                              temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
             result = True
     except Exception as e:
         print('-- error in extract_nested_compressed', e)
