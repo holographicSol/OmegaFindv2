@@ -183,6 +183,7 @@ async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int) -> list:
         _result = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     if 'Password required' in _result:
+        print(f'-- {_result}')
         return _result
 
 
