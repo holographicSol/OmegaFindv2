@@ -135,9 +135,7 @@ def extract_nested_compressed(file: str, temp_directory: str, remove_zipped: boo
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
-                                              remove_zipped=True)
-            if remove_zipped is True:
-                os.remove(file)
+                                              remove_zipped=False)
             result = True
     except Exception as e:
         print('-- error in extract_nested_compressed', e)
