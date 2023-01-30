@@ -24,6 +24,10 @@ Overview:
     OmegaFindv2 is also compatible with 7zip archives and gz archives and further more
     given the time and oportunity, will be compatible with many more archive
     algorithms too.
+
+    Password scan (--p-scan): pScan attempts to find password protected archives.
+    Skips reading database, does not hand database through to child processes and
+    performs no buffer/suffix association checks.
  
 
 Help:
