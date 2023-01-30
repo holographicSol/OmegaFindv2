@@ -135,7 +135,7 @@ def extract_nested_compressed(file: str, temp_directory: str):
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
                 buffer = file_sub_ops(read_bytes(file=file))
-                if 'Zip archive' in buffer or '7-zip archive' in buffer:
+                if 'Zip archive' in buffer or '7-zip archive' in buffer or 'gzip compressed' in buffer:
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
