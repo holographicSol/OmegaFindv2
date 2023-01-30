@@ -40,6 +40,7 @@ Help:
      [--database]          [Specify a database file to use for scanning]
      [--new-suffix-group]  [Create a new suffix group]
     
+     [--p-scan]     [Attempt to find only password protected archives]
      [--de-scan]    [Attempt to ascertain if suffix match contents]
      [--type-scan]  [Scan file type]
                     [--suffix]         [Specify suffix]
