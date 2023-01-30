@@ -40,7 +40,8 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
                             _type_suffix: list) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp) is True:
+    extraction = handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp)
+    if extraction is True:
         sub_files = scanfs.scan(_tmp)
         sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
         for sub_file in sub_files:
@@ -48,13 +49,16 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
             _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
         shutil.rmtree(_tmp)
+    else:
+        _result = extraction
     return _result
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    if handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp) is True:
+    extraction = handler_file.extract_nested_compressed(file=_file, temp_directory=_tmp)
+    if extraction is True:
         sub_files = scanfs.scan(_tmp)
         sub_files = handler_chunk.un_chunk_data(sub_files, depth=1)
         for sub_file in sub_files:
@@ -62,6 +66,8 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
             _result.append(await de_scan_check(sub_file, suffix, buffer, _recognized_files))
         shutil.rmtree(_tmp)
+    else:
+        _result = extraction
     return _result
 
 

@@ -112,7 +112,7 @@ async def clean_database(fname: str):
         await handle.write('\n')
 
 
-def extract_nested_compressed(file: str, temp_directory: str) -> bool:
+def extract_nested_compressed(file: str, temp_directory: str):
     result = False
     try:
         buffer = file_sub_ops(read_bytes(file=file))
@@ -132,7 +132,11 @@ def extract_nested_compressed(file: str, temp_directory: str) -> bool:
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
     except Exception as e:
-        print('-- error in extract_nested_compressed', e)
+        if 'Password is required' in str(e):
+            print(f'-- password required: {file}')
+            result = ['Password required', str(file)]
+        else:
+            print('-- error in extract_nested_compressed', e)
     return result
 
 
