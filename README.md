@@ -19,6 +19,11 @@ Overview:
     also be extracted and scanned during various scan techniques if --extract argument
     is used. Password protected archives can also be detected when using --extract,
     password protected files will be added to the results files for further analysis.
+    -- extract compat: Many archives from .zip to ebub etc are actually zipfiles and
+    are alone compatible with OmegaFindv2's zipfile extraction capabilities. However,
+    OmegaFindv2 is also compatible with 7zip archives and gz archives and further more
+    given the time and oportunity, will be compatible with many more archive
+    algorithms too.
  
 
 Help:
