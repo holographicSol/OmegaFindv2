@@ -83,7 +83,8 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
     # print(f'check_extract {_buffer}')
     if _extract is True:
-        if 'Zip archive' in str(_buffer) or '7-zip archive' in str(_buffer) or 'gzip compressed' in str(_buffer):
+        if 'Zip archive' in str(_buffer) or '7-zip archive' in str(_buffer) or 'gzip compressed' in str(_buffer)\
+                or 'bzip2 compressed' in str(_buffer):
             return True
 
 
