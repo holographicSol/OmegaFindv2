@@ -12,6 +12,7 @@ import zipfile
 import py7zr
 import shutil
 import tarfile
+import bz2
 
 debug = False
 
@@ -127,12 +128,16 @@ def extract_nested_compressed(file: str, temp_directory: str):
         elif 'gzip compressed' in buffer:
             with tarfile.open(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
+        elif 'bzip2 compressed' in buffer:
+            with tarfile.open(file, 'r') as archive:
+                archive.extractall(path=temp_directory+'\\')
         else:
             result = ['incompatible archive', file, buffer]
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
                 buffer = file_sub_ops(read_bytes(file=file))
-                if 'Zip archive' in buffer or '7-zip archive' in buffer or 'gzip compressed' in buffer:
+                if 'Zip archive' in buffer or '7-zip archive' in buffer or 'gzip compressed' in buffer\
+                        or 'bzip2 compressed' in buffer:
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
