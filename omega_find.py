@@ -51,7 +51,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
         shutil.rmtree(_tmp)
     else:
         _result = extraction
-    await rem_dir(path=_tmp)
+    await asyncio.to_thread(rem_dir, path=_tmp)
     return _result
 
 
@@ -68,11 +68,11 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             _result.append(await de_scan_check(sub_file, suffix, buffer, _recognized_files))
     else:
         _result = extraction
-    await rem_dir(path=_tmp)
+    await asyncio.to_thread(rem_dir, path=_tmp)
     return _result
 
 
-async def rem_dir(path: str):
+def rem_dir(path: str):
     if os.path.exists(path):
         shutil.rmtree(path)
 
