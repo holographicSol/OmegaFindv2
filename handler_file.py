@@ -117,6 +117,7 @@ async def clean_database(fname: str):
 
 def extract_nested_compressed(file: str, temp_directory: str):
     result = False
+    buffer = ''
     try:
         buffer = file_sub_ops(read_bytes(file=file))
         buffer = str(buffer).strip()
