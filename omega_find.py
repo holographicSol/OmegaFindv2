@@ -46,7 +46,12 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
         for sub_file in sub_files:
             buffer = await read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-            _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
+            res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
+            if res is not None:
+                _result.append(res)
+            else:
+                if [_file, _buffer] not in _result:
+                    _result.append([_file, _buffer])
     else:
         _result = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
@@ -63,7 +68,12 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
         for sub_file in sub_files:
             buffer = await read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-            _result.append(await de_scan_check(sub_file, suffix, buffer, _recognized_files))
+            res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
+            if res is not None:
+                _result.append(res)
+            else:
+                if [_file, _buffer] not in _result:
+                    _result.append([_file, _buffer])
     else:
         _result = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
@@ -71,8 +81,9 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 
 
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
+    # print(f'check_extract {_buffer}')
     if _extract is True:
-        if 'Zip archive' in str(_buffer) or '7-zip archive' in str(_buffer):
+        if 'Zip archive' in str(_buffer) or '7-zip archive' in str(_buffer) or 'gzip compressed' in str(_buffer):
             return True
 
 

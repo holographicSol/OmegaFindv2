@@ -11,6 +11,7 @@ import pathlib
 import zipfile
 import py7zr
 import shutil
+import tarfile
 
 debug = False
 
@@ -125,6 +126,12 @@ def extract_nested_compressed(file: str, temp_directory: str):
             with py7zr.SevenZipFile(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
                 result = True
+        elif 'gzip compressed' in buffer:
+            with tarfile.open(file, 'r') as archive:
+                archive.extractall(path=temp_directory+'\\')
+            result = True
+        else:
+            result = ['incompatible archive', file, buffer]
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
                 buffer = file_sub_ops(read_bytes(file=file))
