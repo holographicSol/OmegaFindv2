@@ -20,7 +20,6 @@ import omega_find_banner
 import omega_find_help
 import omega_find_sysargv
 import scanfs
-import shutil
 import string
 import random
 
@@ -48,7 +47,6 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
             buffer = await read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
             _result.append(await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix))
-        shutil.rmtree(_tmp)
     else:
         _result = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
