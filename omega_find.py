@@ -69,7 +69,6 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
     if _extract is True:
-        # print('check_extract:', str(_buffer))
         if 'Zip archive' in str(_buffer) or '7-zip archive' in str(_buffer):
             return True
 
@@ -235,7 +234,6 @@ if __name__ == '__main__':
             results = handler_chunk.un_chunk_data(results, depth=1)
             exc, results = handler_exception.separate_exception(results)
             print(f'-- errors: {len(exc)}')
-            print(f'-- results: {results}')
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # post-scan results

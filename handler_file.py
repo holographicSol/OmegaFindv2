@@ -118,10 +118,10 @@ def extract_nested_compressed(file: str, temp_directory: str) -> bool:
         buffer = file_sub_ops(read_bytes(file=file))
         if 'Zip archive' in buffer:
             with zipfile.ZipFile(file, 'r') as zfile:
-                zfile.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
+                zfile.extractall(path=temp_directory+'\\')
         elif '7-zip archive' in buffer:
             with py7zr.SevenZipFile(file, 'r') as archive:
-                archive.extractall(path=temp_directory+'\\'+pathlib.Path(file).suffix)
+                archive.extractall(path=temp_directory+'\\')
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
                 buffer = file_sub_ops(read_bytes(file=file))
