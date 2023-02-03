@@ -94,6 +94,12 @@ Developer:
     initial iterables as there is no manager.dict and obviously no previously
     set globals for the child processes. Lines edited: 337, 339, 345.
 
+    Todo:
+    * Add compatibility for archives not yet supported by current extraction
+      methods.
+    * Add multiple methods of extraction to existing archive extraction methods.
+    * More readable/parsable logs, results.
+
 
 Compatibility:
     
