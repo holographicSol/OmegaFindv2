@@ -40,49 +40,55 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
                             _type_suffix: list) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp)
-    if extraction is True:
+    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp)
+    if result_bool is True:
         sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
         sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
         for sub_file in sub_files:
             buffer = await read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
             res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
+            # store result of sub-file scan(s) -> list of lists
             if res is not None:
                 _result.append(res)
+            # else store the original result -> list of lists
             else:
                 if [_file, _buffer] not in _result:
                     _result.append([_file, _buffer])
     else:
+        # possibly password required -> list of lists
         _result = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _result
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list) -> list:
-    _result = [_file]
+    _results = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp)
-    if extraction is True:
+    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
+                                                      file=_file, temp_directory=_tmp)
+    if result_bool is True:
         sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
         sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
         for sub_file in sub_files:
             buffer = await read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
             res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
+            # store result of sub-file scan(s) -> list of lists
             if res is not None:
-                _result.append(res)
+                _results.append(res)
+            # else store the original result -> list of lists
             else:
-                if [_file, _buffer] not in _result:
-                    _result.append([_file, _buffer])
+                if [_file, _buffer] not in _results:
+                    _results.append([_file, _buffer])
     else:
-        _result = extraction
+        # possibly password required -> list of lists
+        _results = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
-    return _result
+    return _results
 
 
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
-    # print(f'check_extract {_buffer}')  # dev check compatibility
     if _extract is True:
         _buffer = str(_buffer).strip()
         if _buffer.startswith(tuple(compatible_archives.compatible_arch)):
@@ -112,7 +118,7 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
             _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                             _recognized_files=_recognized_files)
     except Exception as e:
-        _result = handler_exception.exception_format(e)
+        _result = ['[ERROR]', str(file), str(e)]
     return _result
 
 
@@ -141,7 +147,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
             _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                               _recognized_files=_recognized_files, _type_suffix=_type_suffix)
     except Exception as e:
-        _result = handler_exception.exception_format(e)
+        _result = ['[ERROR]', str(file), str(e)]
     return _result
 
 
@@ -161,30 +167,25 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await scan_learn_check(suffix, buffer, _recognized_files)
     except Exception as e:
-        _result = handler_exception.exception_format(e)
+        _result = ['[ERROR]', str(file), str(e)]
     return _result
 
 
 async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int) -> list:
     _result = [_file]
     _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp)
-    if extraction is True:
-        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
-        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
-        for sub_file in sub_files:
-            buffer = await read_bytes(sub_file, _buffer_max)
-            if buffer is not None:
-                _result.append(buffer)
-            else:
-                if [_file, _buffer] not in _result:
-                    _result.append([_file, _buffer])
-    else:
-        _result = extraction
+    _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
-    if 'Password required' in _result:
-        print(f'-- {_result}')
-        return _result
+    final_res = []
+    # collect only password required and any errors -> list of lists
+    for res in _results:
+        if 'Password required' in res:
+            if res not in final_res:
+                final_res.append(res)
+        elif res[0] == '[ERROR]':
+            if res not in final_res:
+                final_res.append(res)
+    return final_res
 
 
 async def p_scan(file: str, _buffer_max: int, _extract: bool) -> list:
@@ -194,7 +195,7 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool) -> list:
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
             _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max)
     except Exception as e:
-        _result = handler_exception.exception_format(e)
+        _result = ['[ERROR]', str(file), str(e)]
     return _result
 
 
@@ -263,7 +264,7 @@ if __name__ == '__main__':
 
             # read recognized files
             recognized_files, suffixes = [], []
-            if p_scan is False:
+            if p_scan_bool is False:
                 recognized_files, suffixes = handler_file.db_read_handler(_learn_bool=learn_bool,
                                                                           _de_scan_bool=de_scan_bool,
                                                                           _type_scan_bool=type_scan_bool,
@@ -300,6 +301,10 @@ if __name__ == '__main__':
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
                                               _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
                                               _dt=dt)
+
+            # final clean of tmp
+            if os.path.exists('./tmp/'):
+                handler_file.rem_dir(path='./tmp/')
 
         else:
             print('-- invalid input')

@@ -15,6 +15,7 @@ import tarfile
 import compatible_archives
 
 debug = False
+result = []
 
 
 async def read_definitions(fname: str) -> tuple:
@@ -116,29 +117,25 @@ async def clean_database(fname: str):
 
 
 def extract_nested_compressed(file: str, temp_directory: str):
-    result = False
+    global result
+    result_bool = False
     buffer = ''
+    group_tarball = ['gzip compressed', 'bzip2 compressed']
     try:
         buffer = file_sub_ops(read_bytes(file=file))
         buffer = str(buffer).strip()
+
         if buffer.startswith('Zip archive'):
             with zipfile.ZipFile(file, 'r') as zfile:
                 zfile.extractall(path=temp_directory+'\\')
-                result = True
+
         elif buffer.startswith('7-zip archive'):
             with py7zr.SevenZipFile(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
-                result = True
-        elif buffer.startswith('gzip compressed'):
+
+        elif buffer.startswith(tuple(group_tarball)):
             with tarfile.open(file, 'r') as archive:
                 archive.extractall(path=temp_directory+'\\')
-                result = True
-        elif buffer.startswith('bzip2 compressed'):
-            with tarfile.open(file, 'r') as archive:
-                archive.extractall(path=temp_directory+'\\')
-                result = True
-        else:
-            result = ['incompatible archive', file, buffer]
 
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
@@ -148,13 +145,18 @@ def extract_nested_compressed(file: str, temp_directory: str):
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
-
+        result_bool = True
     except Exception as e:
         if 'Password is required' in str(e):
-            result = ['Password required', str(file), buffer]
+            _result = ['Password required', str(file), buffer]
+            if _result not in result:
+                result.append(_result)
         else:
-            print('-- error in extract_nested_compressed', e)
-    return result
+            # print(f'[E] [{file} {buffer}] {e}')
+            _result = ['[ERROR]', str(file), str(buffer), str(e)]
+            if _result not in result:
+                result.append(_result)
+    return result_bool, result
 
 
 def db_read_handler(_learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool,

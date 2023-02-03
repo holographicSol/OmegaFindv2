@@ -14,7 +14,7 @@ def scantree(path: str) -> str:
             else:
                 yield entry
     except Exception as e:
-        x_files.append(handler_exception.exception_format(e))
+        x_files.append(['[ERROR]', str(e)])
 
 
 def scan(path: str) -> list:
