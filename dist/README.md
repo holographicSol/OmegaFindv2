@@ -95,6 +95,15 @@ Developer:
     set globals for the child processes. Lines edited: 337, 339, 345.
 
 
+Compatibility:
+    
+    Logging: Compatibility issues such as a file appearing to be a b2z archive (for example)
+    but however tarfile module cannot extract the contents. This would require donations to
+    the relevant team and or OmegaFindv2 itself being armed with multiple different extraction
+    methods per archive type (zip, 7izp, b2z etc..). Compatibility for OmegaFindv2's extraction
+    capabilities is in progress. 
+
+
 Gratitude and Thanks:
 
     Powered by asyncio, aiomultiprocess, aiofiles, python-magic and of course
