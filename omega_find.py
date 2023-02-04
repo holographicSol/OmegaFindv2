@@ -52,6 +52,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
             res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
             # store result of sub-file scan(s) -> list of lists
             if res is not None:
+                res[0] = res[0].replace(_tmp, _target)
                 _result.append(res)
             # else store the original result -> list of lists
             else:
@@ -79,6 +80,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
             # store result of sub-file scan(s) -> list of lists
             if res is not None:
+                res[0] = res[0].replace(_tmp, _target)
                 _results.append(res)
             # else store the original result -> list of lists
             else:
