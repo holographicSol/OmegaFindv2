@@ -58,7 +58,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
         # possibly password required -> list of lists
         _results = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
-    return _result
+    return _results
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
