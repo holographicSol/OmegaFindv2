@@ -117,19 +117,17 @@ async def clean_database(fname: str):
 
 
 def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer: str, e: Exception):
+    # print(f'[E] [{file} {buffer}] {e}')
     _result = []
     if 'Password is required' in str(e):
         fullpath = file.replace(_static_tmp, _target)
         _result = ['Password required', str(fullpath), buffer]
         if _result not in result:
-            # result.append(_result)
             return _result
     else:
-        # print(f'[E] [{file} {buffer}] {e}')
         fullpath = file.replace(_static_tmp, _target)
         _result = ['[ERROR]', str(fullpath), str(buffer), str(e)]
         if _result not in result:
-            # result.append(_result)
             return _result
 
 
@@ -142,14 +140,13 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
         buffer = file_sub_ops(read_bytes(file=file))
         buffer = str(buffer).strip()
         try:
+            # +/- compatibility
             if buffer.startswith('Zip archive'):
                 with zipfile.ZipFile(file, 'r') as zfile:
                     zfile.extractall(path=temp_directory+'\\')
-
             elif buffer.startswith('7-zip archive'):
                 with py7zr.SevenZipFile(file, 'r') as archive:
                     archive.extractall(path=temp_directory+'\\')
-
             elif buffer.startswith(tuple(group_tarball)):
                 with tarfile.open(file, 'r') as archive:
                     archive.extractall(path=temp_directory+'\\')
