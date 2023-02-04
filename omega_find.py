@@ -39,7 +39,7 @@ def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
 
 async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
                             _type_suffix: list, _target: str) -> list:
-    _result = [_file]
+    _results = [_file, _buffer]
     _tmp = '.\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp,
                                                       _target=_target, _static_tmp=_tmp)
@@ -53,20 +53,16 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
             # store result of sub-file scan(s) -> list of lists
             if res is not None:
                 res[0] = res[0].replace(_tmp, _target)
-                _result.append(res)
-            # else store the original result -> list of lists
-            else:
-                if [_file, _buffer] not in _result:
-                    _result.append([_file, _buffer])
+                _results.append(res)
     else:
         # possibly password required -> list of lists
-        _result = extraction
+        _results = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _result
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
-    _results = [_file]
+    _results = [_file, _buffer]
     _tmp = '.\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
@@ -82,10 +78,6 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             if res is not None:
                 res[0] = res[0].replace(_tmp, _target)
                 _results.append(res)
-            # else store the original result -> list of lists
-            else:
-                if [_file, _buffer] not in _results:
-                    _results.append([_file, _buffer])
     else:
         # possibly password required -> list of lists
         _results = extraction
