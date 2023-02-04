@@ -26,21 +26,21 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                 print(f'-- unrecognized files: {len(_results)}')
                 print('-- writing results ...')
                 asyncio.run(handler_file.write_scan_results(*_results,
-                                                            file='scan_results__' + _dt + '.txt',
+                                                            file='scan_results_de-scan_' + _dt + '.txt',
                                                             _dt=_dt))
                 # result_handler(_results=_results, msg='unrecognized')
             elif _type_scan_bool is True:
                 print(f'-- found files: {len(_results)}')
                 print('-- writing results ...')
                 asyncio.run(handler_file.write_scan_results(*_results,
-                                                            file='scan_results__' + _dt + '.txt',
+                                                            file='scan_results_type-scan_' + _dt + '.txt',
                                                             _dt=_dt))
                 # result_handler(_results=_results, msg='found')
             elif _p_scan is True:
                 print(f'-- found files: {len(_results)}')
                 print('-- writing results ...')
                 asyncio.run(handler_file.write_scan_results(*_results,
-                                                            file='scan_results__' + _dt + '.txt',
+                                                            file='scan_results_pscan_' + _dt + '.txt',
                                                             _dt=_dt))
                 result_handler(_results=_results, msg='potentially password protected')
     else:
