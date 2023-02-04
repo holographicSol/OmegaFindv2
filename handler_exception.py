@@ -8,6 +8,7 @@ def exception_format(e: Exception) -> list:
 
 
 def separate_exception(_list: list) -> tuple:
+    # temporary list parser method
     e = []
     new_l = []
     for item in _list:

@@ -20,6 +20,7 @@ import omega_find_banner
 import omega_find_help
 import omega_find_sysargv
 import compatible_archives
+import post_process
 import scanfs
 import string
 import random
@@ -295,6 +296,10 @@ if __name__ == '__main__':
             exc, results = handler_exception.separate_exception(results)
             print(f'-- errors: {len(exc)}')
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
+
+            # post-processing
+            if p_scan_bool is True:
+                results = post_process.pscan(_list=results)
 
             # post-scan results
             handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
