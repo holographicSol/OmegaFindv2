@@ -116,7 +116,7 @@ async def clean_database(fname: str):
         await handle.write('\n')
 
 
-def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer: str, e: Exception):
+def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer: str, e: Exception, msg: str):
     # print(f'[E] [{file} {buffer}] {e}')
     _result = []
     if 'Password is required' in str(e):
@@ -126,7 +126,7 @@ def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer:
             return _result
     else:
         fullpath = file.replace(_static_tmp, _target)
-        _result = ['[ERROR]', str(fullpath), str(buffer), str(e)]
+        _result = [msg, str(fullpath), str(buffer), str(e)]
         if _result not in result:
             return _result
 
@@ -152,23 +152,34 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                 with tarfile.open(file, 'r') as extract_file:
                     extract_file.extractall(path=temp_directory+'\\')
 
-        except Exception as e:
-            result.append(
-                extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e))
+            else:
+                # isolate archives known to be incompatible (not in current group_compatible lists.) -> compatibility
+                split_buffer = buffer.split(' ')
+                if len(split_buffer) >= 2:
+                    if buffer.split(' ')[1] in ['archive', 'compressed']:
+                        result.append(['[INCOMPATIBLE NON-VARIANT]', file, buffer])
 
-        for root, dirs, files in os.walk(temp_directory):
-            for filename in files:
-                buffer = file_sub_ops(read_bytes(file=file))
-                buffer = str(buffer).strip()
-                if buffer.startswith(tuple(compatible_archives.compatible_arch)):
+        except Exception as e:
+            # isolate incompatible archive variants of archive types otherwise compatible. -> compatibility
+            result.append(
+                extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e,
+                                          msg='[INCOMPATIBLE VARIANT]'))
+
+        if os.path.exists(temp_directory):
+            result_bool = True
+            for root, dirs, files in os.walk(temp_directory):
+                for filename in files:
+                    buffer = file_sub_ops(read_bytes(file=file))
+                    buffer = str(buffer).strip()
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
                                               _target=_target,
                                               _static_tmp=_static_tmp)
-        result_bool = True
+
     except Exception as e:
-        result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e))
+        result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e,
+                                                msg='[ERROR]'))
     return result_bool, result
 
 

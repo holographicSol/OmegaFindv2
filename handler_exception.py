@@ -7,20 +7,22 @@ def exception_format(e: Exception) -> list:
     return [e]
 
 
-def separate_exception(_list: list) -> tuple:
-    # temporary list parser method
+def results_filter(_list: list) -> tuple:
+    # temporary list parser method (refine/replace)
+    log_filter = ['[ERROR]', '[INCOMPATIBLE NON-VARIANT]', '[INCOMPATIBLE VARIANT]']
     e = []
     new_l = []
     for item in _list:
+
         # errors
         found_error = False
         if len(item) > 0:
-            if item[0] == '[ERROR]':
+            if item[0] in log_filter:
                 e.append(item)
                 found_error = True
             else:
                 if len(item) > 0:
-                    if item[0][0] == '[ERROR]':
+                    if item[0][0] in log_filter:
                         for x in item:
                             if x not in e:
                                 e.append(item)

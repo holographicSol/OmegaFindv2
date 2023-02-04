@@ -39,7 +39,7 @@ def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
 
 async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
                             _type_suffix: list, _target: str) -> list:
-    _results = [_file, _buffer]
+    _results = [[_file, _buffer]]
     _tmp = '.\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
@@ -63,22 +63,23 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
-    _results = [_file, _buffer]
+    _results = [[_file, _buffer]]
     _tmp = '.\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
     if result_bool is True:
-        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
-        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
-        for sub_file in sub_files:
-            buffer = await read_bytes(sub_file, _buffer_max)
-            suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-            res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
-            # store result of sub-file scan(s) -> list of lists
-            if res is not None:
-                res[0] = res[0].replace(_tmp, _target)
-                _results.append(res)
+        if os.path.exists(_tmp):
+            sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+            sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+            for sub_file in sub_files:
+                buffer = await read_bytes(sub_file, _buffer_max)
+                suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
+                res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
+                # store result of sub-file scan(s) -> list of lists
+                if res is not None:
+                    res[0] = res[0].replace(_tmp, _target)
+                    _results.append(res)
     else:
         # possibly password required -> list of lists
         _results = extraction
@@ -89,8 +90,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
     if _extract is True:
         _buffer = str(_buffer).strip()
-        if _buffer.startswith(tuple(compatible_archives.compatible_arch)):
-            return True
+        return True
 
 
 async def read_bytes(file: str, _buffer_max: int) -> bytes:
@@ -298,7 +298,7 @@ if __name__ == '__main__':
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             print(f'-- scan time: {time.perf_counter()-t}')
             results = handler_chunk.un_chunk_data(results, depth=1)
-            exc, results = handler_exception.separate_exception(results)
+            exc, results = handler_exception.results_filter(results)
             print(f'-- errors: {len(exc)}')
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
