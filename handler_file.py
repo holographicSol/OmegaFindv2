@@ -131,7 +131,7 @@ def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer:
             return _result
 
 
-def extract_nested_compressed(file: str, temp_directory: str, _target: str, _static_tmp: str):
+def extract_nested_compressed(file: str, temp_directory: str, _target: str, _static_tmp: str) -> tuple:
     result_bool = False
     global result
     buffer = ''
