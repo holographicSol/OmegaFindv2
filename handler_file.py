@@ -135,19 +135,21 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
     result_bool = False
     global result
     buffer = ''
-    group_tarball = ['gzip compressed', 'bzip2 compressed']
+    group_tarfile_compat = ['gzip compressed', 'bzip2 compressed']
+    group_zipfile_compat = ['Zip archive']
+    group_py7zr_compat = ['7-zip archive']
     try:
         buffer = file_sub_ops(read_bytes(file=file))
         buffer = str(buffer).strip()
         try:
             # +/- compatibility
-            if buffer.startswith('Zip archive'):
+            if buffer.startswith(tuple(group_zipfile_compat)):
                 with zipfile.ZipFile(file, 'r') as zfile:
                     zfile.extractall(path=temp_directory+'\\')
-            elif buffer.startswith('7-zip archive'):
+            elif buffer.startswith(tuple(group_py7zr_compat)):
                 with py7zr.SevenZipFile(file, 'r') as archive:
                     archive.extractall(path=temp_directory+'\\')
-            elif buffer.startswith(tuple(group_tarball)):
+            elif buffer.startswith(tuple(group_tarfile_compat)):
                 with tarfile.open(file, 'r') as archive:
                     archive.extractall(path=temp_directory+'\\')
         except Exception as e:
