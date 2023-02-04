@@ -10,6 +10,7 @@ def result_handler(_results: list, msg: str):
             print(' ', result)
             i_result += 1
         else:
+            print('-- more results available in scan results file(s).')
             break
 
 

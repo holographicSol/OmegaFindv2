@@ -40,7 +40,7 @@ def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
 async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
                             _type_suffix: list, _target: str) -> list:
     _result = [_file]
-    _tmp = '.\\tmp\\'+str(randStr())+'\\'
+    _tmp = '.\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp,
                                                       _target=_target, _static_tmp=_tmp)
     if result_bool is True:
@@ -66,7 +66,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
     _results = [_file]
-    _tmp = '.\\tmp\\'+str(randStr())+'\\'
+    _tmp = '.\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
