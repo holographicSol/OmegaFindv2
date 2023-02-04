@@ -116,9 +116,9 @@ async def clean_database(fname: str):
         await handle.write('\n')
 
 
-def extract_nested_compressed(file: str, temp_directory: str):
-    global result
+def extract_nested_compressed(file: str, temp_directory: str, _target: str, _static_tmp: str):
     result_bool = False
+    global result
     buffer = ''
     group_tarball = ['gzip compressed', 'bzip2 compressed']
     try:
@@ -144,11 +144,14 @@ def extract_nested_compressed(file: str, temp_directory: str):
                 if buffer.startswith(tuple(compatible_archives.compatible_arch)):
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
-                                              temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''))
+                                              temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
+                                              _target=_target,
+                                              _static_tmp=_static_tmp)
         result_bool = True
     except Exception as e:
         if 'Password is required' in str(e):
-            _result = ['Password required', str(file), buffer]
+            fullpath = file.replace(_static_tmp, _target)
+            _result = ['Password required', str(fullpath), buffer]
             if _result not in result:
                 result.append(_result)
         else:

@@ -4,10 +4,11 @@ import handler_chunk
 
 def dict_maker(_recognized_files: list, _buffer_max: int, _type_suffix: list,
                _learn: bool, _de_scan: bool, _type_scan: bool, _p_scan: bool,
-               _extract: bool) -> dict:
+               _extract: bool, _target: str) -> dict:
 
     multiproc_dict = {'files_recognized': _recognized_files,
-                      'buffer_max': _buffer_max}
+                      'buffer_max': _buffer_max,
+                      'target': _target}
     if _extract is True:
         multiproc_dict.update({'extract': True})
 

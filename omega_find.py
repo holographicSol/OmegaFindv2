@@ -172,10 +172,14 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
     return _result
 
 
-async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int) -> list:
+async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
     _result = [_file]
-    _tmp = '.\\tmp\\'+str(randStr())+'\\'
-    _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp)
+    _tmp = '.\\tmp\\'+str(randStr())
+    _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed,
+                                                     file=_file,
+                                                     temp_directory=_tmp,
+                                                     _target=_target,
+                                                     _static_tmp=_tmp)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     final_res = []
     # collect only password required and any errors -> list of lists
@@ -189,12 +193,12 @@ async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int) -> list:
     return final_res
 
 
-async def p_scan(file: str, _buffer_max: int, _extract: bool) -> list:
+async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> list:
     _result = []
     try:
         buffer = await read_bytes(file, _buffer_max)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
-            _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max)
+            _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)
     except Exception as e:
         _result = ['[ERROR]', str(file), str(e)]
     return _result
@@ -202,7 +206,8 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool) -> list:
 
 async def entry_point_p_scan(chunk: list, **kwargs) -> list:
     _buffer_max = int(kwargs.get('buffer_max'))
-    return [await p_scan(item, _buffer_max, _extract=True) for item in chunk]
+    _target = str(kwargs.get('target'))
+    return [await p_scan(item, _buffer_max, _extract=True, _target=_target) for item in chunk]
 
 
 async def entry_point_learn(chunk: list, **kwargs) -> list:
@@ -285,7 +290,7 @@ if __name__ == '__main__':
                                                      _type_suffix=type_suffix, _learn=learn_bool,
                                                      _de_scan=de_scan_bool, _type_scan=type_scan_bool,
                                                      _p_scan=p_scan_bool,
-                                                     _extract=extract)
+                                                     _extract=extract, _target=target)
 
             # run the async multiprocess operation(s)
             print('-- scanning target ...')
