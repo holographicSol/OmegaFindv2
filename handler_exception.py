@@ -15,12 +15,16 @@ def separate_exception(_list: list) -> tuple:
         # errors
         found_error = False
         if len(item) > 0:
-            if len(item) > 0:
-                if item[0][0] == '[ERROR]':
-                    for x in item:
-                        if x not in e:
-                            e.append(item)
-                    found_error = True
+            if item[0] == '[ERROR]':
+                e.append(item)
+                found_error = True
+            else:
+                if len(item) > 0:
+                    if item[0][0] == '[ERROR]':
+                        for x in item:
+                            if x not in e:
+                                e.append(item)
+                        found_error = True
         # results
         if found_error is False:
             new_l.append(item)

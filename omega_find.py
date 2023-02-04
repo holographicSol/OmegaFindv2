@@ -116,7 +116,7 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
             _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                             _recognized_files=_recognized_files, _target=_target)
     except Exception as e:
-        _result = ['[ERROR]', str(file), str(e)]
+        _result = [['[ERROR]', str(file), str(e)]]
     return _result
 
 
@@ -147,7 +147,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
                                               _recognized_files=_recognized_files, _type_suffix=_type_suffix,
                                               _target=_target)
     except Exception as e:
-        _result = ['[ERROR]', str(file), str(e)]
+        _result = [['[ERROR]', str(file), str(e)]]
     return _result
 
 
@@ -167,7 +167,7 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await scan_learn_check(suffix, buffer, _recognized_files)
     except Exception as e:
-        _result = ['[ERROR]', str(file), str(e)]
+        _result = [['[ERROR]', str(file), str(e)]]
     return _result
 
 
@@ -199,7 +199,7 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> l
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
             _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)
     except Exception as e:
-        _result = ['[ERROR]', str(file), str(e)]
+        _result = [['[ERROR]', str(file), str(e)]]
     return _result
 
 
