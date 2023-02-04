@@ -41,8 +41,9 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
                             _type_suffix: list, _target: str) -> list:
     _results = [_file, _buffer]
     _tmp = '.\\tmp\\'+str(randStr())
-    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed, file=_file, temp_directory=_tmp,
-                                                      _target=_target, _static_tmp=_tmp)
+    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
+                                                      file=_file, temp_directory=_tmp, _target=_target,
+                                                      _static_tmp=_tmp)
     if result_bool is True:
         sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
         sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)

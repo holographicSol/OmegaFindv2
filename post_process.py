@@ -5,5 +5,4 @@ def pscan(_list: list) -> list:
         for x in item:
             if x not in new:
                 new.append(x)
-                # print('[PSCAN]', x)
     return new

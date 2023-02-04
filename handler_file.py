@@ -156,7 +156,8 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                 result.append(_result)
         else:
             # print(f'[E] [{file} {buffer}] {e}')
-            _result = ['[ERROR]', str(file), str(buffer), str(e)]
+            fullpath = file.replace(_static_tmp, _target)
+            _result = ['[ERROR]', str(fullpath), str(buffer), str(e)]
             if _result not in result:
                 result.append(_result)
     return result_bool, result
