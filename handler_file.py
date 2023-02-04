@@ -116,6 +116,23 @@ async def clean_database(fname: str):
         await handle.write('\n')
 
 
+def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer: str, e: Exception):
+    _result = []
+    if 'Password is required' in str(e):
+        fullpath = file.replace(_static_tmp, _target)
+        _result = ['Password required', str(fullpath), buffer]
+        if _result not in result:
+            # result.append(_result)
+            return _result
+    else:
+        # print(f'[E] [{file} {buffer}] {e}')
+        fullpath = file.replace(_static_tmp, _target)
+        _result = ['[ERROR]', str(fullpath), str(buffer), str(e)]
+        if _result not in result:
+            # result.append(_result)
+            return _result
+
+
 def extract_nested_compressed(file: str, temp_directory: str, _target: str, _static_tmp: str):
     result_bool = False
     global result
@@ -124,18 +141,21 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
     try:
         buffer = file_sub_ops(read_bytes(file=file))
         buffer = str(buffer).strip()
+        try:
+            if buffer.startswith('Zip archive'):
+                with zipfile.ZipFile(file, 'r') as zfile:
+                    zfile.extractall(path=temp_directory+'\\')
 
-        if buffer.startswith('Zip archive'):
-            with zipfile.ZipFile(file, 'r') as zfile:
-                zfile.extractall(path=temp_directory+'\\')
+            elif buffer.startswith('7-zip archive'):
+                with py7zr.SevenZipFile(file, 'r') as archive:
+                    archive.extractall(path=temp_directory+'\\')
 
-        elif buffer.startswith('7-zip archive'):
-            with py7zr.SevenZipFile(file, 'r') as archive:
-                archive.extractall(path=temp_directory+'\\')
-
-        elif buffer.startswith(tuple(group_tarball)):
-            with tarfile.open(file, 'r') as archive:
-                archive.extractall(path=temp_directory+'\\')
+            elif buffer.startswith(tuple(group_tarball)):
+                with tarfile.open(file, 'r') as archive:
+                    archive.extractall(path=temp_directory+'\\')
+        except Exception as e:
+            result.append(
+                extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e))
 
         for root, dirs, files in os.walk(temp_directory):
             for filename in files:
@@ -149,17 +169,7 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                                               _static_tmp=_static_tmp)
         result_bool = True
     except Exception as e:
-        if 'Password is required' in str(e):
-            fullpath = file.replace(_static_tmp, _target)
-            _result = ['Password required', str(fullpath), buffer]
-            if _result not in result:
-                result.append(_result)
-        else:
-            # print(f'[E] [{file} {buffer}] {e}')
-            fullpath = file.replace(_static_tmp, _target)
-            _result = ['[ERROR]', str(fullpath), str(buffer), str(e)]
-            if _result not in result:
-                result.append(_result)
+        result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e))
     return result_bool, result
 
 
