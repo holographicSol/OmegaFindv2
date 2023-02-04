@@ -144,14 +144,14 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
         try:
             # +/- compatibility
             if buffer.startswith(tuple(group_zipfile_compat)):
-                with zipfile.ZipFile(file, 'r') as zfile:
-                    zfile.extractall(path=temp_directory+'\\')
+                with zipfile.ZipFile(file, 'r') as extract_file:
+                    extract_file.extractall(path=temp_directory+'\\')
             elif buffer.startswith(tuple(group_py7zr_compat)):
-                with py7zr.SevenZipFile(file, 'r') as archive:
-                    archive.extractall(path=temp_directory+'\\')
+                with py7zr.SevenZipFile(file, 'r') as extract_file:
+                    extract_file.extractall(path=temp_directory+'\\')
             elif buffer.startswith(tuple(group_tarfile_compat)):
-                with tarfile.open(file, 'r') as archive:
-                    archive.extractall(path=temp_directory+'\\')
+                with tarfile.open(file, 'r') as extract_file:
+                    extract_file.extractall(path=temp_directory+'\\')
         except Exception as e:
             result.append(
                 extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e))
