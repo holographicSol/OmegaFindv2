@@ -135,6 +135,7 @@ def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer:
 
 
 def extract_nested_compressed(file: str, temp_directory: str, _target: str, _static_tmp: str) -> tuple:
+
     result_bool = False
     global result
     buffer = ''
@@ -176,12 +177,17 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
             for root, dirs, files in os.walk(temp_directory):
                 for filename in files:
 
-                    # recursively read file(s) with magic and attempt extraction for compatible archives
-                    fileSpec = os.path.join(root, filename)
-                    extract_nested_compressed(file=fileSpec,
-                                              temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
-                                              _target=_target,
-                                              _static_tmp=_static_tmp)
+                    # check if file looks like a compatible archive
+                    buffer = file_sub_ops(read_bytes(file=file))
+                    buffer = str(buffer).strip()
+                    if buffer.startswith(tuple(compatible_archives.compatible_arch)):
+
+                        # re-iterate
+                        fileSpec = os.path.join(root, filename)
+                        extract_nested_compressed(file=fileSpec,
+                                                  temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
+                                                  _target=_target,
+                                                  _static_tmp=_static_tmp)
 
     except Exception as e:
         result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e,
