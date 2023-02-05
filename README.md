@@ -102,6 +102,7 @@ Developer:
     * f search (scandir, (also use windows index if on windows)).
     * --reveal argument. (new scan technique).
     * mod times.
+    * --map argument. (new scan technique).
 
 
 Compatibility:
