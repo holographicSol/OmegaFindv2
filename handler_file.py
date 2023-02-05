@@ -237,13 +237,13 @@ def rem_dir(path: str):
 
 
 def pre_scan_handler(_target: str) -> tuple:
-    print('-- performing pre-scan ..')
+    print('-- pre-scanning target ..')
     t = time.perf_counter()
     scan_results = scanfs.scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
-    print(f'-- files: {len(_files)}')
-    print(f'-- errors: {len(_x_files)}')
-    print(f'-- pre-scan time: {time.perf_counter() - t}')
+    print(f'-- found {len(_files)} files during pre-scan (errors: {len(_x_files)}).')
+    # print(f'-- pre-scan errors: {len(_x_files)}')
+    # print(f'-- pre-scan time: {time.perf_counter() - t}')
     return _files, _x_files
 

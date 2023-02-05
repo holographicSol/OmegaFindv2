@@ -29,6 +29,7 @@ def results_filter(_list: list) -> tuple:
                         found_error = True
         # results
         if found_error is False:
-            new_l.append(item)
+            if item:
+                new_l.append(item)
     e = handler_chunk.un_chunk_data(e, depth=1)
     return e, new_l

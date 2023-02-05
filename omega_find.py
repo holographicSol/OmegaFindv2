@@ -296,10 +296,9 @@ if __name__ == '__main__':
             print('-- scanning target ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
-            print(f'-- scan time: {time.perf_counter()-t}')
+            print(f'-- scan completed in {time.perf_counter()-t} seconds.')
             results = handler_chunk.un_chunk_data(results, depth=1)
             exc, results = handler_exception.results_filter(results)
-            print(f'-- errors: {len(exc)}')
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # post-processing
@@ -310,7 +309,7 @@ if __name__ == '__main__':
             handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
                                               _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
-                                              _dt=dt)
+                                              _dt=dt, _exc=exc)
 
             # final clean of tmp
             if os.path.exists('./tmp/'):
