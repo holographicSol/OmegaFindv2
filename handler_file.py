@@ -174,14 +174,15 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                     if len(split_buff) >= 2:
                         if split_buff[1] in ['compressed', 'archive']:
                             patoolib.extract_archive(archive=file, outdir=temp_directory, verbosity=1)
-                except:
-                    # isolate archives known to be incompatible (not in current group_compatible lists.) -> compatibility
-                    non_variant = handler_extraction.incompatible_non_variant(_file=file, _buffer=buffer)
+                except Exception as e:
+
+                    # isolate archives known to be incompatible (not in current group_compatible lists.)
+                    non_variant = handler_extraction.incompatible_non_variant(_file=file, _buffer=buffer, e=e)
                     if non_variant:
                         result.append(non_variant)
 
         except Exception as e:
-            # isolate incompatible archive variants of archive types otherwise compatible. -> compatibility
+            # isolate incompatible archive variants of archive types otherwise compatible.
             result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target,
                                                     buffer=buffer, e=e, msg='[INCOMPATIBLE VARIANT]'))
 
