@@ -162,18 +162,22 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                     # method 1: gzip module
                     handler_extraction.ex_gzip(_file=file, _temp_directory=temp_directory)
 
-        except:
-            # method: patool
-            try:
-                split_buff = buffer.split(' ')
-                if len(split_buff) >= 2:
-                    if split_buff[1] in ['compressed', 'archive']:
-                        patoolib.extract_archive(archive=file, outdir=temp_directory, verbosity=0)
-            except Exception as e:
-                # log incompatible
-                non_variant = handler_extraction.incompatible_non_variant(_file=file, _buffer=buffer, e=e)
-                if non_variant:
-                    result.append(non_variant)
+        except Exception as e:
+            if 'Password' in str(e):
+                result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target,
+                                                        buffer=buffer, e=e, msg=''))
+            else:
+                # method: patool
+                try:
+                    split_buff = buffer.split(' ')
+                    if len(split_buff) >= 2:
+                        if split_buff[1] in ['compressed', 'archive']:
+                            patoolib.extract_archive(archive=file, outdir=temp_directory, verbosity=0)
+                except Exception as e:
+                    # log incompatible
+                    non_variant = handler_extraction.incompatible_non_variant(_file=file, _buffer=buffer, e=e)
+                    if non_variant:
+                        result.append(non_variant)
 
         # attempt to walk in extracted contents
         if os.path.exists(temp_directory):
