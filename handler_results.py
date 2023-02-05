@@ -3,6 +3,7 @@ import handler_file
 
 
 def result_handler(_results: list, msg: str):
+    # todo: limit line len and overall char len
     print(f'\n   {msg}')
     i_result = 0
     for result in _results:
