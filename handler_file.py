@@ -175,8 +175,8 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
             result_bool = True
             for root, dirs, files in os.walk(temp_directory):
                 for filename in files:
-                    buffer = file_sub_ops(read_bytes(file=file))
-                    buffer = str(buffer).strip()
+
+                    # recursively read file(s) with magic and attempt extraction for compatible archives
                     fileSpec = os.path.join(root, filename)
                     extract_nested_compressed(file=fileSpec,
                                               temp_directory=fileSpec.replace(pathlib.Path(filename).suffix, ''),
