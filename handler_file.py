@@ -139,20 +139,26 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
     global result
     buffer = ''
     try:
+        # read file with magic
         buffer = file_sub_ops(read_bytes(file=file))
         buffer = str(buffer).strip()
         try:
             # +/- compatibility
+
+            # method: zipfile module
             if buffer.startswith(tuple(compatible_archives.group_zipfile_compat)):
                 handler_extraction.ex_zip(_file=file, _temp_directory=temp_directory)
 
+            # method: py7zr module
             elif buffer.startswith(tuple(compatible_archives.group_py7zr_compat)):
                 handler_extraction.ex_py7zr(_file=file, _temp_directory=temp_directory)
 
+            # method 0: tarfile module
             elif buffer.startswith(tuple(compatible_archives.group_tarfile_compat)):
                 try:
                     handler_extraction.ex_tarfile(_file=file, _temp_directory=temp_directory)
-                except Exception as e:
+                except:
+                    # method 1: gzip module
                     handler_extraction.ex_gzip(_file=file, _temp_directory=temp_directory)
             else:
                 # isolate archives known to be incompatible (not in current group_compatible lists.) -> compatibility
@@ -164,6 +170,7 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
             result.append(handler_extraction.incompatible_variant(file=file, _static_tmp=_static_tmp, _target=_target,
                                                                   buffer=buffer, e=e))
 
+        # attempt to walk in extracted contents
         if os.path.exists(temp_directory):
             result_bool = True
             for root, dirs, files in os.walk(temp_directory):
