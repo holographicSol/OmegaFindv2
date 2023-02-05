@@ -13,6 +13,7 @@ import py7zr
 import shutil
 import tarfile
 import compatible_archives
+import gzip
 
 debug = False
 result = []
@@ -149,9 +150,20 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                     extract_file.extractall(path=temp_directory+'\\')
 
             elif buffer.startswith(tuple(compatible_archives.group_tarfile_compat)):
-                with tarfile.open(file, 'r') as extract_file:
-                    extract_file.extractall(path=temp_directory+'\\')
-
+                try:
+                    # method 1: tarfile
+                    with tarfile.open(file, 'r') as extract_file:
+                        extract_file.extractall(path=temp_directory+'\\')
+                except Exception as e:
+                    # method 2: gzip
+                    GZ = gzip.GzipFile(file)
+                    contents = GZ.read()
+                    idx = file.rfind('\\')
+                    new_fname = temp_directory+file[idx:]
+                    if not os.path.exists(temp_directory):
+                        os.makedirs(temp_directory)
+                    with open(new_fname, 'wb') as new_file:
+                        new_file.write(contents)
             else:
                 # isolate archives known to be incompatible (not in current group_compatible lists.) -> compatibility
                 split_buffer = buffer.split(' ')
