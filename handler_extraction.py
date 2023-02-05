@@ -36,8 +36,3 @@ def incompatible_non_variant(_file: str, _buffer: str):
     if len(split_buffer) >= 2:
         if _buffer.split(' ')[1] in ['archive', 'compressed']:
             return ['[INCOMPATIBLE NON-VARIANT]', _file, _buffer]
-
-
-def incompatible_variant(file: str, _static_tmp: str, _target: str, buffer: str, e: Exception):
-    fullpath = file.replace(_static_tmp, _target)
-    return ['[INCOMPATIBLE VARIANT]', str(fullpath), str(buffer), str(e)]

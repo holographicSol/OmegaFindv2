@@ -167,8 +167,8 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                     result.append(non_variant)
         except Exception as e:
             # isolate incompatible archive variants of archive types otherwise compatible. -> compatibility
-            result.append(handler_extraction.incompatible_variant(file=file, _static_tmp=_static_tmp, _target=_target,
-                                                                  buffer=buffer, e=e))
+            result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target,
+                                                    buffer=buffer, e=e, msg='[INCOMPATIBLE VARIANT]'))
 
         # attempt to walk in extracted contents
         if os.path.exists(temp_directory):
