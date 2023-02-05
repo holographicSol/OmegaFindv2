@@ -98,7 +98,9 @@ Developer:
     * Add compatibility for archives not yet supported by current extraction
       methods.
     * Add multiple methods of extraction to existing archive extraction methods.
-    * More readable/parsable logs, results.
+    * refine logs, results.
+    * f search (scandir, (also use windows index if on windows)).
+    * --reveal argument. (new scan technique). 
 
 
 Compatibility:
