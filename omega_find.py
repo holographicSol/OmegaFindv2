@@ -293,7 +293,7 @@ if __name__ == '__main__':
                                                      _extract=extract, _target=target)
 
             # run the async multiprocess operation(s)
-            print('-- scanning target ...')
+            print('-- scanning target ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             print(f'-- scan time: {time.perf_counter()-t}')

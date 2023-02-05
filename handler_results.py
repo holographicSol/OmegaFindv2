@@ -20,26 +20,26 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
         if len(_results) >= 1:
             if _learn_bool is True:
                 print(f'-- new definitions {len(_results)}')
-                print('-- updating definitions ...')
+                print('-- updating definitions ..')
                 asyncio.run(handler_file.write_definitions(*_results, file=_db_recognized_files))
                 asyncio.run(handler_file.clean_database(fname=_db_recognized_files))
             elif _de_scan_bool is True:
                 print(f'-- unrecognized files: {len(_results)}')
-                print('-- writing results ...')
+                print('-- writing results ..')
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_de-scan_' + _dt + '.txt',
                                                             _dt=_dt))
                 result_handler(_results=_results, msg='[Unrecognized]')
             elif _type_scan_bool is True:
                 print(f'-- found files: {len(_results)}')
-                print('-- writing results ...')
+                print('-- writing results ..')
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_type-scan_' + _dt + '.txt',
                                                             _dt=_dt))
                 result_handler(_results=_results, msg='[Found]')
             elif _p_scan is True:
                 print(f'-- found files: {len(_results)}')
-                print('-- writing results ...')
+                print('-- writing results ..')
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_pscan_' + _dt + '.txt',
                                                             _dt=_dt))
@@ -48,4 +48,5 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
             print('-- zero results.')
     else:
         print('-- zero results.')
+    print('')
     print('')
