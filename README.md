@@ -112,5 +112,5 @@ Compatibility:
 
 Gratitude and Thanks:
 
-    Powered by asyncio, aiomultiprocess, aiofiles, python-magic and of course
+    Powered by asyncio, aiomultiprocess, aiofiles, python-magic, patool and of course
     the python standard library.
