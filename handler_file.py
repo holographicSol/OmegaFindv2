@@ -5,6 +5,8 @@ import time
 import codecs
 import aiofiles
 import asyncio
+
+import handler_extraction
 import scanfs
 import magic
 import pathlib
@@ -142,40 +144,25 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
         try:
             # +/- compatibility
             if buffer.startswith(tuple(compatible_archives.group_zipfile_compat)):
-                with zipfile.ZipFile(file, 'r') as extract_file:
-                    extract_file.extractall(path=temp_directory+'\\')
+                handler_extraction.ex_zip(_file=file, _temp_directory=temp_directory)
 
             elif buffer.startswith(tuple(compatible_archives.group_py7zr_compat)):
-                with py7zr.SevenZipFile(file, 'r') as extract_file:
-                    extract_file.extractall(path=temp_directory+'\\')
+                handler_extraction.ex_py7zr(_file=file, _temp_directory=temp_directory)
 
             elif buffer.startswith(tuple(compatible_archives.group_tarfile_compat)):
                 try:
-                    # method 1: tarfile
-                    with tarfile.open(file, 'r') as extract_file:
-                        extract_file.extractall(path=temp_directory+'\\')
+                    handler_extraction.ex_tarfile(_file=file, _temp_directory=temp_directory)
                 except Exception as e:
-                    # method 2: gzip
-                    GZ = gzip.GzipFile(file)
-                    contents = GZ.read()
-                    idx = file.rfind('\\')
-                    new_fname = temp_directory+file[idx:]
-                    if not os.path.exists(temp_directory):
-                        os.makedirs(temp_directory)
-                    with open(new_fname, 'wb') as new_file:
-                        new_file.write(contents)
+                    handler_extraction.ex_gzip(_file=file, _temp_directory=temp_directory)
             else:
                 # isolate archives known to be incompatible (not in current group_compatible lists.) -> compatibility
-                split_buffer = buffer.split(' ')
-                if len(split_buffer) >= 2:
-                    if buffer.split(' ')[1] in ['archive', 'compressed']:
-                        result.append(['[INCOMPATIBLE NON-VARIANT]', file, buffer])
-
+                non_variant = handler_extraction.incompatible_non_variant(_file=file, _buffer=buffer)
+                if non_variant:
+                    result.append(non_variant)
         except Exception as e:
             # isolate incompatible archive variants of archive types otherwise compatible. -> compatibility
-            result.append(
-                extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target, buffer=buffer, e=e,
-                                          msg='[INCOMPATIBLE VARIANT]'))
+            result.append(handler_extraction.incompatible_variant(file=file, _static_tmp=_static_tmp, _target=_target,
+                                                                  buffer=buffer, e=e))
 
         if os.path.exists(temp_directory):
             result_bool = True
