@@ -143,36 +143,43 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
         # read file with magic
         buffer = file_sub_ops(read_bytes(file=file))
         buffer = str(buffer).strip()
+        extracted_bool = False
         try:
             # +/- compatibility
 
+            # method: zipfile module
+            if buffer.startswith(tuple(compatible_archives.group_zipfile_compat)):
+                handler_extraction.ex_zip(_file=file, _temp_directory=temp_directory)
+                extracted_bool = True
+
+            # method: py7zr module
+            elif buffer.startswith(tuple(compatible_archives.group_py7zr_compat)):
+                handler_extraction.ex_py7zr(_file=file, _temp_directory=temp_directory)
+                extracted_bool = True
+
+            # method 0: tarfile module
+            elif buffer.startswith(tuple(compatible_archives.group_tarfile_compat)):
+                try:
+                    handler_extraction.ex_tarfile(_file=file, _temp_directory=temp_directory)
+                    extracted_bool = True
+                except:
+                    # method 1: gzip module
+                    handler_extraction.ex_gzip(_file=file, _temp_directory=temp_directory)
+                    extracted_bool = True
+
             # method: patool
-            try:
-                split_buff = buffer.split(' ')
-                if len(split_buff) >= 2:
-                    if split_buff[1] in ['compressed', 'archive']:
-                        patoolib.extract_archive(archive=file, outdir=temp_directory)
-            except:
-                # method: zipfile module
-                if buffer.startswith(tuple(compatible_archives.group_zipfile_compat)):
-                    handler_extraction.ex_zip(_file=file, _temp_directory=temp_directory)
-
-                # method: py7zr module
-                elif buffer.startswith(tuple(compatible_archives.group_py7zr_compat)):
-                    handler_extraction.ex_py7zr(_file=file, _temp_directory=temp_directory)
-
-                # method 0: tarfile module
-                elif buffer.startswith(tuple(compatible_archives.group_tarfile_compat)):
-                    try:
-                        handler_extraction.ex_tarfile(_file=file, _temp_directory=temp_directory)
-                    except:
-                        # method 1: gzip module
-                        handler_extraction.ex_gzip(_file=file, _temp_directory=temp_directory)
-                else:
+            if extracted_bool is False:
+                try:
+                    split_buff = buffer.split(' ')
+                    if len(split_buff) >= 2:
+                        if split_buff[1] in ['compressed', 'archive']:
+                            patoolib.extract_archive(archive=file, outdir=temp_directory, verbosity=1)
+                except:
                     # isolate archives known to be incompatible (not in current group_compatible lists.) -> compatibility
                     non_variant = handler_extraction.incompatible_non_variant(_file=file, _buffer=buffer)
                     if non_variant:
                         result.append(non_variant)
+
         except Exception as e:
             # isolate incompatible archive variants of archive types otherwise compatible. -> compatibility
             result.append(extract_exception_handler(file=file, _static_tmp=_static_tmp, _target=_target,
