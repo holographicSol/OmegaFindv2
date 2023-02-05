@@ -45,8 +45,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                                             _dt=_dt))
                 result_handler(_results=_results, msg='[PASSWORD PROTECTED]')
         else:
-            print('-- zero results.')
+            print(f'-- zero results (errors: {len(_exc)}).')
     else:
-        print('-- zero results.')
+        print(f'-- zero results (errors: {len(_exc)}).')
     print('')
     print('')
