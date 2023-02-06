@@ -11,6 +11,7 @@ def omega_help():
     print(' [--database]          [Specify a database file to use for scanning]')
     print(' [--new-suffix-group]  [Create a new suffix group]')
     print('')
+    print(' [FileScan]     [PATH Search_Query]')
     print(' [--p-scan]     [Attempt to find only password protected archives]')
     print(' [--de-scan]    [Attempt to ascertain if suffix match contents]')
     print(' [--type-scan]  [Scan file type]')

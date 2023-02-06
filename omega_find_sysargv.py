@@ -1,10 +1,14 @@
 import os
+import sys
+
 import ext_module
 import string
 import omega_find_banner
 import omega_find_help
 import handler_file
 import asyncio
+
+import scanfs
 
 
 def mode(stdin: list) -> tuple:
@@ -163,8 +167,36 @@ def verbosity(stdin: list) -> bool:
     return verbose
 
 
+def loop_scandir_results(_list: list):
+    try:
+        usr_input = input('select? ')
+        if usr_input.isdigit():
+            usr_input = int(usr_input)
+            result = _list[usr_input]
+            idx = result.rfind('\\')
+            fullpath = result[:idx]
+            if usr_input <= len(_list):
+                os.startfile(fullpath)
+        loop_scandir_results(_list=_list)
+    except KeyboardInterrupt:
+        print('')
+        pass
+
+
 def run_and_exit(stdin: list):
-    if '-h' in stdin:
+
+    if os.path.exists(stdin[1]):
+        omega_find_banner.banner()
+        _path = stdin[1]
+        _q = stdin[2]
+        print(f'-- target: {_path}')
+        print(f'-- search: {_q}')
+        print('')
+        results = scanfs.search_scan(path=_path, q=_q)
+        loop_scandir_results(_list=results)
+        print('')
+
+    elif '-h' in stdin:
         omega_find_help.omega_help()
 
     elif '--recognized' in stdin:
