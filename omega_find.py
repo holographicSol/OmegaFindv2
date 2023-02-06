@@ -217,11 +217,14 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> l
 
 
 async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> list:
-    _result = ''
+    _result = []
     try:
         buffer = await read_bytes(file, _buffer_max)
+        _result.append([file, buffer])
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
-            _result = await extract_reveal_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)
+            _result_ex = await extract_reveal_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)
+            if _result_ex:
+                _result.append(_result_ex)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
