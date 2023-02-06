@@ -189,9 +189,6 @@ def run_and_exit(stdin: list):
         omega_find_banner.banner()
         _path = stdin[1]
         _q = stdin[2]
-        print(f'-- target: {_path}')
-        print(f'-- search: {_q}')
-        print('')
         results = scanfs.search_scan(path=_path, q=_q)
         loop_scandir_results(_list=results)
         print('')
