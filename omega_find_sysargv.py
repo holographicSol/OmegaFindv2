@@ -12,12 +12,13 @@ import scanfs
 
 
 def mode(stdin: list) -> tuple:
-    modes = ['--learn', '--de-scan', '--type-scan', '--p-scan']
+    modes = ['--learn', '--de-scan', '--type-scan', '--p-scan', '--reveal']
     _mode = ''
     learn = False
     de_scan = False
     type_scan = False
     p_scan = False
+    reveal_scan = False
     suffix = []
     for m in modes:
         if m in stdin:
@@ -28,6 +29,8 @@ def mode(stdin: list) -> tuple:
         de_scan = True
     elif _mode == '--p-scan':
         p_scan = True
+    elif _mode == '--reveal':
+        reveal_scan = True
     elif _mode == '--type-scan':
         type_scan = True
         if '--suffix' in stdin:
@@ -85,7 +88,7 @@ def mode(stdin: list) -> tuple:
                     suffix = sfx_group
             else:
                 print('-- no custom suffix groups found ...')
-    return _mode, learn, de_scan, type_scan, p_scan, suffix
+    return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan
 
 
 def target(stdin: list, _mode) -> str:

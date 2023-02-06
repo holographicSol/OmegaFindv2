@@ -87,6 +87,29 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
     return _results
 
 
+async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
+    _results = [[_file, _buffer]]
+    _tmp = '.\\tmp\\'+str(randStr())
+    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
+                                                      file=_file, temp_directory=_tmp, _target=_target,
+                                                      _static_tmp=_tmp)
+    if result_bool is True:
+        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+        for sub_file in sub_files:
+            buffer = await read_bytes(sub_file, _buffer_max)
+            res = [sub_file, buffer]
+            # store result of sub-file scan(s) -> list of lists
+            if res is not None:
+                res[0] = res[0].replace(_tmp, _target)
+                _results.append(res)
+    else:
+        # possibly password required -> list of lists
+        _results = extraction
+    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
+    return _results
+
+
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
     if _extract is True:
         _buffer = str(_buffer).strip()
@@ -203,6 +226,26 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> l
     return _result
 
 
+async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> list:
+    _result = ''
+    try:
+        buffer = await read_bytes(file, _buffer_max)
+        if await check_extract(_extract=_extract, _buffer=buffer) is True:
+            _result = await extract_reveal_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)
+    except Exception as e:
+        _result = [['[ERROR]', str(file), str(e)]]
+    return _result
+
+
+async def entry_point_reveal_scan(chunk: list, **kwargs) -> list:
+    _buffer_max = int(kwargs.get('buffer_max'))
+    _target = str(kwargs.get('target'))
+    _extract = False
+    if 'extract' in kwargs.keys():
+        _extract = kwargs.get('extract')
+    return [await reveal_scan(item, _buffer_max, _extract, _target) for item in chunk]
+
+
 async def entry_point_p_scan(chunk: list, **kwargs) -> list:
     _buffer_max = int(kwargs.get('buffer_max'))
     _target = str(kwargs.get('target'))
@@ -236,6 +279,8 @@ async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
             _results = await pool.map(entry_point_type_scan, _chunks, _multiproc_dict)
         elif mode == '--p-scan':
             _results = await pool.map(entry_point_p_scan, _chunks, _multiproc_dict)
+        elif mode == '--reveal':
+            _results = await pool.map(entry_point_reveal_scan, _chunks, _multiproc_dict)
     return _results
 
 
@@ -252,7 +297,7 @@ if __name__ == '__main__':
     if omega_find_sysargv.run_and_exit(stdin=STDIN) is False:
 
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
-        mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix = omega_find_sysargv.mode(STDIN)
+        mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix, reveal_scan_bool = omega_find_sysargv.mode(STDIN)
         if type_scan_bool is True and not len(type_suffix) >= 1:
             sys.exit('-- exiting ...\n')
         target = omega_find_sysargv.target(STDIN, mode)
@@ -270,7 +315,7 @@ if __name__ == '__main__':
 
             # read recognized files
             recognized_files, suffixes = [], []
-            if p_scan_bool is False:
+            if p_scan_bool is False or reveal_scan_bool is False:
                 recognized_files, suffixes = handler_file.db_read_handler(_learn_bool=learn_bool,
                                                                           _de_scan_bool=de_scan_bool,
                                                                           _type_scan_bool=type_scan_bool,
@@ -290,7 +335,7 @@ if __name__ == '__main__':
                                                      _type_suffix=type_suffix, _learn=learn_bool,
                                                      _de_scan=de_scan_bool, _type_scan=type_scan_bool,
                                                      _p_scan=p_scan_bool,
-                                                     _extract=extract, _target=target)
+                                                     _extract=extract, _target=target, _reveal_scan=reveal_scan_bool)
 
             # run the async multiprocess operation(s)
             print('-- scanning target ..')
@@ -309,7 +354,7 @@ if __name__ == '__main__':
             handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
                                               _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
-                                              _dt=dt, _exc=exc)
+                                              _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool)
 
             # final clean of tmp
             if os.path.exists('./tmp/'):
