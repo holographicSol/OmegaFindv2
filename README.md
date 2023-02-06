@@ -94,10 +94,9 @@ Developer:
       methods.
     * Add multiple methods of extraction to existing archive extraction methods.
     * refine logs, results.
-    * f search (scandir, (also use windows index if on windows)).
-    * --reveal argument. (new scan technique).
     * mod times.
     * --map argument. (new scan technique).
+    * search query (WAN/LAN for online/offline results)
 
 
 Compatibility:
