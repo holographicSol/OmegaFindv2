@@ -37,29 +37,17 @@ def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
     return ''.join(random.choice(chars) for _ in range(n))
 
 
-async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
-                            _type_suffix: list, _target: str) -> list:
-    _results = [[_file, _buffer]]
-    _tmp = '.\\tmp\\'+str(randStr())
-    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
-                                                      file=_file, temp_directory=_tmp, _target=_target,
-                                                      _static_tmp=_tmp)
-    if result_bool is True:
-        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
-        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
-        for sub_file in sub_files:
-            buffer = await read_bytes(sub_file, _buffer_max)
-            suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-            res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
-            # store result of sub-file scan(s) -> list of lists
-            if res is not None:
-                res[0] = res[0].replace(_tmp, _target)
-                _results.append(res)
-    else:
-        # possibly password required -> list of lists
-        _results = extraction
-    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
-    return _results
+async def check_extract(_extract: bool, _buffer: bytes) -> bool:
+    if _extract is True:
+        _buffer = str(_buffer).strip()
+        return True
+
+
+async def read_bytes(file: str, _buffer_max: int) -> bytes:
+    async with aiofiles.open(file, mode='rb') as handle:
+        _bytes = await handle.read(_buffer_max)
+        await handle.close()
+    return await asyncio.to_thread(handler_file.file_sub_ops, _bytes)
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
@@ -87,6 +75,52 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
     return _results
 
 
+async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
+                            _type_suffix: list, _target: str) -> list:
+    _results = [[_file, _buffer]]
+    _tmp = '.\\tmp\\'+str(randStr())
+    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
+                                                      file=_file, temp_directory=_tmp, _target=_target,
+                                                      _static_tmp=_tmp)
+    if result_bool is True:
+        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+        for sub_file in sub_files:
+            buffer = await read_bytes(sub_file, _buffer_max)
+            suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
+            res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
+            # store result of sub-file scan(s) -> list of lists
+            if res is not None:
+                res[0] = res[0].replace(_tmp, _target)
+                _results.append(res)
+    else:
+        # possibly password required -> list of lists
+        _results = extraction
+    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
+    return _results
+
+
+async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
+    _result = [_file]
+    _tmp = '.\\tmp\\'+str(randStr())
+    _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed,
+                                                     file=_file,
+                                                     temp_directory=_tmp,
+                                                     _target=_target,
+                                                     _static_tmp=_tmp)
+    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
+    final_res = []
+    # collect only password required and any errors -> list of lists
+    for res in _results:
+        if 'Password required' in res:
+            if res not in final_res:
+                final_res.append(res)
+        elif res[0] == '[ERROR]':
+            if res not in final_res:
+                final_res.append(res)
+    return final_res
+
+
 async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
     _results = [[_file, _buffer]]
     _tmp = '.\\tmp\\'+str(randStr())
@@ -110,17 +144,14 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
     return _results
 
 
-async def check_extract(_extract: bool, _buffer: bytes) -> bool:
-    if _extract is True:
-        _buffer = str(_buffer).strip()
-        return True
-
-
-async def read_bytes(file: str, _buffer_max: int) -> bytes:
-    async with aiofiles.open(file, mode='rb') as handle:
-        _bytes = await handle.read(_buffer_max)
-        await handle.close()
-    return await asyncio.to_thread(handler_file.file_sub_ops, _bytes)
+async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
+    global x_learn
+    digi_str = r'[0-9]'
+    buffer = re.sub(digi_str, '', str(buffer))
+    if [suffix, buffer] not in x_learn:
+        x_learn.append([suffix, buffer])
+        if [suffix, buffer] not in _recognized_files:
+            return [suffix, buffer]
 
 
 async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
@@ -128,6 +159,23 @@ async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files
     buffer = re.sub(digi_str, '', str(buffer))
     if [suffix, buffer] not in _recognized_files:
         return [file, suffix, buffer]
+
+
+async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list, _type_suffix: list):
+    digi_str = r'[0-9]'
+    buffer = re.sub(digi_str, '', str(buffer))
+    if [buffer] in _recognized_files:
+        return [file, suffix, buffer]
+
+
+async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
+    try:
+        buffer = await read_bytes(file, _buffer_max)
+        suffix = await asyncio.to_thread(handler_file.get_suffix, file)
+        _result = await scan_learn_check(suffix, buffer, _recognized_files)
+    except Exception as e:
+        _result = [['[ERROR]', str(file), str(e)]]
+    return _result
 
 
 async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str) -> list:
@@ -143,23 +191,6 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
     return _result
 
 
-async def entry_point_de_scan(chunk: list, **kwargs) -> list:
-    _recognized_files = kwargs.get('files_recognized')
-    _buffer_max = int(kwargs.get('buffer_max'))
-    _target = str(kwargs.get('target'))
-    _extract = False
-    if 'extract' in kwargs.keys():
-        _extract = kwargs.get('extract')
-    return [await de_scan(item, _recognized_files, _buffer_max, _extract, _target) for item in chunk]
-
-
-async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list, _type_suffix: list):
-    digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))
-    if [buffer] in _recognized_files:
-        return [file, suffix, buffer]
-
-
 async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list, _extract: bool, _target: str):
     try:
         buffer = await read_bytes(file, _buffer_max)
@@ -172,47 +203,6 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
-
-
-async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
-    global x_learn
-    digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))
-    if [suffix, buffer] not in x_learn:
-        x_learn.append([suffix, buffer])
-        if [suffix, buffer] not in _recognized_files:
-            return [suffix, buffer]
-
-
-async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
-    try:
-        buffer = await read_bytes(file, _buffer_max)
-        suffix = await asyncio.to_thread(handler_file.get_suffix, file)
-        _result = await scan_learn_check(suffix, buffer, _recognized_files)
-    except Exception as e:
-        _result = [['[ERROR]', str(file), str(e)]]
-    return _result
-
-
-async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
-    _result = [_file]
-    _tmp = '.\\tmp\\'+str(randStr())
-    _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed,
-                                                     file=_file,
-                                                     temp_directory=_tmp,
-                                                     _target=_target,
-                                                     _static_tmp=_tmp)
-    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
-    final_res = []
-    # collect only password required and any errors -> list of lists
-    for res in _results:
-        if 'Password required' in res:
-            if res not in final_res:
-                final_res.append(res)
-        elif res[0] == '[ERROR]':
-            if res not in final_res:
-                final_res.append(res)
-    return final_res
 
 
 async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> list:
@@ -237,25 +227,20 @@ async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str)
     return _result
 
 
-async def entry_point_reveal_scan(chunk: list, **kwargs) -> list:
+async def entry_point_learn(chunk: list, **kwargs) -> list:
+    _recognized_files = kwargs.get('files_recognized')
+    _buffer_max = int(kwargs.get('buffer_max'))
+    return [await scan_learn(item, _recognized_files, _buffer_max) for item in chunk]
+
+
+async def entry_point_de_scan(chunk: list, **kwargs) -> list:
+    _recognized_files = kwargs.get('files_recognized')
     _buffer_max = int(kwargs.get('buffer_max'))
     _target = str(kwargs.get('target'))
     _extract = False
     if 'extract' in kwargs.keys():
         _extract = kwargs.get('extract')
-    return [await reveal_scan(item, _buffer_max, _extract, _target) for item in chunk]
-
-
-async def entry_point_p_scan(chunk: list, **kwargs) -> list:
-    _buffer_max = int(kwargs.get('buffer_max'))
-    _target = str(kwargs.get('target'))
-    return [await p_scan(item, _buffer_max, _extract=True, _target=_target) for item in chunk]
-
-
-async def entry_point_learn(chunk: list, **kwargs) -> list:
-    _recognized_files = kwargs.get('files_recognized')
-    _buffer_max = int(kwargs.get('buffer_max'))
-    return [await scan_learn(item, _recognized_files, _buffer_max) for item in chunk]
+    return [await de_scan(item, _recognized_files, _buffer_max, _extract, _target) for item in chunk]
 
 
 async def entry_point_type_scan(chunk: list, **kwargs) -> list:
@@ -267,6 +252,21 @@ async def entry_point_type_scan(chunk: list, **kwargs) -> list:
     if 'extract' in kwargs.keys():
         _extract = kwargs.get('extract')
     return [await type_scan(item, _recognized_files, _buffer_max, _type_suffix, _extract, _target) for item in chunk]
+
+
+async def entry_point_p_scan(chunk: list, **kwargs) -> list:
+    _buffer_max = int(kwargs.get('buffer_max'))
+    _target = str(kwargs.get('target'))
+    return [await p_scan(item, _buffer_max, _extract=True, _target=_target) for item in chunk]
+
+
+async def entry_point_reveal_scan(chunk: list, **kwargs) -> list:
+    _buffer_max = int(kwargs.get('buffer_max'))
+    _target = str(kwargs.get('target'))
+    _extract = False
+    if 'extract' in kwargs.keys():
+        _extract = kwargs.get('extract')
+    return [await reveal_scan(item, _buffer_max, _extract, _target) for item in chunk]
 
 
 async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
