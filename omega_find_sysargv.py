@@ -169,14 +169,14 @@ def run_and_exit(stdin: list):
 
     elif '--recognized' in stdin:
         omega_find_banner.banner()
-        db_recognized_files = omega_find_sysargv.display_recognized(stdin)
+        db_recognized_files = display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         print(f'-- recognized file types: {len(recognized_files)}')
         print(f'-- recognized suffixes: {len(suffixes)}\n')
 
     elif '--new-suffix-group' in stdin:
         omega_find_banner.banner()
-        omega_find_sysargv.make_suffix_group()
+        make_suffix_group()
 
     else:
         return False
