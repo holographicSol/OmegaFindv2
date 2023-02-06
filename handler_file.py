@@ -135,7 +135,6 @@ def extract_exception_handler(file: str, _static_tmp: str, _target: str, buffer:
 
 
 def extract_nested_compressed(file: str, temp_directory: str, _target: str, _static_tmp: str) -> tuple:
-
     result_bool = False
     global result
     buffer = ''
@@ -248,13 +247,9 @@ def rem_dir(path: str):
 
 
 def pre_scan_handler(_target: str) -> tuple:
-    print('-- pre-scanning target ..')
     t = time.perf_counter()
     scan_results = scanfs.scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
-    print(f'-- found {len(_files)} files during pre-scan (errors: {len(_x_files)}).')
-    # print(f'-- pre-scan errors: {len(_x_files)}')
-    # print(f'-- pre-scan time: {time.perf_counter() - t}')
+    print(f'-- found {len(_files)} files during pre-scan (errors: {len(_x_files)}). time: {time.perf_counter()-t}')
     return _files, _x_files
-

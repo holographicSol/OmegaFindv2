@@ -31,8 +31,8 @@ def ex_gzip(_file: str, _temp_directory: str) -> None:
         new_file.write(contents)
 
 
-def incompatible_non_variant(_file: str, _buffer: str):
+def incompatible_non_variant(_file: str, _buffer: str, e: Exception):
     split_buffer = _buffer.split(' ')
     if len(split_buffer) >= 2:
         if _buffer.split(' ')[1] in ['archive', 'compressed']:
-            return ['[INCOMPATIBLE NON-VARIANT]', _file, _buffer]
+            return ['[INCOMPATIBLE NON-VARIANT]', str(_file), str(_buffer), str(e)]

@@ -23,3 +23,15 @@ def scan(path: str) -> list:
     fp = []
     [fp.append(entry.path) for entry in scantree(path) if entry.is_file()]
     return [fp, x_files]
+
+
+def search_scan(path: str, q: str) -> list:
+    fp = []
+    i_match = 0
+    for entry in scantree(path):
+        if entry.is_file():
+            if q in entry.path:
+                print(f'[?][{i_match}] {entry.path}')
+                fp.append(entry.path)
+                i_match += 1
+    return fp
