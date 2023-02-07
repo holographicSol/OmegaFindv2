@@ -21,7 +21,11 @@ def scan(path: str) -> list:
     global x_files
     x_files = []
     fp = []
-    [fp.append(entry.path) for entry in scantree(path) if entry.is_file()]
+    for entry in scantree(path):
+        # print(f'entry: {entry}')
+        # if entry.is_file():
+        fp.append(entry.path)
+    # [fp.append(entry.path) for entry in scantree(path) if entry.is_file()]
     return [fp, x_files]
 
 
@@ -29,6 +33,7 @@ def search_scan(path: str, q: str) -> list:
     fp = []
     i_match = 0
     for entry in scantree(path):
+        print(f'entry: {entry}')
         if entry.is_file():
             if q in entry.path:
                 print(f'[?][{i_match}] {entry.path}')
