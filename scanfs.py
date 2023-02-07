@@ -21,11 +21,8 @@ def scan(path: str) -> list:
     global x_files
     x_files = []
     fp = []
-    for entry in scantree(path):
-        # print(f'entry: {entry}')
-        # if entry.is_file():
-        fp.append(entry.path)
     # [fp.append(entry.path) for entry in scantree(path) if entry.is_file()]
+    [fp.append(entry.path) for entry in scantree(path)]
     return [fp, x_files]
 
 
