@@ -29,8 +29,9 @@ def search_scan(path: str, q: str) -> list:
     fp = []
     i_match = 0
     for entry in scantree(path):
-        if q in entry.path:
-            print(f'[?][{i_match}] {entry.path}')
-            fp.append(entry.path)
+        p = entry.path
+        if q in p:
+            print(f'[?][{i_match}] {p}')
+            fp.append(p)
             i_match += 1
     return fp
