@@ -341,7 +341,6 @@ if __name__ == '__main__':
                                                      _extract=extract, _target=target, _reveal_scan=reveal_scan_bool)
 
             # run the async multiprocess operation(s)
-            # print('-- scanning target ..')
             t = time.perf_counter()
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             t_completion = str(time.perf_counter()-t)

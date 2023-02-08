@@ -1,7 +1,6 @@
 """ Written by Benjamin Jack Cullen """
 import os
 import time
-
 import handler_exception
 
 x_files = []
@@ -37,3 +36,8 @@ def search_scan(path: str, q: str) -> list:
             fp.append(p)
             i_match += 1
     return fp
+
+
+t = time.perf_counter()
+res = scan(path='C:\\')
+print(f't: {time.perf_counter()-t}')

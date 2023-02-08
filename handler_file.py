@@ -248,6 +248,7 @@ def rem_dir(path: str):
 
 def pre_scan_handler(_target: str) -> tuple:
     t = time.perf_counter()
+    # scan_results = scanfs.scan(path=_target)
     scan_results = scanfs.scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
