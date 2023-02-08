@@ -7,6 +7,7 @@ import aiofiles
 import asyncio
 import patoolib
 import handler_extraction
+import get_path
 import scanfs
 import magic
 import pathlib
@@ -19,6 +20,8 @@ import gzip
 
 debug = False
 result = []
+
+program_root = get_path.get_path()
 
 
 async def read_definitions(fname: str) -> tuple:
@@ -63,8 +66,8 @@ async def read_type_definitions(fname: str, _type_suffix: list) -> tuple:
 
 
 async def write_definitions(*args, file: str):
-    if not os.path.exists('./db/'):
-        os.mkdir('./db/')
+    if not os.path.exists(program_root+'\\db\\'):
+        os.mkdir(program_root+'\\db\\')
     if not os.path.exists(file):
         codecs.open(file, "w", encoding='utf8').close()
     async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
@@ -73,9 +76,9 @@ async def write_definitions(*args, file: str):
 
 
 async def write_scan_results(*args, file: str, _dt: str):
-    target_dir = './data/' + _dt + '/'
-    if not os.path.exists('./data/'):
-        os.mkdir('./data/')
+    target_dir = program_root+'\\data\\' + _dt + '\\'
+    if not os.path.exists(program_root+'\\data\\'):
+        os.mkdir(program_root+'\\data\\')
     if not os.path.exists(target_dir):
         os.mkdir(target_dir)
     file = target_dir + file
@@ -86,9 +89,9 @@ async def write_scan_results(*args, file: str, _dt: str):
 
 
 async def write_exception_log(*args, file: str, _dt: str):
-    target_dir = './log/' + _dt + '/'
-    if not os.path.exists('./log/'):
-        os.mkdir('./log/')
+    target_dir = program_root+'\\log\\' + _dt + '\\'
+    if not os.path.exists(program_root+'\\log\\'):
+        os.mkdir(program_root+'\\log\\')
     if not os.path.exists(target_dir):
         os.mkdir(target_dir)
     file = target_dir + file

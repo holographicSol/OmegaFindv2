@@ -6,8 +6,10 @@ import omega_find_banner
 import omega_find_help
 import handler_file
 import asyncio
-
+import get_path
 import scanfs
+
+program_root = get_path.get_path()
 
 
 def mode(stdin: list) -> tuple:
@@ -65,9 +67,9 @@ def mode(stdin: list) -> tuple:
         elif '--custom-suffix' in stdin:
             omega_find_banner.banner()
             print('-- searching for custom suffix groups ...')
-            if os.path.exists('./suffix_group.txt'):
+            if os.path.exists(program_root+'\\suffix_group.txt'):
                 custom_suffix_groups = []
-                with open('./suffix_group.txt', 'r', encoding='utf8') as fo:
+                with open(program_root+'\\suffix_group.txt', 'r', encoding='utf8') as fo:
                     i = 0
                     for line in fo:
                         line = line.strip()
@@ -109,9 +111,9 @@ def buffer_max(stdin: list) -> int:
 
 
 def database(stdin: list) -> str:
-    _db_recognized_files = './db/database_file_recognition.txt'
-    if not os.path.exists('./db/database_file_recognition.txt'):
-        open('./db/database_file_recognition.txt', 'w').close()
+    _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
+    if not os.path.exists(program_root+'\\db\\database_file_recognition.txt'):
+        open(program_root+'\\db\\database_file_recognition.txt', 'w').close()
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files
@@ -133,23 +135,23 @@ def make_suffix_group():
         create_new_suffix_group = input('-- save?: ')
         if create_new_suffix_group == 'Y' or create_new_suffix_group == 'y':
             print('-- saving ...')
-            if not os.path.exists('./suffix_group.txt'):
-                open('./suffix_group.txt', 'w').close()
-            with open('./suffix_group.txt', 'a', encoding='utf8') as fo:
+            if not os.path.exists(program_root+'\\suffix_group.txt'):
+                open(program_root+'\\suffix_group.txt', 'w').close()
+            with open(program_root+'\\suffix_group.txt', 'a', encoding='utf8') as fo:
                 fo.write(sfx_name + ' ' + str(sfx_group) + '\n')
             print('-- done.')
             print('')
 
 
 def clean_db(stdin: list) -> str:
-    _db_recognized_files = './db/database_file_recognition.txt'
+    _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files
 
 
 def display_recognized(stdin: list) -> str:
-    _db_recognized_files = './db/database_file_recognition.txt'
+    _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
     if '--database' in stdin:
         _db_recognized_files = stdin[stdin.index('--database')+1]
     return _db_recognized_files

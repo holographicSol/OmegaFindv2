@@ -24,9 +24,12 @@ import post_process
 import scanfs
 import string
 import random
+import get_path
 
 debug = False
 x_learn = []
+
+program_root = get_path.get_path()
 
 
 def get_dt() -> str:
@@ -52,7 +55,7 @@ async def read_bytes(file: str, _buffer_max: int) -> bytes:
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
     _results = [[_file, _buffer]]
-    _tmp = '.\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
@@ -78,7 +81,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
                             _type_suffix: list, _target: str) -> list:
     _results = [[_file, _buffer]]
-    _tmp = '.\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
@@ -102,7 +105,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
 
 async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
     _result = [_file]
-    _tmp = '.\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(randStr())
     _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                      file=_file,
                                                      temp_directory=_tmp,
@@ -123,7 +126,7 @@ async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: 
 
 async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
     _results = [[_file, _buffer]]
-    _tmp = '.\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
@@ -293,6 +296,9 @@ if __name__ == '__main__':
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
 
+    # directory of program (not cwd)
+    print(f'program_root:', program_root)
+
     # get input
     STDIN = list(sys.argv)
 
@@ -360,8 +366,8 @@ if __name__ == '__main__':
                                               _t_completion=t_completion)
 
             # final clean of tmp
-            if os.path.exists('./tmp/'):
-                handler_file.rem_dir(path='./tmp/')
+            if os.path.exists(program_root+'\\tmp\\'):
+                handler_file.rem_dir(path=program_root+'\\tmp\\')
 
         else:
             print('-- invalid input')
