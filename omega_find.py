@@ -6,11 +6,14 @@ import os
 import sys
 import re
 import time
+import string
+import random
 from datetime import datetime
 import asyncio
 import aiofiles
 import aiomultiprocess
 import multiprocessing
+
 import handler_dict
 import handler_chunk
 import handler_file
@@ -19,11 +22,8 @@ import handler_exception
 import omega_find_banner
 import omega_find_help
 import omega_find_sysargv
-import compatible_archives
 import post_process
 import scanfs
-import string
-import random
 import get_path
 
 debug = False
@@ -297,7 +297,7 @@ if __name__ == '__main__':
         multiprocessing.freeze_support()
 
     # directory of program (not cwd)
-    print(f'program_root:', program_root)
+    # print(f'program_root:', program_root)
 
     # get input
     STDIN = list(sys.argv)
