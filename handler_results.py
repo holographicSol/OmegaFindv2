@@ -7,7 +7,7 @@ import handler_file
 def result_handler_no_extract(_results: list):
     i_result = 0
     for result in _results:
-        if i_result <= 20:
+        if i_result <= 500:
             print(result)
             i_result += 1
         else:
@@ -22,9 +22,9 @@ def result_handler_de_scan(_results: list, msg: str, _extract: bool):
     elif _extract is True:
         i_result = 0
         for result in _results:
-            if i_result <= 20:
+            if i_result <= 500:
                 for sub_result in result:
-                    if i_result <= 20:
+                    if i_result <= 500:
                         print(sub_result)
                         i_result += 1
                     else:
@@ -41,9 +41,9 @@ def result_handler_type_scan(_results: list, msg: str, _extract: bool):
     elif _extract is True:
         i_result = 0
         for result in _results:
-            if i_result <= 20:
+            if i_result <= 500:
                 for sub_result in result:
-                    if i_result <= 20:
+                    if i_result <= 500:
                         print(sub_result)
                         i_result += 1
                     else:
@@ -66,10 +66,10 @@ def result_handler_reveal_scan(_results: list, msg: str, _extract: bool):
     elif _extract is True:
         i_result = 0
         for result in _results:
-            if i_result <= 20:
+            if i_result <= 500:
                 concat_sub = []
                 for sub_result in result:
-                    if i_result <= 20:
+                    if i_result <= 500:
                         if isinstance(sub_result, list):
                             print(sub_result)
                         else:
