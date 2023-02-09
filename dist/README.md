@@ -37,7 +37,7 @@ Help:
      [-t]    [Type Scan. Return all files of a certain type]
              [-sfx]     [Suffix. Specify suffix]
              [-csfx]    [Custom Suffix Group]
-             [-gsfx]    [Group Suffix. Specify a default suffix group ]
+             [-gsfx]    [Group Suffix. Specify a default suffix group]
                         [archive]
                         [audio]
                         [book]
