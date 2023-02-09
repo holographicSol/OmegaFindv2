@@ -40,6 +40,11 @@ def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
     return ''.join(random.choice(chars) for _ in range(n))
 
 
+def sub_str(_buffer: bytes):
+    digi_str = r'[0-9]'
+    return re.sub(digi_str, '', str(_buffer))
+
+
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
     if _extract is True:
         _buffer = str(_buffer).strip()
@@ -146,8 +151,7 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
     global x_learn
-    digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))
+    buffer = sub_str(_buffer=buffer)
     if [suffix, buffer] not in x_learn:
         x_learn.append([suffix, buffer])
         if [suffix, buffer] not in _recognized_files:
@@ -155,15 +159,13 @@ async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) 
 
 
 async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
-    digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))
+    buffer = sub_str(_buffer=buffer)
     if [suffix, buffer] not in _recognized_files:
         return [file, suffix, buffer]
 
 
 async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list, _type_suffix: list):
-    digi_str = r'[0-9]'
-    buffer = re.sub(digi_str, '', str(buffer))
+    buffer = sub_str(_buffer=buffer)
     if [buffer] in _recognized_files:
         return [file, suffix, buffer]
 
