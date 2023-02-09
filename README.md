@@ -27,45 +27,47 @@ Overview:
 
 Help:
 
-    [OmegaFind v2] Multi-processed async for better performance.
-                   Forensics tool. Search differently.
-                   Developed and written by Benjamin Jack Cullen.
+    [OmegaFind v2]  Multi-processed async for better performance.
+                    Forensics tool. Search differently.
     
-     [--recognized]        [Display number of recognized buffers and suffixes]
-     [--learn]             [Scans and learns from specified target location]
-     [--chunk-max]         [Maximum items in each chunk. Default 16]
-     [--buffer-max]        [Maximum bytes read. Default 2048]
-     [--extract]           [Extract Zip Archives while scanning]
-     [--database]          [Specify a database file to use for scanning]
-     [--new-suffix-group]  [Create a new suffix group]
+     [-l]    [Learn. Scans and learns from specified target location]
+     [-r]    [Reveal Scan. Attempt to reveal what all files encountered really are]
+     [-p]    [Password Protected Scan. Attempt to find only password protected archives]
+     [-d]    [De-Obfuscation Scan. Attempt to ascertain if suffix is associated with file]
+     [-t]    [Type Scan. Return all files of a certain type]
+             [-sfx]     [Suffix. Specify suffix]
+             [-csfx]    [Custom Suffix Group]
+             [-gsfx]    [Group Suffix. Specify a default suffix group ]
+                        [archive]
+                        [audio]
+                        [book]
+                        [code]
+                        [executable]
+                        [font]
+                        [image]
+                        [sheet]
+                        [slide]
+                        [text]
+                        [video]
+                        [web]
     
-     [--p-scan]     [Attempt to find only password protected archives]
-     [--de-scan]    [Attempt to ascertain if suffix match contents]
-     [--type-scan]  [Scan file type]
-                    [--suffix]         [Specify suffix]
-                    [--custom-suffix]  [Select custom suffix group]
-                    [--group-suffix]   [Use predefined suffix group]
-                                       [archive]
-                                       [audio]
-                                       [book]
-                                       [code]
-                                       [executable]
-                                       [font]
-                                       [image]
-                                       [sheet]
-                                       [slide]
-                                       [text]
-                                       [video]
-                                       [web]
+     [-e]       [Extract. Extract archives while scanning]
+     [-db]      [Database. Specify a database file to use for scanning]
+     [-cmax]    [Chunk Max. Maximum items in each chunk. Default 16]
+     [-bmax]    [Buffer Max. Maximum bytes read. Default 2048]
+     [-nsfx]    [New Suffix Group. Create a new suffix group]
+     [-R]       [Recognized. Display number of recognized buffers and suffixes]
+     [-v]       [Verbosity]
+     [-h]       [Help]
     
-     [-v]  [Verbosity]  [Increase verbosity]
-     [-h]  [Help]       [Displays this help message]
+     omega_find -l PATH -cmax 16 -bmax 2048
+     omega_find -d PATH -cmax 16 -bmax 2048
+     omega_find -t PATH -sfx sh
+     omega_find -t PATH -csfx
+     omega_find -t PATH -gsfx image -e
+     omega_find PATH QUERY
     
-     [omega_find --learn PATH --chunk-max 16 --buffer-max 2048 -v]
-     [omega_find --de-scan PATH --chunk-max 16 --buffer-max 2048 -v]
-     [omega_find --type-scan PATH --suffix sh -v]
-     [omega_find --type-scan PATH --custom-suffix -v]
-     [omega_find --type-scan PATH --group-suffix image]
+     Developed and written by Benjamin Jack Cullen.
 
 
 User:
