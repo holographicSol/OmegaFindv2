@@ -7,7 +7,7 @@ def result_handler(_results: list, msg: str):
     print(f'\n   {msg}')
     i_result = 0
     for result in _results:
-        if i_result <= 3:
+        if i_result <= 20:
             print('  ', result)
             i_result += 1
         else:
