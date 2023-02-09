@@ -92,13 +92,14 @@ Developer:
     set globals for the child processes. Lines edited: 337, 339, 345.
 
 
-Compatibility:
+Extraction Compatibility (Below compatibility accounts for many more file suffixes listed as different suffixes use
+    the same compression as below. Like epubs for one example).:
     
-    Logging: Compatibility issues such as a file appearing to be a b2z archive (for example)
-    but however tarfile module cannot extract the contents. This would require donations to
-    the relevant team and or OmegaFindv2 itself being armed with multiple different extraction
-    methods per archive type (zip, 7izp, b2z etc..). Compatibility for OmegaFindv2's extraction
-    capabilities is in progress. 
+    patool supports: 7z (.7z), ACE (.ace), ADF (.adf), ALZIP (.alz), APE (.ape), AR (.a), ARC (.arc), ARJ (.arj),
+    BZIP2 (.bz2), CAB (.cab), COMPRESS (.Z), CPIO (.cpio), DEB (.deb), DMS (.dms), FLAC (.flac), GZIP (.gz), ISO (.iso),
+    LRZIP (.lrz), LZH (.lha, .lzh), LZIP (.lz), LZMA (.lzma), LZOP (.lzo), RPM (.rpm), RAR (.rar), RZIP (.rz), SHN
+    (.shn), TAR (.tar), XZ (.xz), ZIP (.zip, .jar), ZOO (.zoo) and ZPAQ (.zpaq) formats.
+    It relies on helper applications to handle those archive formats (for example bzip2 for BZIP2 archives).
 
 
 Gratitude and Thanks:
