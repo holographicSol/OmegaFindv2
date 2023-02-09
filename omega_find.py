@@ -39,7 +39,7 @@ def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
     return ''.join(random.choice(chars) for _ in range(n))
 
 
-def sub_str(_buffer: bytes):
+def sub_str(_buffer: bytes) -> str:
     digi_str = r'[0-9]'
     return re.sub(digi_str, '', str(_buffer))
 
