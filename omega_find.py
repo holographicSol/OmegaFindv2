@@ -65,12 +65,10 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                 buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
                 res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
-                # store result of sub-file scan(s) -> list of lists
                 if res is not None:
                     res[0] = res[0].replace(_tmp, _target)
                     _results.append(res)
     else:
-        # possibly password required -> list of lists
         _results = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results
@@ -90,12 +88,10 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
             buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
             res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
-            # store result of sub-file scan(s) -> list of lists
             if res is not None:
                 res[0] = res[0].replace(_tmp, _target)
                 _results.append(res)
     else:
-        # possibly password required -> list of lists
         _results = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results
@@ -111,7 +107,6 @@ async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: 
                                                      _static_tmp=_tmp)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     final_res = []
-    # collect only password required and any errors -> list of lists
     for res in _results:
         if 'Password required' in res:
             if res not in final_res:
@@ -134,7 +129,6 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
         for sub_file in sub_files:
             buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
             res = [sub_file, buffer]
-            # store result of sub-file scan(s) -> list of lists
             if res is not None:
                 res[0] = res[0].replace(_tmp, _target)
                 _results.append(res)
@@ -218,8 +212,6 @@ async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str)
         _result = [file, buffer]
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
             _result = await extract_reveal_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)
-            # if _result_ex:
-            #     _result.append(_result_ex)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
@@ -287,9 +279,6 @@ if __name__ == '__main__':
     # used for compile time
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
-
-    # directory of program (not cwd)
-    # print(f'program_root:', program_root)
 
     # ensure default database file
     handler_file.ensure_db()
