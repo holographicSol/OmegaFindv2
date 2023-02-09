@@ -10,7 +10,7 @@ def omega_help():
     print(' [-t]    [Type. Return all files of a certain type]')
     print('         [-sfx]     [Suffix. Specify suffix]')
     print('         [-csfx]    [Custom Suffix Group]')
-    print('         [-gsfx]    [Group Suffix. Specify a default suffix group ]')
+    print('         [-gsfx]    [Group Suffix. Specify a default suffix group]')
     print('                    [archive]')
     print('                    [audio]')
     print('                    [book]')
