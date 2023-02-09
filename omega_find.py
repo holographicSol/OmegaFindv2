@@ -10,7 +10,6 @@ import string
 import random
 from datetime import datetime
 import asyncio
-import aiofiles
 import aiomultiprocess
 import multiprocessing
 
