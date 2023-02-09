@@ -102,15 +102,15 @@ def target(stdin: list, _mode) -> str:
 
 def chunk_max(stdin: list) -> int:
     _chunk_max = 16
-    if '--chunk-max' in stdin:
-        _chunk_max = int(stdin[stdin.index('--chunk-max') + 1])
+    if '-cmax' in stdin:
+        _chunk_max = int(stdin[stdin.index('-cmax') + 1])
     return _chunk_max
 
 
 def buffer_max(stdin: list) -> int:
     _buffer_max = 2048
-    if '--buffer-max' in stdin:
-        _buffer_max = int(stdin[stdin.index('--buffer-max')+1])
+    if '-bmax' in stdin:
+        _buffer_max = int(stdin[stdin.index('-bmax')+1])
     return _buffer_max
 
 
@@ -118,8 +118,8 @@ def database(stdin: list) -> str:
     _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
     if not os.path.exists(program_root+'\\db\\database_file_recognition.txt'):
         open(program_root+'\\db\\database_file_recognition.txt', 'w').close()
-    if '--database' in stdin:
-        _db_recognized_files = stdin[stdin.index('--database')+1]
+    if '-db' in stdin:
+        _db_recognized_files = stdin[stdin.index('-db')+1]
     return _db_recognized_files
 
 
@@ -149,21 +149,21 @@ def make_suffix_group():
 
 def clean_db(stdin: list) -> str:
     _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
-    if '--database' in stdin:
-        _db_recognized_files = stdin[stdin.index('--database')+1]
+    if '-db' in stdin:
+        _db_recognized_files = stdin[stdin.index('-db')+1]
     return _db_recognized_files
 
 
 def display_recognized(stdin: list) -> str:
     _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
-    if '--database' in stdin:
-        _db_recognized_files = stdin[stdin.index('--database')+1]
+    if '-db' in stdin:
+        _db_recognized_files = stdin[stdin.index('-db')+1]
     return _db_recognized_files
 
 
 def extract(stdin: list) -> bool:
     _extract = False
-    if '--extract' in stdin:
+    if '-e' in stdin:
         _extract = True
     return _extract
 
@@ -204,14 +204,14 @@ def run_and_exit(stdin: list):
     elif '-h' in stdin:
         omega_find_help.omega_help()
 
-    elif '--recognized' in stdin:
+    elif '-R' in stdin:
         omega_find_banner.banner()
         db_recognized_files = display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         print(f'-- recognized file types: {len(recognized_files)}')
         print(f'-- recognized suffixes: {len(suffixes)}\n')
 
-    elif '--new-suffix-group' in stdin:
+    elif '-nsfx' in stdin:
         omega_find_banner.banner()
         make_suffix_group()
 
