@@ -51,13 +51,6 @@ async def check_extract(_extract: bool, _buffer: bytes) -> bool:
         return True
 
 
-async def read_bytes(file: str, _buffer_max: int) -> bytes:
-    async with aiofiles.open(file, mode='rb') as handle:
-        _bytes = await handle.read(_buffer_max)
-        await handle.close()
-    return await asyncio.to_thread(handler_file.file_sub_ops, _bytes)
-
-
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
     _results = [[_file, _buffer]]
     _tmp = program_root+'\\tmp\\'+str(randStr())
@@ -69,7 +62,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
             sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
             for sub_file in sub_files:
-                buffer = await read_bytes(sub_file, _buffer_max)
+                buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
                 res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
                 # store result of sub-file scan(s) -> list of lists
@@ -94,7 +87,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
         sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
         sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
         for sub_file in sub_files:
-            buffer = await read_bytes(sub_file, _buffer_max)
+            buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
             res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
             # store result of sub-file scan(s) -> list of lists
@@ -139,7 +132,7 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
         sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
         sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
         for sub_file in sub_files:
-            buffer = await read_bytes(sub_file, _buffer_max)
+            buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
             res = [sub_file, buffer]
             # store result of sub-file scan(s) -> list of lists
             if res is not None:
@@ -172,7 +165,7 @@ async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_fil
 
 async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
     try:
-        buffer = await read_bytes(file, _buffer_max)
+        buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await scan_learn_check(suffix, buffer, _recognized_files)
     except Exception as e:
@@ -182,7 +175,7 @@ async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> li
 
 async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str) -> list:
     try:
-        buffer = await read_bytes(file, _buffer_max)
+        buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await de_scan_check(file, suffix, buffer, _recognized_files)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
@@ -195,7 +188,7 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
 
 async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list, _extract: bool, _target: str):
     try:
-        buffer = await read_bytes(file, _buffer_max)
+        buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
@@ -210,7 +203,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
 async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> list:
     _result = []
     try:
-        buffer = await read_bytes(file, _buffer_max)
+        buffer = await handler_file.async_read_bytes(file, _buffer_max)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
             _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)
     except Exception as e:
@@ -221,7 +214,7 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> l
 async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str) -> list:
     _result = []
     try:
-        buffer = await read_bytes(file, _buffer_max)
+        buffer = await handler_file.async_read_bytes(file, _buffer_max)
         _result = [file, buffer]
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
             _result = await extract_reveal_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target)

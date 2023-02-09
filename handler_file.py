@@ -27,6 +27,13 @@ def ensure_db():
         open(program_root+'\\db\\database_file_recognition.txt', 'w').close()
 
 
+async def async_read_bytes(file: str, _buffer_max: int) -> bytes:
+    async with aiofiles.open(file, mode='rb') as handle:
+        _bytes = await handle.read(_buffer_max)
+        await handle.close()
+    return await asyncio.to_thread(file_sub_ops, _bytes)
+
+
 async def read_definitions(fname: str) -> tuple:
     recognized_files, suffixes = [], []
     if os.path.exists(fname):
