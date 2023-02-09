@@ -138,7 +138,7 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
             res = [sub_file, buffer]
             # store result of sub-file scan(s) -> list of lists
             if res is not None:
-                res[0] = res[0].replace(_tmp, str(_target))
+                res[0] = res[0].replace(_tmp, _target)
                 _results.append(res)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results
@@ -360,7 +360,7 @@ if __name__ == '__main__':
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
                                               _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
                                               _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool,
-                                              _t_completion=t_completion)
+                                              _t_completion=t_completion, _extract=extract)
 
             # final clean of tmp
             if os.path.exists(program_root+'\\tmp\\'):
