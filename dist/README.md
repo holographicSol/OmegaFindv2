@@ -84,16 +84,16 @@ Developer:
 
     Install modules run: requirements.bat
     
-    Running the source code: Requires pool.py be placed in aiomultiprocessing.
-    Backup original pool.py first.
-    My edit marked '# my edit' on line 339 in pool.py enables a dictionary to
-    be passed into the child processes when using pool.map() along with the
-    initial iterables as there is no manager.dict and obviously no previously
-    set globals for the child processes. Lines edited: 337, 339, 345.
+    Running the source code:
+    Requires pool.py be placed in aiomultiprocessing. (Backup original pool.py first).
+    My edit in pool.py (marked '# my edit' on line 339 in pool.py) enables a dictionary
+    to be passed into the child processes when using pool.map() along with the initial
+    iterables as there is no manager.dict and obviously no previously set globals for
+    the child processes. Lines edited: 337, 339, 345.
 
 
 Extraction Compatibility (Below compatibility accounts for many more file suffixes listed as different suffixes use
-    the same compression as below. Like epubs for one example).:
+    the same compression as below. Like epubs for one example):
     
     patool supports: 7z (.7z), ACE (.ace), ADF (.adf), ALZIP (.alz), APE (.ape), AR (.a), ARC (.arc), ARJ (.arj),
     BZIP2 (.bz2), CAB (.cab), COMPRESS (.Z), CPIO (.cpio), DEB (.deb), DMS (.dms), FLAC (.flac), GZIP (.gz), ISO (.iso),
