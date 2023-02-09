@@ -19,11 +19,6 @@ Overview:
     also be extracted and scanned during various scan techniques if --extract argument
     is used. Password protected archives can also be detected when using --extract,
     password protected files will be added to the results files for further analysis.
-    -- extract compat: Many archives from .zip to ebub etc are actually zipfiles and
-    are alone compatible with OmegaFindv2's zipfile extraction capabilities. However,
-    OmegaFindv2 is also compatible with 7zip archives and gz archives and further more
-    given the time and oportunity, will be compatible with many more archive
-    algorithms too.
 
     Password scan (--p-scan): pScan attempts to find password protected archives.
     Skips reading database, does not hand database through to child processes and
@@ -32,50 +27,52 @@ Overview:
 
 Help:
 
-    [OmegaFind v2] Multi-processed async for better performance.
-                   Forensics tool. Search differently.
-                   Developed and written by Benjamin Jack Cullen.
+    [OmegaFind v2]  Multi-processed async for better performance.
+                    Forensics tool. Search differently.
     
-     [--recognized]        [Display number of recognized buffers and suffixes]
-     [--learn]             [Scans and learns from specified target location]
-     [--chunk-max]         [Maximum items in each chunk. Default 16]
-     [--buffer-max]        [Maximum bytes read. Default 2048]
-     [--extract]           [Extract Zip Archives while scanning]
-     [--database]          [Specify a database file to use for scanning]
-     [--new-suffix-group]  [Create a new suffix group]
+     [-l]    [Learn. Scans and learns from specified target location]
+     [-r]    [Reveal Scan. Attempt to reveal what all files encountered really are]
+     [-p]    [Password Protected Scan. Attempt to find only password protected archives]
+     [-d]    [De-Obfuscation Scan. Attempt to ascertain if suffix is associated with file]
+     [-t]    [Type Scan. Return all files of a certain type]
+             [-sfx]     [Suffix. Specify suffix]
+             [-csfx]    [Custom Suffix Group]
+             [-gsfx]    [Group Suffix. Specify a default suffix group ]
+                        [archive]
+                        [audio]
+                        [book]
+                        [code]
+                        [executable]
+                        [font]
+                        [image]
+                        [sheet]
+                        [slide]
+                        [text]
+                        [video]
+                        [web]
     
-     [--p-scan]     [Attempt to find only password protected archives]
-     [--de-scan]    [Attempt to ascertain if suffix match contents]
-     [--type-scan]  [Scan file type]
-                    [--suffix]         [Specify suffix]
-                    [--custom-suffix]  [Select custom suffix group]
-                    [--group-suffix]   [Use predefined suffix group]
-                                       [archive]
-                                       [audio]
-                                       [book]
-                                       [code]
-                                       [executable]
-                                       [font]
-                                       [image]
-                                       [sheet]
-                                       [slide]
-                                       [text]
-                                       [video]
-                                       [web]
+     [-e]       [Extract. Extract archives while scanning]
+     [-db]      [Database. Specify a database file to use for scanning]
+     [-cmax]    [Chunk Max. Maximum items in each chunk. Default 16]
+     [-bmax]    [Buffer Max. Maximum bytes read. Default 2048]
+     [-nsfx]    [New Suffix Group. Create a new suffix group]
+     [-R]       [Recognized. Display number of recognized buffers and suffixes]
+     [-v]       [Verbosity]
+     [-h]       [Help]
     
-     [-v]  [Verbosity]  [Increase verbosity]
-     [-h]  [Help]       [Displays this help message]
+     omega_find -l PATH -cmax 16 -bmax 2048
+     omega_find -d PATH -cmax 16 -bmax 2048
+     omega_find -t PATH -sfx sh
+     omega_find -t PATH -csfx
+     omega_find -t PATH -gsfx image -e
+     omega_find PATH QUERY
     
-     [omega_find --learn PATH --chunk-max 16 --buffer-max 2048 -v]
-     [omega_find --de-scan PATH --chunk-max 16 --buffer-max 2048 -v]
-     [omega_find --type-scan PATH --suffix sh -v]
-     [omega_find --type-scan PATH --custom-suffix -v]
-     [omega_find --type-scan PATH --group-suffix image]
+     Developed and written by Benjamin Jack Cullen.
 
 
 User:
 
-    * Recommended only currently running omega_find from within omega_find directory.
+    * Portable. Except where sys.executabe path may not be path to omega_find.exe.
     * Ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system while also considering buffer_max.
     * If using --extract then ensure sufficient storage in working directory while also considering buffer_max and chunk_max.
 
@@ -98,7 +95,10 @@ Developer:
     * Add compatibility for archives not yet supported by current extraction
       methods.
     * Add multiple methods of extraction to existing archive extraction methods.
-    * More readable/parsable logs, results.
+    * refine logs, results.
+    * mod times.
+    * --map argument. (new scan technique).
+    * search query (WAN/LAN for online/offline results)
 
 
 Compatibility:
