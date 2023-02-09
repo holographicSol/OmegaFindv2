@@ -274,15 +274,15 @@ async def entry_point_reveal_scan(chunk: list, **kwargs) -> list:
 
 async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
     async with aiomultiprocess.Pool() as pool:
-        if mode == '--learn':
+        if mode == '-l':
             _results = await pool.map(entry_point_learn, _chunks, _multiproc_dict)
-        elif mode == '--de-scan':
+        elif mode == '-d':
             _results = await pool.map(entry_point_de_scan, _chunks, _multiproc_dict)
-        elif mode == '--type-scan':
+        elif mode == '-t':
             _results = await pool.map(entry_point_type_scan, _chunks, _multiproc_dict)
-        elif mode == '--p-scan':
+        elif mode == '-p':
             _results = await pool.map(entry_point_p_scan, _chunks, _multiproc_dict)
-        elif mode == '--reveal':
+        elif mode == '-r':
             _results = await pool.map(entry_point_reveal_scan, _chunks, _multiproc_dict)
     return _results
 

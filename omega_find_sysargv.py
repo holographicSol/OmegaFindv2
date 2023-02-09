@@ -13,7 +13,8 @@ program_root = get_path.get_path()
 
 
 def mode(stdin: list) -> tuple:
-    modes = ['--learn', '--de-scan', '--type-scan', '--p-scan', '--reveal']
+    # modes: learn, de-obfuscation, type-scan, password-protected-scan, reveal-scan.
+    modes = ['-l', '-d', '-t', '-p', '-r']
     _mode = ''
     learn = False
     de_scan = False
@@ -24,21 +25,23 @@ def mode(stdin: list) -> tuple:
     for m in modes:
         if m in stdin:
             _mode = m
-    if _mode == '--learn':
+    if _mode == '-l':
         learn = True
-    elif _mode == '--de-scan':
+    elif _mode == '-d':
         de_scan = True
-    elif _mode == '--p-scan':
+    elif _mode == '-p':
         p_scan = True
-    elif _mode == '--reveal':
+    elif _mode == '-r':
         reveal_scan = True
-    elif _mode == '--type-scan':
+    elif _mode == '-t':
         type_scan = True
-        if '--suffix' in stdin:
-            idx = stdin.index('--suffix')
+        # suffix
+        if '-sfx' in stdin:
+            idx = stdin.index('-sfx')
             suffix.append(stdin[idx + 1].strip())
-        elif '--group-suffix' in stdin:
-            idx = stdin.index('--group-suffix')
+        # group suffix
+        elif '-gsfx' in stdin:
+            idx = stdin.index('-gsfx')
             suffix_ = stdin[idx + 1]
             if suffix_ == 'archive':
                 suffix = ext_module.ext_archive
@@ -64,7 +67,8 @@ def mode(stdin: list) -> tuple:
                 suffix = ext_module.ext_video
             elif suffix_ == 'web':
                 suffix = ext_module.ext_web
-        elif '--custom-suffix' in stdin:
+        # custom suffix group
+        elif '-csfx' in stdin:
             omega_find_banner.banner()
             print('-- searching for custom suffix groups ...')
             if os.path.exists(program_root+'\\suffix_group.txt'):
