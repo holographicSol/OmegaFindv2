@@ -11,17 +11,20 @@ import get_path
 import scanfs
 import magic
 import pathlib
-import zipfile
-import py7zr
 import shutil
-import tarfile
 import compatible_archives
-import gzip
 
 debug = False
 result = []
 
 program_root = get_path.get_path()
+
+
+def ensure_db():
+    if not os.path.exists(program_root+'\\db\\'):
+        os.mkdir(program_root+'\\db\\')
+    if not os.path.exists(program_root+'\\db\\database_file_recognition.txt'):
+        open(program_root+'\\db\\database_file_recognition.txt', 'w').close()
 
 
 async def read_definitions(fname: str) -> tuple:

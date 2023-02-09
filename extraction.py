@@ -1,8 +1,5 @@
 import os
-import time
-
 import magic
-import compatible_archives
 import zipfile
 import tarfile
 import py7zr

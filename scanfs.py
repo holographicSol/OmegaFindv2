@@ -1,8 +1,5 @@
 """ Written by Benjamin Jack Cullen """
 import os
-import time
-
-import handler_exception
 
 x_files = []
 

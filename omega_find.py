@@ -296,6 +296,9 @@ if __name__ == '__main__':
     # directory of program (not cwd)
     # print(f'program_root:', program_root)
 
+    # ensure default database file
+    handler_file.ensure_db()
+
     # get input
     STDIN = list(sys.argv)
 
