@@ -7,7 +7,6 @@ import gzip
 import patoolib
 import handler_file
 import variables_compat_archives
-import handler_extraction_method
 
 result = []
 
@@ -73,19 +72,19 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
 
             # method: zipfile module
             if buffer.startswith(tuple(variables_compat_archives.group_zipfile_compat)):
-                handler_extraction_method.ex_zip(_file=file, _temp_directory=temp_directory)
+                ex_zip(_file=file, _temp_directory=temp_directory)
 
             # method: py7zr module
             elif buffer.startswith(tuple(variables_compat_archives.group_py7zr_compat)):
-                handler_extraction_method.ex_py7zr(_file=file, _temp_directory=temp_directory)
+                ex_py7zr(_file=file, _temp_directory=temp_directory)
 
             # method 0: tarfile module
             elif buffer.startswith(tuple(variables_compat_archives.group_tarfile_compat)):
                 try:
-                    handler_extraction_method.ex_tarfile(_file=file, _temp_directory=temp_directory)
+                    ex_tarfile(_file=file, _temp_directory=temp_directory)
                 except:
                     # method 1: gzip module
-                    handler_extraction_method.ex_gzip(_file=file, _temp_directory=temp_directory)
+                    ex_gzip(_file=file, _temp_directory=temp_directory)
 
         except Exception as e:
             if 'Password' in str(e):
@@ -100,7 +99,7 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                             patoolib.extract_archive(archive=file, outdir=temp_directory, verbosity=0)
                 except Exception as e:
                     # log incompatible
-                    non_variant = handler_extraction_method.incompatible_non_variant(_file=file, _buffer=buffer, e=e)
+                    non_variant = incompatible_non_variant(_file=file, _buffer=buffer, e=e)
                     if non_variant:
                         result.append(non_variant)
 
