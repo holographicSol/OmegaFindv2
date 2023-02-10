@@ -5,12 +5,9 @@ import re
 import codecs
 import aiofiles
 import asyncio
-import patoolib
-import handler_extraction_method
 import magic
 import pathlib
 import shutil
-import variables_compat_archives
 
 debug = False
 result = []
