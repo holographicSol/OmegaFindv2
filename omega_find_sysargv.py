@@ -67,8 +67,10 @@ def mode(stdin: list) -> tuple:
                 suffix = variables_suffix.ext_web
         # custom suffix group
         elif '-csfx' in stdin:
-            handler_print.banner()
+            # handler_print.banner()
+            handler_print.display_spacer()
             handler_print.display_searching_custom_suffix()
+            handler_print.display_spacer()
             if os.path.exists(program_root+'\\suffix_group.txt'):
                 custom_suffix_groups = []
                 with open(program_root+'\\suffix_group.txt', 'r', encoding='utf8') as fo:
@@ -80,7 +82,7 @@ def mode(stdin: list) -> tuple:
                         i += 1
                 fo.close()
                 handler_print.display_spacer()
-                select_group = handler_print.input_select_custom_suffix_group()
+                select_group = handler_print.input_select()
                 select_group = int(select_group.strip())
                 if select_group in range(len(custom_suffix_groups)):
                     _sfx_group = custom_suffix_groups[select_group]

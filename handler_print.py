@@ -109,11 +109,11 @@ def display_invalid_char(char):
 # ------------------------------------------------------------------------------> custom suffix
 
 def display_searching_custom_suffix():
-    print('-- searching for custom suffix groups ...')
+    print(' custom suffix groups:')
 
 
 def display_custom_suffix_result(i, item):
-    print(f'    [{i}] {item}')
+    print(f' [{i}] {item}')
 
 
 def display_no_custom_suffix():
@@ -163,10 +163,6 @@ def display_spacer():
 
 
 # ------------------------------------------------------------------------------> input
-
-def input_select_custom_suffix_group():
-    return input('-- select custom suffix group: ')
-
 
 def input_custom_suffix_group_name():
     return input('-- enter new a suffix group name (alpha numeric): ')
