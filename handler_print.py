@@ -53,11 +53,11 @@ def display_header(_msg):
 
 
 def display_more_results_available():
-    print('-- more results available in scan results file(s).')
+    print('-- more results available in results file.')
 
 
 def display_learning_results_overview(_results):
-    print(f'-- new definitions {len(_results)}')
+    print(f'-- new definitions: {len(_results)}')
     print('-- updating definitions ..')
 
 
@@ -165,7 +165,7 @@ def display_spacer():
 # ------------------------------------------------------------------------------> input
 
 def input_select_custom_suffix_group():
-    return input('[Select Custom Suffix Group]: ')
+    return input('-- select custom suffix group: ')
 
 
 def input_custom_suffix_group_name():
