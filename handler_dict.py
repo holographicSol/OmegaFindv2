@@ -12,6 +12,8 @@ def dict_maker(_recognized_files: list, _buffer_max: int, _type_suffix: list,
                       'program_root': _program_root}
     if _extract is True:
         multiproc_dict.update({'extract': True})
+    if _extract is False:
+        multiproc_dict.update({'extract': False})
 
     if _type_scan is True:
         chunk_suffix = list(handler_chunk.chunk_data(data=_type_suffix, chunk_size=10))

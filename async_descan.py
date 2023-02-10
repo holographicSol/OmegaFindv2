@@ -13,10 +13,11 @@ async def entry_point_de_scan(chunk: list, **kwargs) -> list:
     _buffer_max = int(kwargs.get('buffer_max'))
     _target = str(kwargs.get('target'))
     _program_root = str(kwargs.get('program_root'))
-    _extract = False
-    if 'extract' in kwargs.keys():
-        _extract = kwargs.get('extract')
-    return [await de_scan(item, _recognized_files, _buffer_max, _extract, _target, _program_root) for item in chunk]
+    _extract = kwargs.get('extract')
+    if _extract is False:
+        return [await de_scan(item, _recognized_files, _buffer_max, _extract, _target, _program_root) for item in chunk]
+    elif _extract is True:
+        return [await de_scan_extract(item, _recognized_files, _buffer_max, _extract, _target, _program_root) for item in chunk]
 
 
 async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str,
@@ -25,10 +26,18 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await async_check.scan_check(file, suffix, buffer, _recognized_files)
-        if await async_check.check_extract(_extract=_extract, _buffer=buffer) is True:
-            _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
-                                            _recognized_files=_recognized_files, _target=_target,
-                                            _program_root=_program_root)
+    except Exception as e:
+        _result = [['[ERROR]', str(file), str(e)]]
+    return _result
+
+
+async def de_scan_extract(file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str,
+                          _program_root: str) -> list:
+    try:
+        buffer = await handler_file.async_read_bytes(file, _buffer_max)
+        _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
+                                        _recognized_files=_recognized_files, _target=_target,
+                                        _program_root=_program_root)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result

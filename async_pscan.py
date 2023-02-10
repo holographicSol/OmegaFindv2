@@ -1,7 +1,6 @@
 import asyncio
 import handler_strings
 import handler_file
-import async_check
 import handler_extraction_method
 
 
@@ -16,9 +15,8 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str, _pro
     _result = []
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
-        if await async_check.check_extract(_extract=_extract, _buffer=buffer) is True:
-            _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target,
-                                           _program_root=_program_root)
+        _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target,
+                                       _program_root=_program_root)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result

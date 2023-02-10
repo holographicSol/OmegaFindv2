@@ -13,23 +13,32 @@ async def entry_point_type_scan(chunk: list, **kwargs) -> list:
     _type_suffix = kwargs.get('suffix')
     _target = str(kwargs.get('target'))
     _program_root = str(kwargs.get('program_root'))
-    _extract = False
-    if 'extract' in kwargs.keys():
-        _extract = kwargs.get('extract')
-    return [await type_scan(item, _recognized_files, _buffer_max, _type_suffix, _extract, _target,
-                            _program_root) for item in chunk]
+    _extract = kwargs.get('extract')
+
+    if _extract is False:
+        return [await type_scan(item, _recognized_files, _buffer_max, _type_suffix, _target, _program_root) for item in chunk]
+    elif _extract is True:
+        return [await type_scan_extract(item, _recognized_files, _buffer_max, _type_suffix, _target, _program_root) for item in chunk]
 
 
-async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list, _extract: bool,
+async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list,
                     _target: str, _program_root: str):
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await async_check.scan_check(file, suffix, buffer, _recognized_files)
-        if await async_check.check_extract(_extract=_extract, _buffer=buffer) is True:
-            _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
-                                              _recognized_files=_recognized_files, _type_suffix=_type_suffix,
-                                              _target=_target, _program_root=_program_root)
+    except Exception as e:
+        _result = [['[ERROR]', str(file), str(e)]]
+    return _result
+
+
+async def type_scan_extract(file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list,
+                            _target: str, _program_root: str):
+    try:
+        buffer = await handler_file.async_read_bytes(file, _buffer_max)
+        _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
+                                          _recognized_files=_recognized_files, _type_suffix=_type_suffix,
+                                          _target=_target, _program_root=_program_root)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
