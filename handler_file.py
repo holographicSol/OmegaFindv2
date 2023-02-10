@@ -18,12 +18,12 @@ result = []
 
 def get_executable_path():
     if getattr(sys, 'frozen', False):
-        program_root = sys.executable
-        idx = program_root.rfind('\\')
-        program_root = program_root[:idx]
+        _program_root = sys.executable
+        idx = _program_root.rfind('\\')
+        _program_root = _program_root[:idx]
     else:
-        program_root = '.\\'
-    return program_root
+        _program_root = '.\\'
+    return _program_root
 
 
 program_root = get_executable_path()

@@ -100,7 +100,8 @@ if __name__ == '__main__':
                                                      _type_suffix=type_suffix, _learn=learn_bool,
                                                      _de_scan=de_scan_bool, _type_scan=type_scan_bool,
                                                      _p_scan=p_scan_bool,
-                                                     _extract=extract, _target=target, _reveal_scan=reveal_scan_bool)
+                                                     _extract=extract, _target=target, _reveal_scan=reveal_scan_bool,
+                                                     _program_root=program_root)
 
             # run the async multiprocess operation(s)
             t = time.perf_counter()
