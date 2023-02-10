@@ -1,23 +1,32 @@
 """ Written by Benjamin Jack Cullen """
 import os
+import sys
 import re
-import time
 import codecs
 import aiofiles
 import asyncio
 import patoolib
-import handler_extraction
-import get_path
-import scanfs
+import handler_extraction_method
 import magic
 import pathlib
 import shutil
-import compatible_archives
+import variables_compat_archives
 
 debug = False
 result = []
 
-program_root = get_path.get_path()
+
+def get_executable_path():
+    if getattr(sys, 'frozen', False):
+        program_root = sys.executable
+        idx = program_root.rfind('\\')
+        program_root = program_root[:idx]
+    else:
+        program_root = '.\\'
+    return program_root
+
+
+program_root = get_executable_path()
 
 
 def ensure_db():
@@ -159,20 +168,20 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
             # +/- compatibility
 
             # method: zipfile module
-            if buffer.startswith(tuple(compatible_archives.group_zipfile_compat)):
-                handler_extraction.ex_zip(_file=file, _temp_directory=temp_directory)
+            if buffer.startswith(tuple(variables_compat_archives.group_zipfile_compat)):
+                handler_extraction_method.ex_zip(_file=file, _temp_directory=temp_directory)
 
             # method: py7zr module
-            elif buffer.startswith(tuple(compatible_archives.group_py7zr_compat)):
-                handler_extraction.ex_py7zr(_file=file, _temp_directory=temp_directory)
+            elif buffer.startswith(tuple(variables_compat_archives.group_py7zr_compat)):
+                handler_extraction_method.ex_py7zr(_file=file, _temp_directory=temp_directory)
 
             # method 0: tarfile module
-            elif buffer.startswith(tuple(compatible_archives.group_tarfile_compat)):
+            elif buffer.startswith(tuple(variables_compat_archives.group_tarfile_compat)):
                 try:
-                    handler_extraction.ex_tarfile(_file=file, _temp_directory=temp_directory)
+                    handler_extraction_method.ex_tarfile(_file=file, _temp_directory=temp_directory)
                 except:
                     # method 1: gzip module
-                    handler_extraction.ex_gzip(_file=file, _temp_directory=temp_directory)
+                    handler_extraction_method.ex_gzip(_file=file, _temp_directory=temp_directory)
 
         except Exception as e:
             if 'Password' in str(e):
@@ -187,7 +196,7 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                             patoolib.extract_archive(archive=file, outdir=temp_directory, verbosity=0)
                 except Exception as e:
                     # log incompatible
-                    non_variant = handler_extraction.incompatible_non_variant(_file=file, _buffer=buffer, e=e)
+                    non_variant = handler_extraction_method.incompatible_non_variant(_file=file, _buffer=buffer, e=e)
                     if non_variant:
                         result.append(non_variant)
 
@@ -257,13 +266,3 @@ def file_sub_ops(_bytes: bytes) -> str:
 def rem_dir(path: str):
     if os.path.exists(path):
         shutil.rmtree(path)
-
-
-def pre_scan_handler(_target: str) -> tuple:
-    t = time.perf_counter()
-    # scan_results = scanfs.scan(path=_target)
-    scan_results = scanfs.scan(path=_target)
-    _files = scan_results[0]
-    _x_files = scan_results[1]
-    print(f'-- found {len(_files)} files during pre-scan (errors: {len(_x_files)}). time: {time.perf_counter()-t}')
-    return _files, _x_files

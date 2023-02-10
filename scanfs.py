@@ -1,5 +1,6 @@
 """ Written by Benjamin Jack Cullen """
 import os
+import time
 
 x_files = []
 
@@ -34,3 +35,12 @@ def search_scan(path: str, q: str) -> list:
             fp.append(p)
             i_match += 1
     return fp
+
+
+def pre_scan_handler(_target: str) -> tuple:
+    t = time.perf_counter()
+    scan_results = scan(path=_target)
+    _files = scan_results[0]
+    _x_files = scan_results[1]
+    print(f'-- found {len(_files)} files during pre-scan (errors: {len(_x_files)}). time: {time.perf_counter()-t}')
+    return _files, _x_files

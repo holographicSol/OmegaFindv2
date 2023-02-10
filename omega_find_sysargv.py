@@ -1,14 +1,13 @@
 import os
-import ext_module
+import variables_suffix
 import string
 import omega_find_banner
 import omega_find_help
 import handler_file
 import asyncio
-import get_path
 import scanfs
 
-program_root = get_path.get_path()
+program_root = handler_file.get_executable_path()
 
 
 def mode(stdin: list) -> tuple:
@@ -43,29 +42,29 @@ def mode(stdin: list) -> tuple:
             idx = stdin.index('-gsfx')
             suffix_ = stdin[idx + 1]
             if suffix_ == 'archive':
-                suffix = ext_module.ext_archive
+                suffix = variables_suffix.ext_archive
             elif suffix_ == 'audio':
-                suffix = ext_module.ext_audio
+                suffix = variables_suffix.ext_audio
             elif suffix_ == 'book':
-                suffix = ext_module.ext_book
+                suffix = variables_suffix.ext_book
             elif suffix_ == 'code':
-                suffix = ext_module.ext_code
+                suffix = variables_suffix.ext_code
             elif suffix_ == 'executable':
-                suffix = ext_module.ext_executable
+                suffix = variables_suffix.ext_executable
             elif suffix_ == 'font':
-                suffix = ext_module.ext_font
+                suffix = variables_suffix.ext_font
             elif suffix_ == 'image':
-                suffix = ext_module.ext_image
+                suffix = variables_suffix.ext_image
             elif suffix_ == 'sheet':
-                suffix = ext_module.ext_sheet
+                suffix = variables_suffix.ext_sheet
             elif suffix_ == 'slide':
-                suffix = ext_module.ext_slide
+                suffix = variables_suffix.ext_slide
             elif suffix_ == 'text':
-                suffix = ext_module.ext_text
+                suffix = variables_suffix.ext_text
             elif suffix_ == 'video':
-                suffix = ext_module.ext_video
+                suffix = variables_suffix.ext_video
             elif suffix_ == 'web':
-                suffix = ext_module.ext_web
+                suffix = variables_suffix.ext_web
         # custom suffix group
         elif '-csfx' in stdin:
             omega_find_banner.banner()

@@ -13,22 +13,20 @@ import asyncio
 import aiomultiprocess
 import multiprocessing
 
+import omega_find_banner
+import omega_find_help
+import omega_find_sysargv
 import handler_dict
 import handler_chunk
 import handler_file
 import handler_results
-import handler_exception
-import omega_find_banner
-import omega_find_help
-import omega_find_sysargv
-import post_process
+import handler_post_process
 import scanfs
-import get_path
 
 debug = False
 x_learn = []
 
-program_root = get_path.get_path()
+program_root = handler_file.get_executable_path()
 
 
 def get_dt() -> str:
@@ -50,6 +48,21 @@ async def check_extract(_extract: bool, _buffer: bytes) -> bool:
         return True
 
 
+async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
+    global x_learn
+    buffer = sub_str(_buffer=buffer)
+    if [suffix, buffer] not in x_learn:
+        x_learn.append([suffix, buffer])
+        if [suffix, buffer] not in _recognized_files:
+            return [suffix, buffer]
+
+
+async def scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
+    buffer = sub_str(_buffer=buffer)
+    if [suffix, buffer] not in _recognized_files:
+        return [file, suffix, buffer]
+
+
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
     _results = [[_file, _buffer]]
     _tmp = program_root+'\\tmp\\'+str(randStr())
@@ -63,7 +76,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             for sub_file in sub_files:
                 buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-                res = await de_scan_check(sub_file, suffix, buffer, _recognized_files)
+                res = await scan_check(sub_file, suffix, buffer, _recognized_files)
                 if res is not None:
                     res[0] = res[0].replace(_tmp, _target)
                     _results.append(res)
@@ -86,12 +99,31 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
         for sub_file in sub_files:
             buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
             suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-            res = await type_scan_check(sub_file, suffix, buffer, _recognized_files, _type_suffix)
+            res = await scan_check(sub_file, suffix, buffer, _recognized_files)
             if res is not None:
                 res[0] = res[0].replace(_tmp, _target)
                 _results.append(res)
     else:
         _results = extraction
+    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
+    return _results
+
+
+async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
+    _results = [_file, _buffer]
+    _tmp = program_root+'\\tmp\\'+str(randStr())
+    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
+                                                      file=_file, temp_directory=_tmp, _target=_target,
+                                                      _static_tmp=_tmp)
+    if result_bool is True:
+        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+        for sub_file in sub_files:
+            buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
+            res = [sub_file, buffer]
+            if res is not None:
+                res[0] = res[0].replace(_tmp, _target)
+                _results.append(res)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results
 
@@ -116,46 +148,6 @@ async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: 
     return final_res
 
 
-async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
-    _results = [_file, _buffer]
-    _tmp = program_root+'\\tmp\\'+str(randStr())
-    result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
-                                                      file=_file, temp_directory=_tmp, _target=_target,
-                                                      _static_tmp=_tmp)
-    if result_bool is True:
-        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
-        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
-        for sub_file in sub_files:
-            buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
-            res = [sub_file, buffer]
-            if res is not None:
-                res[0] = res[0].replace(_tmp, _target)
-                _results.append(res)
-    await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
-    return _results
-
-
-async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
-    global x_learn
-    buffer = sub_str(_buffer=buffer)
-    if [suffix, buffer] not in x_learn:
-        x_learn.append([suffix, buffer])
-        if [suffix, buffer] not in _recognized_files:
-            return [suffix, buffer]
-
-
-async def de_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
-    buffer = sub_str(_buffer=buffer)
-    if [suffix, buffer] not in _recognized_files:
-        return [file, suffix, buffer]
-
-
-async def type_scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list, _type_suffix: list):
-    buffer = sub_str(_buffer=buffer)
-    if [buffer] in _recognized_files:
-        return [file, suffix, buffer]
-
-
 async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
@@ -170,7 +162,7 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
-        _result = await de_scan_check(file, suffix, buffer, _recognized_files)
+        _result = await scan_check(file, suffix, buffer, _recognized_files)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
             _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                             _recognized_files=_recognized_files, _target=_target)
@@ -183,7 +175,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
-        _result = await type_scan_check(file, suffix, buffer, _recognized_files, _type_suffix)
+        _result = await scan_check(file, suffix, buffer, _recognized_files)
         if await check_extract(_extract=_extract, _buffer=buffer) is True:
             _result = await extract_type_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                               _recognized_files=_recognized_files, _type_suffix=_type_suffix,
@@ -314,7 +306,7 @@ if __name__ == '__main__':
                                                                           _db_recognized_files=db_recognized_files,
                                                                           _type_suffix=type_suffix)
             # pre-scan
-            files, x_files = handler_file.pre_scan_handler(_target=target)
+            files, x_files = scanfs.pre_scan_handler(_target=target)
             asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
             asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
@@ -334,12 +326,12 @@ if __name__ == '__main__':
             results = asyncio.run(main(chunks, multiproc_dict, mode))
             t_completion = str(time.perf_counter()-t)
             results = handler_chunk.un_chunk_data(results, depth=1)
-            exc, results = handler_exception.results_filter(results)
+            exc, results = handler_post_process.results_filter(results)
             asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
             # post-processing
             if p_scan_bool is True:
-                results = post_process.pscan(_list=results)
+                results = handler_post_process.pscan(_list=results)
 
             # post-scan results
             handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
