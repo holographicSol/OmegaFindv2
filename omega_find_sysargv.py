@@ -175,7 +175,7 @@ def verbosity(stdin: list) -> bool:
 
 def loop_scandir_results(_list: list):
     try:
-        usr_input = input('select? ')
+        usr_input = input(': ')
         if usr_input.isdigit():
             usr_input = int(usr_input)
             result = _list[usr_input]

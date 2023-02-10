@@ -34,6 +34,7 @@ def search_scan(path: str, q: str) -> list:
             print(f'[?][{i_match}] {p}')
             fp.append(p)
             i_match += 1
+    print('')
     return fp
 
 
