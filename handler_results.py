@@ -18,8 +18,8 @@ def result_handler_no_extract(_results: list):
             break
 
 
-def result_handler_de_scan(_results: list, msg: str, _extract: bool):
-    handler_print.display_header(msg)
+def result_handler_de_scan(_results: list, _extract: bool):
+    handler_print.display_results_header_de_scan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
     elif _extract is True:
@@ -37,8 +37,8 @@ def result_handler_de_scan(_results: list, msg: str, _extract: bool):
                 break
 
 
-def result_handler_type_scan(_results: list, msg: str, _extract: bool):
-    handler_print.display_header(msg)
+def result_handler_type_scan(_results: list, _extract: bool):
+    handler_print.display_results_header_type_scan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
     elif _extract is True:
@@ -56,14 +56,14 @@ def result_handler_type_scan(_results: list, msg: str, _extract: bool):
                 break
 
 
-def result_handler_p_scan(_results: list, msg: str, _extract: bool):
-    handler_print.display_header(msg)
+def result_handler_p_scan(_results: list, _extract: bool):
+    handler_print.display_results_header_pscan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
 
 
-def result_handler_reveal_scan(_results: list, msg: str, _extract: bool):
-    handler_print.display_header(msg)
+def result_handler_reveal_scan(_results: list, _extract: bool):
+    handler_print.display_results_header_reveal_scan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
     elif _extract is True:
@@ -102,28 +102,28 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_de-scan_' + _dt + '.txt',
                                                             _dt=_dt))
-                result_handler_de_scan(_results=_results, msg='[Unrecognized]', _extract=_extract)
+                result_handler_de_scan(_results=_results, _extract=_extract)
 
             elif _type_scan_bool is True:
                 handler_print.display_type_scan_results_overview(_results, _exc, _t_completion)
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_type-scan_' + _dt + '.txt',
                                                             _dt=_dt))
-                result_handler_type_scan(_results=_results, msg='[Found]', _extract=_extract)
+                result_handler_type_scan(_results=_results, _extract=_extract)
 
             elif _p_scan is True:
                 handler_print.display_p_scan_results_overview(_results, _exc, _t_completion)
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_pscan_' + _dt + '.txt',
                                                             _dt=_dt))
-                result_handler_p_scan(_results=_results, msg='[PASSWORD PROTECTED]', _extract=_extract)
+                result_handler_p_scan(_results=_results, _extract=_extract)
 
             elif _reveal_scan is True:
                 handler_print.display_reveal_scan_results_overview(_results, _exc, _t_completion)
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_reveal-scan_' + _dt + '.txt',
                                                             _dt=_dt))
-                result_handler_reveal_scan(_results=_results, msg='[Found]', _extract=_extract)
+                result_handler_reveal_scan(_results=_results, _extract=_extract)
 
         else:
             handler_print.display_zero_results(_exc)

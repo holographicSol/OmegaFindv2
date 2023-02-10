@@ -5,7 +5,7 @@
 
 def banner():
     print('')
-    print(' [OmegaFind v2] Forensics tool. Search differently.')
+    print('[OmegaFind v2] Forensics tool. Search differently.')
     print('')
 
 
@@ -48,8 +48,20 @@ def display_result(_item):
     print(_item)
 
 
-def display_header(_msg):
-    print('\n'+str(_msg))
+def display_results_header_de_scan():
+    print('\n'+str('Unrecognized:'))
+
+
+def display_results_header_type_scan():
+    print('\n'+str('Found:'))
+
+
+def display_results_header_pscan():
+    print('\n'+str('Password protected:'))
+
+
+def display_results_header_reveal_scan():
+    print('\n'+str('Found:'))
 
 
 def display_more_results_available():
@@ -109,11 +121,11 @@ def display_invalid_char(char):
 # ------------------------------------------------------------------------------> custom suffix
 
 def display_searching_custom_suffix():
-    print(' custom suffix groups:')
+    print('custom suffix groups:')
 
 
 def display_custom_suffix_result(i, item):
-    print(f' [{i}] {item}')
+    print(f'[{i}] {item}')
 
 
 def display_no_custom_suffix():
