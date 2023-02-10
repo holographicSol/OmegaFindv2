@@ -2,6 +2,8 @@
 import os
 import time
 
+import handler_print
+
 x_files = []
 
 
@@ -31,10 +33,10 @@ def search_scan(path: str, q: str) -> list:
     for entry in scantree(path):
         p = entry.path
         if q in p:
-            print(f'[?][{i_match}] {p}')
+            handler_print.display_search_scan_result(i_match, p)
             fp.append(p)
             i_match += 1
-    print('')
+    handler_print.display_spacer()
     return fp
 
 
@@ -43,5 +45,6 @@ def pre_scan_handler(_target: str) -> tuple:
     scan_results = scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
-    print(f'-- found {len(_files)} files during pre-scan (errors: {len(_x_files)}). time: {time.perf_counter()-t}')
+    completion_time = time.perf_counter()-t
+    handler_print.display_prescan_info(_files, _x_files, completion_time)
     return _files, _x_files

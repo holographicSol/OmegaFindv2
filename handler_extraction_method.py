@@ -1,3 +1,4 @@
+""" Written by Benjamin Jack Cullen """
 import os.path
 import pathlib
 import zipfile

@@ -8,6 +8,7 @@ import asyncio
 import magic
 import pathlib
 import shutil
+import handler_print
 
 debug = False
 result = []
@@ -170,7 +171,7 @@ def file_sub_ops(_bytes: bytes) -> str:
         buff = magic.from_buffer(_bytes)
     except Exception as e:
         if debug is True:
-            print(f'-- exception: {e}')
+            handler_print.display_exception(_msg='-- exception:', e=e)
     return buff
 
 

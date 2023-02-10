@@ -1,11 +1,11 @@
+""" Written by Benjamin Jack Cullen """
 import os
 import variables_suffix
 import string
-import omega_find_banner
-import omega_find_help
 import handler_file
 import asyncio
 import scanfs
+import handler_print
 
 program_root = handler_file.get_executable_path()
 
@@ -67,20 +67,20 @@ def mode(stdin: list) -> tuple:
                 suffix = variables_suffix.ext_web
         # custom suffix group
         elif '-csfx' in stdin:
-            omega_find_banner.banner()
-            print('-- searching for custom suffix groups ...')
+            handler_print.banner()
+            handler_print.display_searching_custom_suffix()
             if os.path.exists(program_root+'\\suffix_group.txt'):
                 custom_suffix_groups = []
                 with open(program_root+'\\suffix_group.txt', 'r', encoding='utf8') as fo:
                     i = 0
                     for line in fo:
                         line = line.strip()
-                        print(f'    [{i}] {line}')
+                        handler_print.display_custom_suffix_result(i, line)
                         custom_suffix_groups.append(line)
                         i += 1
                 fo.close()
-                print('')
-                select_group = input('[Select Custom Suffix Group]: ')
+                handler_print.display_spacer()
+                select_group = handler_print.input_select_custom_suffix_group()
                 select_group = int(select_group.strip())
                 if select_group in range(len(custom_suffix_groups)):
                     _sfx_group = custom_suffix_groups[select_group]
@@ -90,7 +90,7 @@ def mode(stdin: list) -> tuple:
                     sfx_group = sfx_group.split(' ')
                     suffix = sfx_group
             else:
-                print('-- no custom suffix groups found ...')
+                handler_print.display_no_custom_suffix()
     return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan
 
 
@@ -122,27 +122,27 @@ def database(stdin: list) -> str:
 
 
 def make_suffix_group():
-    sfx_name = input('-- enter new a suffix group name (alpha numeric): ')
+    sfx_name = handler_print.input_custom_suffix_group_name()
     valid_chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
     bool_valid_chars = True
     for char in sfx_name:
         if char not in valid_chars:
             bool_valid_chars = False
-            print(f'-- invalid character: {char}')
+            handler_print.display_invalid_char(char)
             break
     if bool_valid_chars is True:
-        sfx_group = input('-- enter suffix(s) (space delimited example: sh exe): ')
-        print(f'-- new suffix group name: {sfx_name}')
-        print(f'-- new suffix group: {sfx_group}')
-        create_new_suffix_group = input('-- save?: ')
+        sfx_group = handler_print.input_custom_suffix()
+        handler_print.display_new_custom_suffix_name(sfx_name)
+        handler_print.display_new_custom_suffix_group(sfx_group)
+        create_new_suffix_group = handler_print.input_save()
         if create_new_suffix_group == 'Y' or create_new_suffix_group == 'y':
-            print('-- saving ...')
+            handler_print.display_saving()
             if not os.path.exists(program_root+'\\suffix_group.txt'):
                 open(program_root+'\\suffix_group.txt', 'w').close()
             with open(program_root+'\\suffix_group.txt', 'a', encoding='utf8') as fo:
                 fo.write(sfx_name + ' ' + str(sfx_group) + '\n')
-            print('-- done.')
-            print('')
+            handler_print.display_completed()
+            handler_print.display_spacer()
 
 
 def clean_db(stdin: list) -> str:
@@ -175,7 +175,7 @@ def verbosity(stdin: list) -> bool:
 
 def loop_scandir_results(_list: list):
     try:
-        usr_input = input(': ')
+        usr_input = handler_print.input_select()
         if usr_input.isdigit():
             usr_input = int(usr_input)
             result = _list[usr_input]
@@ -185,32 +185,32 @@ def loop_scandir_results(_list: list):
                 os.startfile(fullpath)
         loop_scandir_results(_list=_list)
     except KeyboardInterrupt:
-        print('')
+        handler_print.display_spacer()
         pass
 
 
 def run_and_exit(stdin: list):
 
     if os.path.exists(stdin[1]):
-        omega_find_banner.banner()
+        handler_print.banner()
         _path = stdin[1]
         _q = stdin[2]
         results = scanfs.search_scan(path=_path, q=_q)
         loop_scandir_results(_list=results)
-        print('')
+        handler_print.display_spacer()
 
     elif '-h' in stdin:
-        omega_find_help.omega_help()
+        handler_print.omega_help()
 
     elif '-R' in stdin:
-        omega_find_banner.banner()
+        handler_print.banner()
         db_recognized_files = display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
-        print(f'-- recognized file types: {len(recognized_files)}')
-        print(f'-- recognized suffixes: {len(suffixes)}\n')
+        handler_print.display_len_recognized_files(recognized_files)
+        handler_print.display_len_recognized_suffixes(suffixes)
 
     elif '-nsfx' in stdin:
-        omega_find_banner.banner()
+        handler_print.banner()
         make_suffix_group()
 
     else:

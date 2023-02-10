@@ -1,6 +1,4 @@
 """ Written by Benjamin Jack Cullen
-Intention: De-Obfuscation.
-Setup: Multiprocess + Async.
 """
 import os
 import sys
@@ -9,10 +7,9 @@ import asyncio
 import aiomultiprocess
 import multiprocessing
 
-import omega_find_banner
-import omega_find_help
 import omega_find_sysargv
 
+import handler_print
 import handler_dict
 import handler_chunk
 import handler_file
@@ -73,7 +70,7 @@ if __name__ == '__main__':
         verbose = omega_find_sysargv.verbosity(STDIN)
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
-            omega_find_banner.banner()
+            handler_print.banner()
 
             # datetime used for timestamping files/directories
             dt = handler_strings.get_dt()
@@ -127,9 +124,10 @@ if __name__ == '__main__':
                 handler_file.rem_dir(path=program_root+'\\tmp\\')
 
         else:
-            print('-- invalid input')
+            handler_print.display_invalid_input()
             if not os.path.exists(target):
-                print(f'-- invalid path: {target}')
+                handler_print.display_invalid_path(target)
             if not os.path.exists(db_recognized_files):
-                print(f'-- invalid database: {db_recognized_files}')
-            omega_find_help.omega_help()
+                handler_print.display_invalid_database(db_recognized_files)
+            handler_print.omega_help()
+    handler_print.display_spacer()

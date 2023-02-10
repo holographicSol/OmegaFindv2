@@ -1,3 +1,5 @@
+""" Written by Benjamin Jack Cullen """
+
 # Note: this already accounts for many archive suffixes. an epub for example can be a zip archive (index 0 below).
 compatible_arch = ['Zip archive', '7-zip archive', 'gzip compressed', 'bzip2 compressed']
 
