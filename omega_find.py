@@ -21,25 +21,13 @@ import handler_chunk
 import handler_file
 import handler_results
 import handler_post_process
+import handler_strings
 import scanfs
 
 debug = False
 x_learn = []
 
 program_root = handler_file.get_executable_path()
-
-
-def get_dt() -> str:
-    return str(datetime.now()).replace(':', '-').replace('.', '-').replace(' ', '_')
-
-
-def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
-    return ''.join(random.choice(chars) for _ in range(n))
-
-
-def sub_str(_buffer: bytes) -> str:
-    digi_str = r'[0-9]'
-    return re.sub(digi_str, '', str(_buffer))
 
 
 async def check_extract(_extract: bool, _buffer: bytes) -> bool:
@@ -50,7 +38,7 @@ async def check_extract(_extract: bool, _buffer: bytes) -> bool:
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
     global x_learn
-    buffer = sub_str(_buffer=buffer)
+    buffer = handler_strings.sub_str(_buffer=buffer)
     if [suffix, buffer] not in x_learn:
         x_learn.append([suffix, buffer])
         if [suffix, buffer] not in _recognized_files:
@@ -58,14 +46,14 @@ async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) 
 
 
 async def scan_check(file: str, suffix: str, buffer: bytes, _recognized_files: list) -> list:
-    buffer = sub_str(_buffer=buffer)
+    buffer = handler_strings.sub_str(_buffer=buffer)
     if [suffix, buffer] not in _recognized_files:
         return [file, suffix, buffer]
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str) -> list:
     _results = [[_file, _buffer]]
-    _tmp = program_root+'\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(handler_strings.randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
@@ -89,7 +77,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
 async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list,
                             _type_suffix: list, _target: str) -> list:
     _results = [[_file, _buffer]]
-    _tmp = program_root+'\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(handler_strings.randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
@@ -111,7 +99,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
 
 async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
     _results = [_file, _buffer]
-    _tmp = program_root+'\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(handler_strings.randStr())
     result_bool, extraction = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
@@ -130,7 +118,7 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
 
 async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str) -> list:
     _result = [_file]
-    _tmp = program_root+'\\tmp\\'+str(randStr())
+    _tmp = program_root+'\\tmp\\'+str(handler_strings.randStr())
     _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed,
                                                      file=_file,
                                                      temp_directory=_tmp,
@@ -295,7 +283,7 @@ if __name__ == '__main__':
             omega_find_banner.banner()
 
             # datetime used for timestamping files/directories
-            dt = get_dt()
+            dt = handler_strings.get_dt()
 
             # read recognized files
             recognized_files, suffixes = [], []
