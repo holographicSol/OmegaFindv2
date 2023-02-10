@@ -2,6 +2,7 @@ import asyncio
 import handler_strings
 import handler_file
 import async_check
+import handler_extraction_method
 
 
 async def entry_point_p_scan(chunk: list, **kwargs) -> list:
@@ -26,7 +27,7 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str, _pro
 async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: str, _program_root: str) -> list:
     _result = [_file]
     _tmp = _program_root+'\\tmp\\'+str(handler_strings.randStr())
-    _result_bool, _results = await asyncio.to_thread(handler_file.extract_nested_compressed,
+    _result_bool, _results = await asyncio.to_thread(handler_extraction_method.extract_nested_compressed,
                                                      file=_file,
                                                      temp_directory=_tmp,
                                                      _target=_target,
