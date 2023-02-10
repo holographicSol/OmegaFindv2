@@ -149,11 +149,11 @@ def display_completed():
 # ------------------------------------------------------------------------------> xp
 
 def display_len_recognized_files(recognized_files):
-    print(f'-- recognized file types: {len(recognized_files)}')
+    print(f' Recognized file types: {len(recognized_files)}')
 
 
 def display_len_recognized_suffixes(suffixes):
-    print(f'-- recognized suffixes: {len(suffixes)}\n')
+    print(f' Recognized suffixes:   {len(suffixes)}\n')
 
 
 # ------------------------------------------------------------------------------> spacer
