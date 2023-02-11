@@ -194,7 +194,7 @@ def loop_scandir_results(_list: list):
 def run_and_exit(stdin: list):
 
     if os.path.exists(stdin[1]):
-        handler_print.banner()
+        # handler_print.banner()
         _path = stdin[1]
         _q = stdin[2]
         results = scanfs.search_scan(path=_path, q=_q)
@@ -205,14 +205,14 @@ def run_and_exit(stdin: list):
         handler_print.omega_help()
 
     elif '-R' in stdin:
-        handler_print.banner()
+        # handler_print.banner()
         db_recognized_files = display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         handler_print.display_len_recognized_files(recognized_files)
         handler_print.display_len_recognized_suffixes(suffixes)
 
     elif '-nsfx' in stdin:
-        handler_print.banner()
+        # handler_print.banner()
         make_suffix_group()
 
     else:

@@ -34,7 +34,6 @@ def omega_help():
     print(' -h       Help                  Display this help message.')
     print('')
     print(' [Author] Developed and written by Benjamin Jack Cullen.')
-    print('')
 
 
 # ------------------------------------------------------------------------------> exceptions
