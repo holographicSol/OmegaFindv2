@@ -12,7 +12,5 @@ def column_width_from_screen_size_using_ratio(n: int) -> int:
             w = m.width
             # print(f'w: {w}')
 
-    # print(f'suggested column width: {int(0.058*int(w) / int(n))}')
-    return int(0.058*int(w) / int(n))
-
-
+    # print(f'suggested column width: {int(0.058*int(w))}')
+    return int(0.058*int(w))
