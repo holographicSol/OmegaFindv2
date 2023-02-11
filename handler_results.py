@@ -10,7 +10,7 @@ import cli_character_limits
 
 
 def result_handler_no_extract(_results: list):
-    max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio()
+    max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=len(_results))
     print(tabulate.tabulate(_results, tablefmt="simple", maxcolwidths=[max_column_width, max_column_width])) # 800x600 (inc. Windows Defaults)
 
 
