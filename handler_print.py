@@ -45,23 +45,23 @@ def display_exception(_msg: str, e: Exception):
 # ------------------------------------------------------------------------------> results
 
 def display_prescan_info(_files, _x_files, completion_time):
-    print(f' Found {len(_files)} files during pre-scan (errors: {len(_x_files)}). time: {completion_time}')
+    print(f'Found {len(_files)} files during pre-scan (errors: {len(_x_files)}). time: {completion_time}')
 
 
 def display_reveal_scan_results_overview(_results, _exc, _t_completion):
-    print(f' Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}')
+    print(f'Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}\n')
 
 
 def display_de_scan_results_overview(_results, _exc, _t_completion):
-    print(f' Found {len(_results)} unrecognized or obfuscated files (errors: {len(_exc)}). time: {_t_completion}')
+    print(f'Found {len(_results)} unrecognized or obfuscated files (errors: {len(_exc)}). time: {_t_completion}\n')
 
 
 def display_type_scan_results_overview(_results, _exc, _t_completion):
-    print(f' Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}')
+    print(f'Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}\n')
 
 
 def display_p_scan_results_overview(_results, _exc, _t_completion):
-    print(f' Found {len(_results)} password protected files (errors: {len(_exc)}). time: {_t_completion}')
+    print(f'Found {len(_results)} password protected files (errors: {len(_exc)}). time: {_t_completion}\n')
 
 
 def display_result(_item):
