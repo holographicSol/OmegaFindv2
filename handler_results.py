@@ -8,16 +8,16 @@ import tabulate
 
 
 def result_handler_no_extract(_results: list):
-    # table = []
-    # i_result = 0
-    print(tabulate.tabulate(_results, tablefmt="simple", maxcolwidths=[56, 56]))
-    # for result in _results:
-    #     if i_result <= 500:
-    #         handler_print.display_result(_item=result)
-    #         i_result += 1
-    #     else:
-    #         handler_print.display_more_results_available()
-    #         break
+    i_result = 0
+    # # print(tabulate.tabulate(_results, tablefmt="simple", maxcolwidths=[50, 50]))  # 800x600 (inc. Windows Defaults)
+    # print(tabulate.tabulate(_results, tablefmt="simple", maxcolwidths=[110, 110]))  # 800x600 (inc. Windows Defaults)
+    for result in _results:
+        if i_result <= 500:
+            handler_print.display_result(_item=result)
+            i_result += 1
+        else:
+            handler_print.display_more_results_available()
+            break
 
 
 def result_handler_de_scan(_results: list, _extract: bool):
