@@ -1,5 +1,6 @@
 """ Written by Benjamin Jack Cullen """
 
+from tabulate import tabulate
 
 # ------------------------------------------------------------------------------> banner
 
@@ -65,7 +66,8 @@ def display_p_scan_results_overview(_results, _exc, _t_completion):
 
 
 def display_result(_item):
-    print(*_item)
+    # print(*_item)  # raw unpacked
+    print(tabulate(_item, tablefmt='plain'))
 
 
 def display_more_results_available():
