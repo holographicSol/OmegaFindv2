@@ -74,7 +74,6 @@ if __name__ == '__main__':
         verbose = omega_find_sysargv.verbosity(STDIN)
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
-            # handler_print.banner()
 
             # datetime used for timestamping files/directories
             dt = handler_strings.get_dt()
