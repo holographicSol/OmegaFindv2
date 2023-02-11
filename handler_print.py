@@ -160,17 +160,17 @@ def display_spacer():
 
 # ------------------------------------------------------------------------------> input
 
-def input_custom_suffix_group_name():
+def input_custom_suffix_group_name() -> str:
     return input('-- enter new a suffix group name (alpha numeric): ')
 
 
-def input_custom_suffix():
+def input_custom_suffix() -> str:
     return input('-- enter suffix(s) (space delimited example: sh exe): ')
 
 
-def input_save():
+def input_save() -> str:
     return input('-- save?: ')
 
 
-def input_select():
+def input_select() -> str:
     return input(': ')
