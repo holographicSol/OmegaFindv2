@@ -67,8 +67,6 @@ def mode(stdin: list) -> tuple:
                 suffix = variables_suffix.ext_web
         # custom suffix group
         elif '-csfx' in stdin:
-            # handler_print.banner()
-            handler_print.display_spacer()
             handler_print.display_searching_custom_suffix()
             handler_print.display_spacer()
             if os.path.exists(program_root+'\\suffix_group.txt'):
@@ -83,6 +81,7 @@ def mode(stdin: list) -> tuple:
                 fo.close()
                 handler_print.display_spacer()
                 select_group = handler_print.input_select()
+                handler_print.display_spacer()
                 select_group = int(select_group.strip())
                 if select_group in range(len(custom_suffix_groups)):
                     _sfx_group = custom_suffix_groups[select_group]
@@ -144,7 +143,6 @@ def make_suffix_group():
             with open(program_root+'\\suffix_group.txt', 'a', encoding='utf8') as fo:
                 fo.write(sfx_name + ' ' + str(sfx_group) + '\n')
             handler_print.display_completed()
-            handler_print.display_spacer()
 
 
 def clean_db(stdin: list) -> str:
@@ -178,6 +176,7 @@ def verbosity(stdin: list) -> bool:
 def loop_scandir_results(_list: list):
     try:
         usr_input = handler_print.input_select()
+        handler_print.display_spacer()
         if usr_input.isdigit():
             usr_input = int(usr_input)
             result = _list[usr_input]
@@ -194,7 +193,6 @@ def loop_scandir_results(_list: list):
 def run_and_exit(stdin: list):
 
     if os.path.exists(stdin[1]):
-        # handler_print.banner()
         _path = stdin[1]
         _q = stdin[2]
         results = scanfs.search_scan(path=_path, q=_q)
@@ -205,14 +203,12 @@ def run_and_exit(stdin: list):
         handler_print.omega_help()
 
     elif '-R' in stdin:
-        # handler_print.banner()
         db_recognized_files = display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         handler_print.display_len_recognized_files(recognized_files)
         handler_print.display_len_recognized_suffixes(suffixes)
 
     elif '-nsfx' in stdin:
-        # handler_print.banner()
         make_suffix_group()
 
     else:
