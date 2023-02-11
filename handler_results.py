@@ -89,37 +89,42 @@ def result_handler_reveal_scan(_results: list, _extract: bool):
 
 def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bool, _de_scan_bool: bool,
                       _type_scan_bool: bool, _p_scan: bool, _dt: str, _exc: list, _reveal_scan: bool,
-                      _t_completion: str, _extract: bool):
+                      _t_completion: str, _extract: bool, _verbose: bool):
     if _results is not None:
         if len(_results) >= 1:
             if _learn_bool is True:
-                handler_print.display_learning_results_overview(_results)
+                if _verbose is True:
+                    handler_print.display_learning_results_overview(_results)
                 asyncio.run(handler_file.write_definitions(*_results, file=_db_recognized_files))
                 asyncio.run(handler_file.clean_database(fname=_db_recognized_files))
 
             elif _de_scan_bool is True:
-                handler_print.display_de_scan_results_overview(_results, _exc, _t_completion)
+                if _verbose is True:
+                    handler_print.display_de_scan_results_overview(_results, _exc, _t_completion)
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_de-scan_' + _dt + '.txt',
                                                             _dt=_dt))
                 result_handler_de_scan(_results=_results, _extract=_extract)
 
             elif _type_scan_bool is True:
-                handler_print.display_type_scan_results_overview(_results, _exc, _t_completion)
+                if _verbose is True:
+                    handler_print.display_type_scan_results_overview(_results, _exc, _t_completion)
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_type-scan_' + _dt + '.txt',
                                                             _dt=_dt))
                 result_handler_type_scan(_results=_results, _extract=_extract)
 
             elif _p_scan is True:
-                handler_print.display_p_scan_results_overview(_results, _exc, _t_completion)
+                if _verbose is True:
+                    handler_print.display_p_scan_results_overview(_results, _exc, _t_completion)
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_pscan_' + _dt + '.txt',
                                                             _dt=_dt))
                 result_handler_p_scan(_results=_results, _extract=_extract)
 
             elif _reveal_scan is True:
-                handler_print.display_reveal_scan_results_overview(_results, _exc, _t_completion)
+                if _verbose is True:
+                    handler_print.display_reveal_scan_results_overview(_results, _exc, _t_completion)
                 asyncio.run(handler_file.write_scan_results(*_results,
                                                             file='scan_results_reveal-scan_' + _dt + '.txt',
                                                             _dt=_dt))

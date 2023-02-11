@@ -40,11 +40,12 @@ def search_scan(path: str, q: str) -> list:
     return fp
 
 
-def pre_scan_handler(_target: str) -> tuple:
+def pre_scan_handler(_target: str, _verbose: bool) -> tuple:
     t = time.perf_counter()
     scan_results = scan(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
     completion_time = time.perf_counter()-t
-    handler_print.display_prescan_info(_files, _x_files, completion_time)
+    if _verbose is True:
+        handler_print.display_prescan_info(_files, _x_files, completion_time)
     return _files, _x_files

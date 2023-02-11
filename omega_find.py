@@ -84,7 +84,7 @@ if __name__ == '__main__':
                                                                           _db_recognized_files=db_recognized_files,
                                                                           _type_suffix=type_suffix)
             # pre-scan
-            files, x_files = scanfs.pre_scan_handler(_target=target)
+            files, x_files = scanfs.pre_scan_handler(_target=target, _verbose=verbose)
             asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
             asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
@@ -117,7 +117,7 @@ if __name__ == '__main__':
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
                                               _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
                                               _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool,
-                                              _t_completion=t_completion, _extract=extract)
+                                              _t_completion=t_completion, _extract=extract, _verbose=verbose)
 
             # final clean of tmp
             if os.path.exists(program_root+'\\tmp\\'):
