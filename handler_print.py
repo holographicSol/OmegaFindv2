@@ -50,8 +50,7 @@ def display_prescan_info(_files, _x_files, completion_time):
 
 
 def display_reveal_scan_results_overview(_results, _exc, _t_completion):
-    print('')
-    # print(f' Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}')
+    print(f' Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}')
 
 
 def display_result(_item):
