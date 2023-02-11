@@ -131,3 +131,4 @@ if __name__ == '__main__':
                 handler_print.display_invalid_database(db_recognized_files)
             handler_print.omega_help()
     handler_print.display_spacer()
+    handler_print.display_spacer()
