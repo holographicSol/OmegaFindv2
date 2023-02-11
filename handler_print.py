@@ -57,26 +57,6 @@ def display_result(_item):
     print(*_item)
 
 
-def display_results_header_de_scan():
-    print('')
-    # print('\n'+str('Unrecognized:'))
-
-
-def display_results_header_type_scan():
-    print('')
-    # print('\n'+str('Found:'))
-
-
-def display_results_header_pscan():
-    print('')
-    # print('\n'+str('Password protected:'))
-
-
-def display_results_header_reveal_scan():
-    print('')
-    # print('\n'+str('Found:'))
-
-
 def display_more_results_available():
     print(' More results available in results file.')
 

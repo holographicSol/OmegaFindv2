@@ -19,7 +19,6 @@ def result_handler_no_extract(_results: list):
 
 
 def result_handler_de_scan(_results: list, _extract: bool):
-    handler_print.display_results_header_de_scan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
     elif _extract is True:
@@ -38,7 +37,6 @@ def result_handler_de_scan(_results: list, _extract: bool):
 
 
 def result_handler_type_scan(_results: list, _extract: bool):
-    handler_print.display_results_header_type_scan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
     elif _extract is True:
@@ -57,13 +55,11 @@ def result_handler_type_scan(_results: list, _extract: bool):
 
 
 def result_handler_p_scan(_results: list, _extract: bool):
-    handler_print.display_results_header_pscan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
 
 
 def result_handler_reveal_scan(_results: list, _extract: bool):
-    handler_print.display_results_header_reveal_scan()
     if _extract is False:
         result_handler_no_extract(_results=_results)
     elif _extract is True:
