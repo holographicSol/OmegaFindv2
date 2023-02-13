@@ -197,12 +197,12 @@ def loop_scandir_results(_list: list):
         pass
 
 
-def run_and_exit(stdin: list):
+def run_and_exit(stdin: list, interact: bool):
 
     if os.path.exists(stdin[1]):
         _path = stdin[1]
         _q = stdin[2]
-        results = scanfs.search_scan(path=_path, q=_q)
+        results = scanfs.search_scan(path=_path, q=_q, interact=interact)
         loop_scandir_results(_list=results)
 
     elif '-h' in stdin:
