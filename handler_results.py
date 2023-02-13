@@ -40,7 +40,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         # make a mostly suitable max column width factoring in static (22 datetime, 31 len(geopbyte))
         max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=2)
         table_1 = tabulate.tabulate(_results,
-                                    colalign=('right', 'right', 'right', 'left'),
+                                    colalign=('left', 'right', 'right', 'left'),
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
                                     headers=('Modified', 'Buffer', 'Bytes', 'Files'),
                                     stralign='left')
