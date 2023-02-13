@@ -7,7 +7,7 @@ import cli_character_limits
 import power_time
 
 
-# todo: press enter to show more results, q to quit
+# todo: optionally print entire table at once (force/no enter for more) for parsing. + optional write results
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool):
