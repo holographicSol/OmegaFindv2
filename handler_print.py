@@ -1,6 +1,9 @@
 """ Written by Benjamin Jack Cullen """
 
-from tabulate import tabulate
+import tabulate
+import power_time
+import cli_character_limits
+
 
 # ------------------------------------------------------------------------------> banner
 
@@ -43,10 +46,32 @@ def display_exception(_msg: str, e: Exception):
     print(_msg, e)
 
 
+# ------------------------------------------------------------------------------> mode
+def display_mode(_verbose: bool, _mode: str):
+    if _verbose is True:
+        if _mode == '-l':
+            print('Mode: Learning\n\n')
+        elif _mode == '-d':
+            print('Mode: Deobfuscation\n\n')
+        elif _mode == '-t':
+            print('Mode: Type Scan\n\n')
+        elif _mode == '-p':
+            print('Mode: Password Scan\n\n')
+        elif _mode == '-r':
+            print('Mode: Reveal Scan\n\n')
+
+
 # ------------------------------------------------------------------------------> results
 
 def display_prescan_info(_files, _x_files, completion_time):
-    print(f'Found {len(_files)} files during pre-scan (errors: {len(_x_files)}). time: {completion_time}')
+    max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+    scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(completion_time))
+    print(tabulate.tabulate([[*[len(_files)], *[len(_x_files)], *[scan_time_human]]],
+                            maxcolwidths=[max_column_width, max_column_width],
+                            headers=('Pre-Scan Files            ', 'Errors                ', 'Time                  '),
+                            stralign='right'))
+    print('')
+    print('')
 
 
 def display_reveal_scan_results_overview(_results, _exc, _t_completion):
@@ -65,26 +90,23 @@ def display_p_scan_results_overview(_results, _exc, _t_completion):
     print(f'Found {len(_results)} password protected files (errors: {len(_exc)}). time: {_t_completion}\n')
 
 
-def display_result(_item):
-    print(*_item)  # raw unpacked
-    # print(tabulate(_item, tablefmt='plain'))
-
-
 def display_more_results_available():
     print(' More results available in results file.')
 
 
-def display_learning_results_overview(_results):
-    print(f' New definitions: {len(_results)}')
-    print('  Updating definitions ..')
-
-
 def display_search_scan_result(i_match, p):
-    print(f'[?][{i_match}] {p}')
+    print(f'[{i_match}] {p}')
 
 
-def display_zero_results(_exc):
-    print(f' Zero results (errors: {len(_exc)}).')
+def display_zero_results(_results, _t_completion, _exc, _header_0):
+    _results = []
+    max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+    scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
+    table_0 = tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
+                                maxcolwidths=[max_column_width, max_column_width],
+                                headers=(f'{_header_0}', 'Errors                ', 'Time                  '),
+                                stralign='right')
+    print(table_0)
 
 
 # ------------------------------------------------------------------------------> invalid
@@ -151,7 +173,7 @@ def display_len_recognized_files(recognized_files):
 
 
 def display_len_recognized_suffixes(suffixes):
-    print(f' Recognized suffixes:   {len(suffixes)}\n')
+    print(f' Recognized suffixes:   {len(suffixes)}')
 
 
 # ------------------------------------------------------------------------------> spacer

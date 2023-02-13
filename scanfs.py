@@ -1,8 +1,10 @@
 """ Written by Benjamin Jack Cullen """
+import datetime
 import os
 import time
-
+import cli_character_limits
 import handler_print
+import tabulate
 
 x_files = []
 
@@ -33,10 +35,25 @@ def search_scan(path: str, q: str) -> list:
     for entry in scantree(path):
         p = entry.path
         if q in p:
-            handler_print.display_search_scan_result(i_match, p)
-            fp.append(p)
-            i_match += 1
-    handler_print.display_spacer()
+            if p not in fp:
+                try:
+                    sz = os.path.getsize(p)
+                    mt = os.path.getmtime(p)
+                    mt = datetime.datetime.fromtimestamp(mt)
+                    fp.append([i_match, sz, mt, p])
+                    i_match += 1
+                except Exception as e:
+                    fp.append([i_match, '', '', p, e])
+                    i_match += 1
+                    pass
+    if fp:
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=5)
+        table_0 = tabulate.tabulate(fp,
+                                    maxcolwidths=[max_column_width, max_column_width],
+                                    headers=(f'Index', 'Bytes', 'Modified', 'Files', 'Exception'),
+                                    stralign='left')
+        print(table_0)
+        handler_print.display_spacer()
     return fp
 
 
@@ -48,4 +65,4 @@ def pre_scan_handler(_target: str, _verbose: bool) -> tuple:
     completion_time = time.perf_counter()-t
     if _verbose is True:
         handler_print.display_prescan_info(_files, _x_files, completion_time)
-    return _files, _x_files
+    return _files, _x_files, completion_time

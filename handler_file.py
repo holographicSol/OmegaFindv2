@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+import datetime
 import os
 import sys
 import re
@@ -103,6 +104,8 @@ async def write_scan_results(*args, file: str, _dt: str):
         codecs.open(file, "w", encoding='utf8').close()
     async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
         await handle.write('\n'.join(str(arg) for arg in args))
+        await handle.write('\n')
+        await handle.write('\n')
 
 
 async def write_exception_log(*args, file: str, _dt: str):
@@ -163,6 +166,41 @@ def get_suffix(file: str) -> str:
     if sfx == '':
         sfx = 'no_file_extension'
     return sfx
+
+
+def get_m_time(file: str):
+    return str(datetime.datetime.fromtimestamp(os.path.getmtime(file)))
+
+
+def get_size(file: str) -> int:
+    return os.path.getsize(file)
+
+
+async def stat_files(_results, _target, _tmp):
+    final_result = []
+
+    for r in _results:
+
+        if r[0] == '[ERROR]':
+            if r not in final_result:
+                final_result.append(r)
+
+        else:
+            regex_fname = str(r[1]).replace(_target, _tmp)
+
+            if os.path.exists(r[1]):
+                m = await asyncio.to_thread(get_m_time, r[1])
+                s = await asyncio.to_thread(get_size, r[1])
+                sub_result = [s, m, r[2], r[1]]
+                if sub_result not in final_result:
+                    final_result.append(sub_result)
+            elif os.path.exists(regex_fname):
+                m = await asyncio.to_thread(get_m_time, regex_fname)
+                s = await asyncio.to_thread(get_size, regex_fname)
+                sub_result = [s, m, r[2], r[1]]
+                if sub_result not in final_result:
+                    final_result.append(sub_result)
+    return final_result
 
 
 def file_sub_ops(_bytes: bytes) -> str:

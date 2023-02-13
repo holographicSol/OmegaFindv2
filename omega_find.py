@@ -75,6 +75,8 @@ if __name__ == '__main__':
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
 
+            # handler_print.display_mode(_verbose=verbose, _mode=mode)
+
             # datetime used for timestamping files/directories
             dt = handler_strings.get_dt()
 
@@ -87,7 +89,7 @@ if __name__ == '__main__':
                                                                           _db_recognized_files=db_recognized_files,
                                                                           _type_suffix=type_suffix)
             # pre-scan
-            files, x_files = scanfs.pre_scan_handler(_target=target, _verbose=verbose)
+            files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose)
             asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
             asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
@@ -113,14 +115,19 @@ if __name__ == '__main__':
 
             # post-processing
             if p_scan_bool is True:
-                results = handler_post_process.pscan(_list=results)
+                results = asyncio.run(handler_post_process.pscan(_list=results))
+            elif type_scan_bool is True:
+                results = handler_post_process.typescan(_list=results, _recognized_files=recognized_files)
+            elif de_scan_bool is True and extract is True:
+                results = handler_post_process.descan(_list=results, _recognized_files=recognized_files)
 
             # post-scan results
             handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
                                               _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
                                               _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
                                               _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool,
-                                              _t_completion=t_completion, _extract=extract, _verbose=verbose)
+                                              _t_completion=t_completion, _extract=extract, _verbose=verbose,
+                                              _pre_scan_time=pre_scan_time)
 
             # final clean of tmp
             if os.path.exists(program_root+'\\tmp\\'):

@@ -68,6 +68,7 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
         # read file with magic
         buffer = handler_file.file_sub_ops(handler_file.read_bytes(file=file))
         buffer = str(buffer).strip()
+
         try:
             # +/- compatibility
 

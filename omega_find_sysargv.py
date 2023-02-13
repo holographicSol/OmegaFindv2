@@ -175,16 +175,16 @@ def verbosity(stdin: list) -> bool:
 
 def loop_scandir_results(_list: list):
     try:
-        usr_input = handler_print.input_select()
-        handler_print.display_spacer()
-        if usr_input.isdigit():
-            usr_input = int(usr_input)
-            result = _list[usr_input]
-            idx = result.rfind('\\')
-            fullpath = result[:idx]
-            if usr_input <= len(_list):
-                os.startfile(fullpath)
-        loop_scandir_results(_list=_list)
+        if _list:
+            usr_input = handler_print.input_select()
+            if usr_input.isdigit():
+                usr_input = int(usr_input)
+                result = _list[usr_input]
+                idx = result[3].rfind('\\')
+                fullpath = result[3][:idx]
+                if usr_input <= len(_list):
+                    os.startfile(fullpath)
+            loop_scandir_results(_list=_list)
     except KeyboardInterrupt:
         handler_print.display_spacer()
         pass
@@ -197,7 +197,6 @@ def run_and_exit(stdin: list):
         _q = stdin[2]
         results = scanfs.search_scan(path=_path, q=_q)
         loop_scandir_results(_list=results)
-        handler_print.display_spacer()
 
     elif '-h' in stdin:
         handler_print.omega_help()

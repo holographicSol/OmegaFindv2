@@ -23,7 +23,11 @@ async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str,
     _result = []
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
-        _result = [file, buffer]
+
+        m = await asyncio.to_thread(handler_file.get_m_time, file)
+        s = await asyncio.to_thread(handler_file.get_size, file)
+        return [s, m, buffer, file]
+
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
