@@ -65,30 +65,33 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
         # display rows of the table (look away)
-        max_limit = 50
-        i_limiter = 0
-        p = ''
-        for char in table_1:
+        max_limit = 75
+        if len(_results) > max_limit:
+            i_limiter = 0
+            p = ''
+            for char in table_1:
 
-            if char == '\n':
-                if i_limiter <= max_limit:
-                    print(p)
-                    i_limiter += 1
+                if char == '\n':
+                    if i_limiter <= max_limit:
+                        print(p)
+                        i_limiter += 1
+                    else:
+                        input('\n--- more ---\n')
+                        i_limiter = 0
+                    p = ''
+
+                elif char != '\n':
+                    p = p + char
+
                 else:
-                    input('\n--- more ---\n')
-                    i_limiter = 0
-                p = ''
-
-            elif char != '\n':
-                p = p + char
-
-            else:
-                if i_limiter <= max_limit:
-                    print(p)
-                    i_limiter += 1
-                else:
-                    input('\n--- more ---\n')
-                    i_limiter = 0
+                    if i_limiter <= max_limit:
+                        print(p)
+                        i_limiter += 1
+                    else:
+                        input('\n--- more ---\n')
+                        i_limiter = 0
+        else:
+            print(table_1)
 
     else:
         handler_print.display_zero_results(_results, _t_completion, _exc, _header_0)
