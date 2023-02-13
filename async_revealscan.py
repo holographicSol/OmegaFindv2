@@ -30,7 +30,7 @@ async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str,
 
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
-        print('e1:', e)
+        # print('e1:', e)
     return _result
 
 
@@ -41,7 +41,7 @@ async def reveal_scan_extract(file: str, _buffer_max: int, _extract: bool, _targ
         _result = await extract_reveal_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target,
                                             _program_root=_program_root)
     except Exception as e:
-        print('e2:', e)
+        # print('e2:', e)
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
 
