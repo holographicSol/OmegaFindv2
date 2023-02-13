@@ -37,7 +37,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
             print('')
 
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=4, static=[22, 31])
         table_1 = tabulate.tabulate(_results,
                                     colalign=('right', 'right', 'right', 'left'),
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
