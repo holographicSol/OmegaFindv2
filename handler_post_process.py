@@ -6,6 +6,7 @@ import asyncio
 
 
 def typescan(_list: list, _recognized_files: list):
+    # print('typescan', _list)
     return _list
 
 

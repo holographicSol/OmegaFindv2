@@ -37,7 +37,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
             print('')
 
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=4)
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
         table_1 = tabulate.tabulate(_results,
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
                                     headers=('Bytes', 'Modified', 'File Type', 'Files'),
@@ -118,6 +118,7 @@ def result_handler_de_scan(_results: list, _extract: bool, _exc: list, _t_comple
 def result_handler_type_scan(_results: list, _extract: bool, _exc: list, _t_completion: str, _pre_scan_time: str,
                              _verbose: bool, _de_scan_bool: bool,
                              _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str):
+    # print(_results)
     if _extract is False:
         result_handler_display(_results=_results, _exc=_exc, _t_completion=_t_completion,
                                _pre_scan_time=_pre_scan_time, _verbose=_verbose,

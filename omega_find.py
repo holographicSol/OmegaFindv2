@@ -88,6 +88,9 @@ if __name__ == '__main__':
                                                                           _type_scan_bool=type_scan_bool,
                                                                           _db_recognized_files=db_recognized_files,
                                                                           _type_suffix=type_suffix)
+
+            # print(recognized_files)
+
             # pre-scan
             files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose)
             asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
