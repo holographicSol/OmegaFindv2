@@ -198,13 +198,13 @@ async def stat_files(_results, _target, _tmp):
             if os.path.exists(r[1]):
                 m = await asyncio.to_thread(get_m_time, r[1])
                 s = await asyncio.to_thread(get_size, r[1])
-                sub_result = [s, m, r[2], r[1]]
+                sub_result = [m, r[2], s, r[1]]
                 if sub_result not in final_result:
                     final_result.append(sub_result)
             elif os.path.exists(regex_fname):
                 m = await asyncio.to_thread(get_m_time, regex_fname)
                 s = await asyncio.to_thread(get_size, regex_fname)
-                sub_result = [s, m, r[2], r[1]]
+                sub_result = [m, r[2], s, r[1]]
                 if sub_result not in final_result:
                     final_result.append(sub_result)
     return final_result

@@ -51,7 +51,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
     if [_buffer] in _recognized_files:
         m = await asyncio.to_thread(handler_file.get_m_time, _file)
         s = await asyncio.to_thread(handler_file.get_size, _file)
-        _results = [[s, m, _buffer, _file]]
+        _results = [[m, _buffer, s, _file]]
     _tmp = _program_root+'\\tmp\\'+str(handler_strings.randStr())
     result_bool, extraction = await asyncio.to_thread(handler_extraction_method.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,

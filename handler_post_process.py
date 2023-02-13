@@ -29,7 +29,7 @@ async def pscan(_list: list) -> list:
 
 
 def results_filter(_list: list) -> tuple:
-    log_filter = ['[ERROR]', '[INCOMPATIBLE NON-VARIANT]', '[INCOMPATIBLE VARIANT]']
+    log_filter = ['[ERROR]', '[INCOMPATIBLE NON-VARIANT]', '[INCOMPATIBLE VARIANT]', 'Password required']
     e = []
     new_l = []
     for item in _list:

@@ -26,7 +26,7 @@ async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str,
 
         m = await asyncio.to_thread(handler_file.get_m_time, file)
         s = await asyncio.to_thread(handler_file.get_size, file)
-        return [s, m, buffer, file]
+        return [m, buffer, s, file]
 
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
@@ -50,7 +50,7 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
     _results = []
     m = await asyncio.to_thread(handler_file.get_m_time, _file)
     s = await asyncio.to_thread(handler_file.get_size, _file)
-    _results = [[s, m, _buffer, _file]]
+    _results = [[m, _buffer, s, _file]]
     _tmp = _program_root+'\\tmp\\'+str(handler_strings.randStr())
     result_bool, extraction = await asyncio.to_thread(handler_extraction_method.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
@@ -62,7 +62,7 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
             buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
             m = await asyncio.to_thread(handler_file.get_m_time, sub_file)
             s = await asyncio.to_thread(handler_file.get_size, sub_file)
-            res = [s, m, buffer, sub_file]
+            res = [m, buffer, s, sub_file]
             # print(res)
             if res is not None:
                 res[3] = res[3].replace(_tmp, _target)

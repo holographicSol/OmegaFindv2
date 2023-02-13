@@ -40,7 +40,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
         table_1 = tabulate.tabulate(_results,
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
-                                    headers=('Bytes', 'Modified', 'File Type', 'Files'),
+                                    headers=('Modified', 'Buffer', 'Bytes', 'Files'),
                                     stralign='left')
         print(table_1)
         tables.append(table_1)

@@ -26,7 +26,6 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
-
         _result = await async_check.scan_check(file, suffix, buffer, _recognized_files)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
@@ -49,7 +48,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                           _program_root: str) -> list:
     m = await asyncio.to_thread(handler_file.get_m_time, _file)
     s = await asyncio.to_thread(handler_file.get_size, _file)
-    _results = [[s, m, _buffer, _file]]
+    _results = [[m, _buffer, s, _file]]
     _tmp = _program_root+'\\tmp\\'+str(handler_strings.randStr())
     result_bool, extraction = await asyncio.to_thread(handler_extraction_method.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
