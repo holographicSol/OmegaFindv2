@@ -154,6 +154,7 @@ def result_handler_p_scan(_results: list, _extract: bool, _exc: list, _t_complet
 def result_handler_reveal_scan(_results: list, _extract: bool, _exc: list, _t_completion: str, _pre_scan_time: str,
                                _verbose: bool, _de_scan_bool: bool,
                                _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str):
+    # print(_results)
     if _extract is False:
         result_handler_display(_results=_results, _exc=_exc, _t_completion=_t_completion, _pre_scan_time=_pre_scan_time,
                                _verbose=_verbose,
