@@ -28,6 +28,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
         scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
         if _verbose is True:
+            # verbose table: timings and things
             table_0 = tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
                                         maxcolwidths=[max_column_width, max_column_width, max_column_width],
                                         headers=(f'{_header_0}', 'Errors                ', 'Time                  '),
@@ -37,16 +38,18 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
             print('')
 
-        # make a mostly suitable max column width factoring in static (22 datetime, 31 len(geopbyte))
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=2)
+        # results table: to file
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
                                     headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
-        print(table_1)
         tables.append(table_1)
 
+        # make a mostly suitable max column width factoring in static (22 datetime, 31 len(geopbyte))
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=2)
+
+        # filename
         part_fname = 'scan_results_'
         if _de_scan_bool is True:
             part_fname = 'de_scan'
@@ -56,10 +59,36 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             part_fname = 'pscan'
         elif _reveal_scan is True:
             part_fname = 'reveal_scan'
+
+        # write results
         for table in tables:
-            asyncio.run(handler_file.write_scan_results(table,
-                                                        file=part_fname + '_' + _dt + '.txt',
-                                                        _dt=_dt))
+            asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
+
+        max_limit = 100
+        i_limiter = 0
+        p = ''
+        for char in table_1:
+
+            if char == '\n':
+                if i_limiter <= max_limit:
+                    print(p)
+                    i_limiter += 1
+                else:
+                    input('\n--- more ---')
+                    i_limiter = 0
+                p = ''
+
+            elif char != '\n':
+                p = p + char
+
+            else:
+                if i_limiter <= max_limit:
+                    print(p)
+                    i_limiter += 1
+                else:
+                    input('\n--- more ---')
+                    i_limiter = 0
+
     else:
         handler_print.display_zero_results(_results, _t_completion, _exc, _header_0)
 
