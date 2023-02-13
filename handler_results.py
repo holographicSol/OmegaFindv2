@@ -42,7 +42,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
-                                    headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)} Errors: {len(_exc)}'),
+                                    headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
         print(table_1)
         tables.append(table_1)
