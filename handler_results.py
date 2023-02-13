@@ -46,9 +46,18 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         print(table_1)
         tables.append(table_1)
 
+        part_fname = 'scan_results_'
+        if _de_scan_bool is True:
+            part_fname = 'de_scan'
+        elif _type_scan_bool is True:
+            part_fname = 'type_scan'
+        elif _p_scan is True:
+            part_fname = 'pscan'
+        elif _reveal_scan is True:
+            part_fname = 'reveal_scan'
         for table in tables:
             asyncio.run(handler_file.write_scan_results(table,
-                                                        file='scan_results_' + _dt + '.txt',
+                                                        file=part_fname + '_' + _dt + '.txt',
                                                         _dt=_dt))
     else:
         handler_print.display_zero_results(_results, _t_completion, _exc, _header_0)
