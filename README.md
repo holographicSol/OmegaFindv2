@@ -90,6 +90,9 @@ Developer:
     to be passed into the child processes when using pool.map() along with the initial
     iterables as there is no manager.dict and obviously no previously set globals for
     the child processes. Lines edited: 337, 339, 345.
+    
+    Screen: Currently column widths are only partially variable. Font size may soon be factored in. (Current recommended font size 12,
+    until updated).
 
 
 Extraction Compatibility (Below compatibility accounts for many more file suffixes listed as different suffixes use
