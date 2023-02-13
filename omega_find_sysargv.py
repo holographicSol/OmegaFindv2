@@ -173,6 +173,13 @@ def verbosity(stdin: list) -> bool:
     return verbose
 
 
+def interactive(stdin: list) -> bool:
+    interact = True
+    if '-I' in stdin:
+        interact = False
+    return interact
+
+
 def loop_scandir_results(_list: list):
     try:
         if _list:
