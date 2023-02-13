@@ -65,7 +65,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
         # display rows of the table (look away)
-        max_limit = 100
+        max_limit = 50
         i_limiter = 0
         p = ''
         for char in table_1:
