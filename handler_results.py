@@ -4,6 +4,7 @@ import handler_file
 import handler_print
 import tabulate
 import cli_character_limits
+import handler_table_rows
 import power_time
 
 
@@ -64,32 +65,9 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         for table in tables:
             asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
-        # display rows of the table (look away)
-        max_limit = 75
-        if len(_results) > max_limit:
-            i_limiter = 0
-            p = ''
-            for char in table_1:
-
-                if char == '\n':
-                    if i_limiter <= max_limit:
-                        print(p)
-                        i_limiter += 1
-                    else:
-                        input('\n--- more ---\n')
-                        i_limiter = 0
-                    p = ''
-
-                elif char != '\n':
-                    p = p + char
-
-                else:
-                    if i_limiter <= max_limit:
-                        print(p)
-                        i_limiter += 1
-                    else:
-                        input('\n--- more ---\n')
-                        i_limiter = 0
+        interactive_results = True
+        if interactive_results is True:
+            handler_table_rows.display_rows_interactively(max_limit=75, _results=_results, table=table_1)
         else:
             print(table_1)
 
