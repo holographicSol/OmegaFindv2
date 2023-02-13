@@ -169,7 +169,14 @@ def get_suffix(file: str) -> str:
 
 
 def get_m_time(file: str):
-    return str(datetime.datetime.fromtimestamp(os.path.getmtime(file)))
+    dt = str(datetime.datetime.fromtimestamp(os.path.getmtime(file)))
+    dt = dt.replace('-', ' ')
+    dt = dt.split(' ')
+    dt = dt[2] + '/' + dt[1] + '/' + dt[0] + '    ' + dt[3]
+    if '.' in dt:
+        dt = dt.split('.')
+        dt = dt[0]
+    return dt
 
 
 def get_size(file: str) -> int:
