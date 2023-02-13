@@ -31,7 +31,7 @@ def display_rows_interactively(max_limit: int, _results: list, table: str):
 
         else:
             print(table)
-            
+
     except KeyboardInterrupt:
         handler_print.display_spacer()
         pass

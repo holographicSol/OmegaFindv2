@@ -8,7 +8,7 @@ import handler_table_rows
 import power_time
 
 
-# todo: optionally print entire table at once (force/no enter for more) for parsing. + optional write results
+# todo: optional write results
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool,

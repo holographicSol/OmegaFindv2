@@ -1,12 +1,8 @@
 """ Written by Benjamin Jack Cullen """
 import handler_chunk
-import handler_file
-import handler_strings
-import asyncio
 
 
 def typescan(_list: list, _recognized_files: list):
-    # print('typescan', _list)
     return _list
 
 

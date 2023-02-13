@@ -98,7 +98,7 @@ def extract_nested_compressed(file: str, temp_directory: str, _target: str, _sta
                     split_buff = buffer.split(' ')
                     if len(split_buff) >= 2:
                         if split_buff[1] in ['compressed', 'archive']:
-                            patoolib.extract_archive(archive=file, outdir=temp_directory, verbosity=0)
+                            patoolib.extract_archive(archive=file, outdir=temp_directory)
                 except Exception as e:
                     # log incompatible
                     non_variant = incompatible_non_variant(_file=file, _buffer=buffer, e=e)

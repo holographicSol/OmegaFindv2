@@ -72,6 +72,7 @@ if __name__ == '__main__':
         db_recognized_files = omega_find_sysargv.database(STDIN)
         extract = omega_find_sysargv.extract(STDIN)
         verbose = omega_find_sysargv.verbosity(STDIN)
+        interact = omega_find_sysargv.interactive(STDIN)
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
 
@@ -130,7 +131,7 @@ if __name__ == '__main__':
                                               _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
                                               _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool,
                                               _t_completion=t_completion, _extract=extract, _verbose=verbose,
-                                              _pre_scan_time=pre_scan_time)
+                                              _pre_scan_time=pre_scan_time, interact=interact)
 
             # final clean of tmp
             if os.path.exists(program_root+'\\tmp\\'):

@@ -14,6 +14,5 @@ def column_width_from_screen_size_using_ratio(n: int) -> int:
     for m in screeninfo.get_monitors():
         if m.is_primary is True:
             w = m.width
-    w = int(int(w * 0.116) / n)
+    w = int(int(w * 0.150) / n)
     return w
-
