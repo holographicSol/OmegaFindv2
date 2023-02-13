@@ -40,7 +40,7 @@ def search_scan(path: str, q: str) -> list:
                     sz = os.path.getsize(p)
                     mt = os.path.getmtime(p)
                     mt = datetime.datetime.fromtimestamp(mt)
-                    fp.append([i_match, sz, mt, p])
+                    fp.append([i_match, mt, sz, p])
                     i_match += 1
                 except Exception as e:
                     fp.append([i_match, '', '', p, e])
@@ -50,7 +50,7 @@ def search_scan(path: str, q: str) -> list:
         max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=5)
         table_0 = tabulate.tabulate(fp,
                                     maxcolwidths=[max_column_width, max_column_width],
-                                    headers=(f'Index', 'Bytes', 'Modified', 'Files', 'Exception'),
+                                    headers=(f'Index', 'Modified', 'Bytes', 'Files', 'Exception'),
                                     stralign='left')
         print(table_0)
         handler_print.display_spacer()
