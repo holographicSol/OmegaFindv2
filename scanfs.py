@@ -5,6 +5,7 @@ import time
 import cli_character_limits
 import handler_print
 import tabulate
+import handler_table_rows
 
 x_files = []
 
@@ -29,7 +30,7 @@ def scan(path: str) -> list:
     return [fp, x_files]
 
 
-def search_scan(path: str, q: str) -> list:
+def search_scan(path: str, q: str, interact: bool) -> list:
     fp = []
     i_match = 0
     for entry in scantree(path):
@@ -43,16 +44,20 @@ def search_scan(path: str, q: str) -> list:
                     fp.append([i_match, mt, sz, p])
                     i_match += 1
                 except Exception as e:
-                    fp.append([i_match, '', '', p, e])
+                    fp.append([i_match, '[?]', '[?]', p, e])
                     i_match += 1
                     pass
     if fp:
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=5)
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=2, reduce=0, add=56)
         table_0 = tabulate.tabulate(fp,
-                                    maxcolwidths=[max_column_width, max_column_width],
-                                    headers=(f'Index', 'Modified', 'Bytes', 'Files', 'Exception'),
+                                    maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
+                                    headers=(f'Index', 'Modified', 'Bytes', 'Files'),
                                     stralign='left')
-        print(table_0)
+        # print(table_0)
+        if interact is True:
+            handler_table_rows.display_rows_interactively(max_limit=75, _results=fp, table=table_0)
+        else:
+            print(table_0)
         handler_print.display_spacer()
     return fp
 
