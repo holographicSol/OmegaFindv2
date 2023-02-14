@@ -113,25 +113,36 @@ def buffer_max(stdin: list) -> int:
     return _buffer_max
 
 
+def vaild_chars(chars: str):
+    valid_chars = string.ascii_uppercase + string.ascii_lowercase + string.digits + '.' + '_' + '-'
+    bool_valid_chars = True
+    for char in chars:
+        if char not in valid_chars:
+            bool_valid_chars = False
+            handler_print.display_invalid_char(char)
+            break
+    return bool_valid_chars
+
+
 def database(stdin: list) -> str:
     _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
-    if not os.path.exists(program_root+'\\db\\database_file_recognition.txt'):
-        open(program_root+'\\db\\database_file_recognition.txt', 'w').close()
+    if not os.path.exists(_db_recognized_files):
+        handler_file.ensure_db()
     if '-db' in stdin:
         _db_recognized_files = stdin[stdin.index('-db')+1]
+        if vaild_chars(chars=_db_recognized_files) is True:
+            _db_recognized_files = program_root+'\\db\\' + _db_recognized_files
+            if not os.path.exists(program_root + '\\db\\'):
+                os.mkdir(program_root + '\\db\\')
+            if not os.path.exists(_db_recognized_files):
+                open(_db_recognized_files, 'a+').close()
+
     return _db_recognized_files
 
 
 def make_suffix_group():
     sfx_name = handler_print.input_custom_suffix_group_name()
-    valid_chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
-    bool_valid_chars = True
-    for char in sfx_name:
-        if char not in valid_chars:
-            bool_valid_chars = False
-            handler_print.display_invalid_char(char)
-            break
-    if bool_valid_chars is True:
+    if vaild_chars(chars=sfx_name) is True:
         sfx_group = handler_print.input_custom_suffix()
         handler_print.display_new_custom_suffix_name(sfx_name)
         handler_print.display_new_custom_suffix_group(sfx_group)
