@@ -24,7 +24,8 @@ def display_rows_interactively(max_limit: int, results: list, table: str, extra_
     @param results: A list of Results.
     @param table: Tabular results ^.
     @param extra_input: False: Display only message. True: Display message then a run another (input) function.
-    @param function: Specify a module function that should request further input and do something.
+    @param function: Specify a module function that should request further input and do something. Note:
+                     argument=results^ are passed through to argument=function^ specified.
     @param message: Message displayed each time rows printed reach max_limit. Example: --- more ---
     @return: None
     """
