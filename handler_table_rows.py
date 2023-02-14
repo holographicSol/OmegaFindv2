@@ -2,6 +2,19 @@ import handler_print
 import handler_strings
 
 
+def call_input_open_dir(_results):
+    if handler_strings.input_open_dir(_list=_results) is True:
+        call_input_open_dir(_results)
+
+
+def more_or_next(_results, open_dir):
+    if open_dir is True:
+        print('\n--- more ---\n')
+        call_input_open_dir(_results)
+    else:
+        input('\n--- more ---\n')
+
+
 def display_rows_interactively(max_limit: int, _results: list, table: str, open_dir: bool):
 
     try:
@@ -15,11 +28,7 @@ def display_rows_interactively(max_limit: int, _results: list, table: str, open_
                         print(p)
                         i_limiter += 1
                     else:
-                        if open_dir is True:
-                            print('\n--- more ---\n')
-                            handler_strings.input_open_dir(_list=_results)
-                        else:
-                            input('\n--- more ---\n')
+                        more_or_next(_results, open_dir)
                         i_limiter = 0
                     p = ''
 
@@ -31,11 +40,8 @@ def display_rows_interactively(max_limit: int, _results: list, table: str, open_
                         print(p)
                         i_limiter += 1
                     else:
-                        if open_dir is True:
-                            print('\n--- more ---\n')
-                            handler_strings.input_open_dir(_list=_results)
-                        else:
-                            input('\n--- more ---\n')
+                        more_or_next(_results, open_dir)
+
                         i_limiter = 0
 
         else:
