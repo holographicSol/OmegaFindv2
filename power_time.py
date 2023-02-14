@@ -1,3 +1,5 @@
+""" Written by Benjamin Jack Cullen """
+
 import datetime
 import time
 

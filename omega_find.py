@@ -24,8 +24,10 @@ import async_typescan
 import async_pscan
 import async_revealscan
 
+import variable_paths
+
 debug = False
-program_root = handler_file.get_executable_path()
+program_root = variable_paths.get_executable_path()
 
 
 async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
@@ -48,9 +50,6 @@ if __name__ == '__main__':
     # used for compile time
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
-
-    # ensure default database file
-    handler_file.ensure_db()
 
     # get input
     STDIN = list(sys.argv)
@@ -77,8 +76,6 @@ if __name__ == '__main__':
         extract = omega_find_sysargv.extract(STDIN)
 
         if os.path.exists(target) and os.path.exists(db_recognized_files):
-
-            # handler_print.display_mode(_verbose=verbose, _mode=mode)
 
             # datetime used for timestamping files/directories
             dt = handler_strings.get_dt()
@@ -143,8 +140,11 @@ if __name__ == '__main__':
             handler_print.display_invalid_input()
             if not os.path.exists(target):
                 handler_print.display_invalid_path(target)
+
             if not os.path.exists(db_recognized_files):
                 handler_print.display_invalid_database(db_recognized_files)
+
             handler_print.omega_help()
+
     handler_print.display_spacer()
     handler_print.display_spacer()

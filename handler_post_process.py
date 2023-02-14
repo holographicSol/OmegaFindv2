@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+
 import handler_chunk
 
 
@@ -38,9 +39,7 @@ def results_filter(_list: list) -> tuple:
                 found_error = True
             else:
                 if len(item) > 0:
-                    # print('item:', item)
                     if not isinstance(item[0], int):
-                        # print('item check 1:', item)
                         if item[0][0] in log_filter:
                             for x in item:
                                 if x not in e:

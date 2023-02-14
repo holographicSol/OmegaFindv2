@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+
 import handler_chunk
 import asyncio
 import handler_strings
@@ -30,7 +31,6 @@ async def reveal_scan(file: str, _buffer_max: int, _extract: bool, _target: str,
 
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
-        # print('e1:', e)
     return _result
 
 
@@ -41,7 +41,6 @@ async def reveal_scan_extract(file: str, _buffer_max: int, _extract: bool, _targ
         _result = await extract_reveal_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target,
                                             _program_root=_program_root)
     except Exception as e:
-        # print('e2:', e)
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
 
@@ -63,9 +62,8 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
             m = await asyncio.to_thread(handler_file.get_m_time, sub_file)
             s = await asyncio.to_thread(handler_file.get_size, sub_file)
             res = [m, buffer, s, sub_file]
-            # print(res)
             if res is not None:
-                res[3] = res[3].replace(_tmp, _target)
+                res[3] = res[3].replace(str(_tmp), _target)
                 _results.append(res)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results

@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+
 import os
 import variables_suffix
 import string
@@ -6,8 +7,10 @@ import handler_file
 import asyncio
 import scanfs
 import handler_print
+import variable_paths
+import handler_strings
 
-program_root = handler_file.get_executable_path()
+program_root = variable_paths.get_executable_path()
 
 
 def mode(stdin: list) -> tuple:
@@ -125,18 +128,14 @@ def vaild_chars(chars: str):
 
 
 def database(stdin: list) -> str:
-    _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
-    if not os.path.exists(_db_recognized_files):
-        handler_file.ensure_db()
+    _db_recognized_files = variable_paths.database_file_path
+    handler_file.ensure_dir(variable_paths.database_dir_path)
+    handler_file.ensure_db_file(variable_paths.database_file)
     if '-db' in stdin:
         _db_recognized_files = stdin[stdin.index('-db')+1]
         if vaild_chars(chars=_db_recognized_files) is True:
-            _db_recognized_files = program_root+'\\db\\' + _db_recognized_files
-            if not os.path.exists(program_root + '\\db\\'):
-                os.mkdir(program_root + '\\db\\')
-            if not os.path.exists(_db_recognized_files):
-                open(_db_recognized_files, 'a+').close()
-
+            handler_file.ensure_db_file(_db_recognized_files)
+            _db_recognized_files = variable_paths.database_dir_path + _db_recognized_files
     return _db_recognized_files
 
 
@@ -193,16 +192,8 @@ def interactive(stdin: list) -> bool:
 
 def loop_scandir_results(_list: list):
     try:
-        if _list:
-            usr_input = handler_print.input_select()
-            if usr_input.isdigit():
-                usr_input = int(usr_input)
-                result = _list[usr_input]
-                idx = result[3].rfind('\\')
-                fullpath = result[3][:idx]
-                if usr_input <= len(_list):
-                    os.startfile(fullpath)
-            loop_scandir_results(_list=_list)
+        handler_strings.input_open_dir(_list=_list)
+        loop_scandir_results(_list=_list)
     except KeyboardInterrupt:
         handler_print.display_spacer()
         pass

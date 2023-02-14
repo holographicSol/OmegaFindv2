@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+
 import asyncio
 import handler_file
 import handler_print
@@ -11,8 +12,7 @@ import power_time
 # todo: optional write results
 
 
-def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool,
-                                 interact: bool):
+def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool):
 
     max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
@@ -26,7 +26,6 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
                            _de_scan_bool: bool, _type_scan_bool: bool, _p_scan: bool,
                            _reveal_scan: bool, _dt: str, _header_0: str,
                            interact: bool):
-    # print(_results)
     if len(_results) >= 1:
         tables = []
         max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
@@ -42,16 +41,14 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
             print('')
 
-        # results table: to file
+        # results table
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
                                     headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
         tables.append(table_1)
-
-        # make a mostly suitable max column width factoring in static (22 datetime, 31 len(geopbyte))
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=2)
 
         # filename
         part_fname = 'scan_results_'
@@ -69,7 +66,8 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
         if interact is True:
-            handler_table_rows.display_rows_interactively(max_limit=75, _results=_results, table=table_1)
+            handler_table_rows.display_rows_interactively(max_limit=75, _results=_results, table=table_1,
+                                                          open_dir=False)
         else:
             print(table_1)
 
@@ -268,8 +266,7 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                                  _exc=_exc,
                                                  _t_completion=_t_completion,
                                                  _pre_scan_time=_pre_scan_time,
-                                                 _verbose=_verbose,
-                                                 interact=interact)
+                                                 _verbose=_verbose)
 
                     asyncio.run(handler_file.write_definitions(*_results, file=_db_recognized_files))
                     asyncio.run(handler_file.clean_database(fname=_db_recognized_files))

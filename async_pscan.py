@@ -1,7 +1,6 @@
 """ Written by Benjamin Jack Cullen """
-import asyncio
-import os.path
 
+import asyncio
 import handler_strings
 import handler_file
 import handler_extraction_method

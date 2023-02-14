@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+
 import os
 import handler_chunk
 import asyncio
@@ -60,7 +61,6 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             for sub_file in sub_files:
                 buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-
                 res = await async_check.scan_check(sub_file, suffix, buffer, _recognized_files)
                 if res is not None:
                     res[3] = res[3].replace(_tmp, _target)

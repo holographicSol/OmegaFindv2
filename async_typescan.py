@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+
 import handler_chunk
 import asyncio
 import handler_strings
@@ -26,8 +27,7 @@ async def type_scan(file: str, _recognized_files: list, _buffer_max: int, _type_
                     _target: str, _program_root: str):
     try:
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
-        suffix = await asyncio.to_thread(handler_file.get_suffix, file)
-        _result = await async_check.type_scan_check(file, suffix, buffer, _recognized_files)
+        _result = await async_check.type_scan_check(file, buffer, _recognized_files)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     return _result
@@ -61,8 +61,7 @@ async def extract_type_scan(_buffer: bytes, _file: str, _buffer_max: int, _recog
         sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
         for sub_file in sub_files:
             buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
-            suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-            res = await async_check.type_scan_check(sub_file, suffix, buffer, _recognized_files)
+            res = await async_check.type_scan_check(sub_file, buffer, _recognized_files)
             if res is not None:
                 res[3] = res[3].replace(_tmp, _target)
                 _results.append(res)

@@ -1,7 +1,8 @@
 import handler_print
+import handler_strings
 
 
-def display_rows_interactively(max_limit: int, _results: list, table: str):
+def display_rows_interactively(max_limit: int, _results: list, table: str, open_dir: bool):
 
     try:
         if len(_results) > max_limit:
@@ -14,7 +15,11 @@ def display_rows_interactively(max_limit: int, _results: list, table: str):
                         print(p)
                         i_limiter += 1
                     else:
-                        input('\n--- more ---\n')
+                        if open_dir is True:
+                            print('\n--- more ---\n')
+                            handler_strings.input_open_dir(_list=_results)
+                        else:
+                            input('\n--- more ---\n')
                         i_limiter = 0
                     p = ''
 
@@ -26,7 +31,11 @@ def display_rows_interactively(max_limit: int, _results: list, table: str):
                         print(p)
                         i_limiter += 1
                     else:
-                        input('\n--- more ---\n')
+                        if open_dir is True:
+                            print('\n--- more ---\n')
+                            handler_strings.input_open_dir(_list=_results)
+                        else:
+                            input('\n--- more ---\n')
                         i_limiter = 0
 
         else:

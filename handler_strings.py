@@ -1,7 +1,12 @@
+""" Written by Benjamin Jack Cullen """
+
+import os
 from datetime import datetime
 import re
 import random
 import string
+import variable_strings
+import handler_print
 
 
 def get_dt() -> str:
@@ -13,5 +18,16 @@ def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
 
 
 def sub_str(_buffer: bytes) -> str:
-    digi_str = r'[0-9]'
-    return re.sub(digi_str, '', str(_buffer))
+    return re.sub(variable_strings.digi_str, '', str(_buffer))
+
+
+def input_open_dir(_list):
+    if _list:
+        usr_input = handler_print.input_select()
+        if usr_input.isdigit():
+            usr_input = int(usr_input)
+            result = _list[usr_input]
+            idx = result[3].rfind('\\')
+            fullpath = result[3][:idx]
+            if usr_input <= len(_list):
+                os.startfile(fullpath)

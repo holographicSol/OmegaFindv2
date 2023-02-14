@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+
 import datetime
 import os
 import time
@@ -53,9 +54,8 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
                                     headers=(f'Index', 'Modified', 'Bytes', 'Files'),
                                     stralign='left')
-        # print(table_0)
         if interact is True:
-            handler_table_rows.display_rows_interactively(max_limit=75, _results=fp, table=table_0)
+            handler_table_rows.display_rows_interactively(max_limit=75, _results=fp, table=table_0, open_dir=True)
         else:
             print(table_0)
         handler_print.display_spacer()

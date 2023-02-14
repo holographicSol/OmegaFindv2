@@ -1,7 +1,7 @@
 """ Written by Benjamin Jack Cullen """
+
 import datetime
 import os
-import sys
 import re
 import codecs
 import aiofiles
@@ -10,29 +10,21 @@ import magic
 import pathlib
 import shutil
 import handler_print
+import variable_paths
+import variable_strings
 
 debug = False
 result = []
+program_root = variable_paths.program_root
 
 
-def get_executable_path():
-    if getattr(sys, 'frozen', False):
-        _program_root = sys.executable
-        idx = _program_root.rfind('\\')
-        _program_root = _program_root[:idx]
-    else:
-        _program_root = '.\\'
-    return _program_root
+def ensure_dir(path: str):
+    if not os.path.exists(path):
+        os.mkdir(path)
 
 
-program_root = get_executable_path()
-
-
-def ensure_db():
-    if not os.path.exists(program_root+'\\db\\'):
-        os.mkdir(program_root+'\\db\\')
-    if not os.path.exists(program_root+'\\db\\database_file_recognition.txt'):
-        open(program_root+'\\db\\database_file_recognition.txt', 'w').close()
+def ensure_db_file(fname: str):
+    open(variable_paths.database_dir_path + fname, 'a+').close()
 
 
 async def async_read_bytes(file: str, _buffer_max: int) -> bytes:
@@ -42,50 +34,48 @@ async def async_read_bytes(file: str, _buffer_max: int) -> bytes:
     return await asyncio.to_thread(file_sub_ops, _bytes)
 
 
+async def read_file(file: str):
+    data = []
+    if os.path.exists(file):
+        async with aiofiles.open(file, mode='r', encoding='utf8') as handle:
+            data = await handle.read()
+    return data
+
+
 async def read_definitions(fname: str) -> tuple:
     recognized_files, suffixes = [], []
-    if os.path.exists(fname):
-        digi_str = r'[0-9]'
-        async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
-            _data = await handle.read()
-        _data = _data.split('\n')
-        recognized_files = []
-        suffixes = []
-        for datas in _data:
-            idx = datas.find(' ')
-            suffix = datas[:idx]
-            buffer = datas[idx+1:]
-            buffer = re.sub(digi_str, '', buffer)
-            recognized_files.append([suffix, buffer])
-            if suffix not in suffixes:
-                suffixes.append(suffix)
+    _data = await read_file(file=fname)
+    _data = _data.split('\n')
+    for datas in _data:
+        idx = datas.find(' ')
+        suffix = datas[:idx]
+        buffer = datas[idx+1:]
+        buffer = re.sub(variable_strings.digi_str, '', buffer)
+        recognized_files.append([suffix, buffer])
+        if suffix not in suffixes:
+            suffixes.append(suffix)
     return recognized_files, suffixes
 
 
 async def read_type_definitions(fname: str, _type_suffix: list) -> tuple:
     recognized_files, suffixes = [], []
-    if os.path.exists(fname):
-        digi_str = r'[0-9]'
-        async with aiofiles.open(fname, mode='r', encoding='utf8') as handle:
-            _data = await handle.read()
-        _data = _data.split('\n')
-        recognized_files = []
-        suffixes = []
-        for datas in _data:
-            idx = datas.find(' ')
-            suffix = datas[:idx]
-            if suffix in _type_suffix:
-                buffer = datas[idx+1:]
-                buffer = re.sub(digi_str, '', buffer)
-                recognized_files.append([buffer])
-                if suffix not in suffixes:
-                    suffixes.append(suffix)
+    _data = await read_file(file=fname)
+    _data = _data.split('\n')
+    for datas in _data:
+        idx = datas.find(' ')
+        suffix = datas[:idx]
+        if suffix in _type_suffix:
+            buffer = datas[idx+1:]
+            buffer = re.sub(variable_strings.digi_str, '', buffer)
+            recognized_files.append([buffer])
+            if suffix not in suffixes:
+                suffixes.append(suffix)
     return recognized_files, suffixes
 
 
 async def write_definitions(*args, file: str):
-    if not os.path.exists(program_root+'\\db\\'):
-        os.mkdir(program_root+'\\db\\')
+    if not os.path.exists(variable_paths.database_dir_path):
+        os.mkdir(variable_paths.database_dir_path)
     if not os.path.exists(file):
         codecs.open(file, "w", encoding='utf8').close()
     async with aiofiles.open(file, mode='a', encoding='utf8') as handle:
@@ -94,9 +84,9 @@ async def write_definitions(*args, file: str):
 
 
 async def write_scan_results(*args, file: str, _dt: str):
-    target_dir = program_root+'\\data\\' + _dt + '\\'
-    if not os.path.exists(program_root+'\\data\\'):
-        os.mkdir(program_root+'\\data\\')
+    target_dir = variable_paths.data_dir_path + _dt + '\\'
+    if not os.path.exists(variable_paths.data_dir_path):
+        os.mkdir(variable_paths.data_dir_path)
     if not os.path.exists(target_dir):
         os.mkdir(target_dir)
     file = target_dir + file
@@ -109,9 +99,9 @@ async def write_scan_results(*args, file: str, _dt: str):
 
 
 async def write_exception_log(*args, file: str, _dt: str):
-    target_dir = program_root+'\\log\\' + _dt + '\\'
-    if not os.path.exists(program_root+'\\log\\'):
-        os.mkdir(program_root+'\\log\\')
+    target_dir = variable_paths.log_dir_path + _dt + '\\'
+    if not os.path.exists(variable_paths.log_dir_path):
+        os.mkdir(variable_paths.log_dir_path)
     if not os.path.exists(target_dir):
         os.mkdir(target_dir)
     file = target_dir + file
@@ -185,16 +175,12 @@ def get_size(file: str) -> int:
 
 async def stat_files(_results, _target, _tmp):
     final_result = []
-
     for r in _results:
-
         if r[0] == '[ERROR]':
             if r not in final_result:
                 final_result.append(r)
-
         else:
             regex_fname = str(r[1]).replace(_target, _tmp)
-
             if os.path.exists(r[1]):
                 m = await asyncio.to_thread(get_m_time, r[1])
                 s = await asyncio.to_thread(get_size, r[1])

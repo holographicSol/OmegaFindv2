@@ -8,7 +8,6 @@ def exception_format(e: Exception) -> list:
 
 
 def results_filter(_list: list) -> tuple:
-    # temporary list parser method (refine/replace)
     log_filter = ['[ERROR]', '[INCOMPATIBLE NON-VARIANT]', '[INCOMPATIBLE VARIANT]']
     e = []
     new_l = []
