@@ -6,7 +6,8 @@ import time
 import cli_character_limits
 import handler_print
 import tabulate
-import handler_table_rows
+import tabulate_helper
+import handler_file
 
 x_files = []
 
@@ -55,7 +56,12 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                                     headers=(f'Index', 'Modified', 'Bytes', 'Files'),
                                     stralign='left')
         if interact is True:
-            handler_table_rows.display_rows_interactively(max_limit=75, _results=fp, table=table_0, open_dir=True)
+            tabulate_helper.display_rows_interactively(max_limit=75,
+                                                       results=fp,
+                                                       table=table_0,
+                                                       extra_input=True,
+                                                       message='\n--- more ---\n',
+                                                       function=handler_file.call_input_open_dir)
         else:
             print(table_0)
         handler_print.display_spacer()

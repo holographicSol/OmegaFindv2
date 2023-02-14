@@ -12,6 +12,7 @@ import shutil
 import handler_print
 import variable_paths
 import variable_strings
+import handler_strings
 
 debug = False
 result = []
@@ -209,3 +210,9 @@ def file_sub_ops(_bytes: bytes) -> str:
 def rem_dir(path: str):
     if os.path.exists(path):
         shutil.rmtree(path)
+
+
+def call_input_open_dir(_results):
+    if handler_strings.input_open_dir(_list=_results) is True:
+        # got digit: ask again
+        call_input_open_dir(_results)

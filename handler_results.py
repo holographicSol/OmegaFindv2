@@ -5,7 +5,7 @@ import handler_file
 import handler_print
 import tabulate
 import cli_character_limits
-import handler_table_rows
+import tabulate_helper
 import power_time
 
 
@@ -66,8 +66,12 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
         if interact is True:
-            handler_table_rows.display_rows_interactively(max_limit=75, _results=_results, table=table_1,
-                                                          open_dir=False)
+            tabulate_helper.display_rows_interactively(max_limit=75,
+                                                       results=_results,
+                                                       table=table_1,
+                                                       extra_input=False,
+                                                       message='\n--- more ---\n',
+                                                       function=None)
         else:
             print(table_1)
 

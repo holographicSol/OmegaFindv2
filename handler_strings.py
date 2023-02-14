@@ -21,7 +21,7 @@ def sub_str(_buffer: bytes) -> str:
     return re.sub(variable_strings.digi_str, '', str(_buffer))
 
 
-def input_open_dir(_list):
+def input_open_dir(_list) -> bool:
     repeat_request = False
     if _list:
         usr_input = handler_print.input_select()
