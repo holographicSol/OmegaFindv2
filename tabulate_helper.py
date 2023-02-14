@@ -1,4 +1,10 @@
-""" Written by Benjamin Jack Cullen """
+""" Written by Benjamin Jack Cullen
+
+Compliment tabulate module.
+Overcome potential Terminal/Console buffer limitations causing a table to not be entirely displayed.
+Display N rows of table at a time, with some customization.
+
+"""
 
 import handler_print
 
