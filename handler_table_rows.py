@@ -25,24 +25,18 @@ def display_rows_interactively(max_limit: int, _results: list, table: str, open_
 
                 if char == '\n':
                     if i_limiter <= max_limit:
+                        # print row from table: up to max limit
                         print(p)
                         i_limiter += 1
                     else:
+                        print(p)
+                        # limit reached: present input
                         more_or_next(_results, open_dir)
                         i_limiter = 0
                     p = ''
 
                 elif char != '\n':
                     p = p + char
-
-                else:
-                    if i_limiter <= max_limit:
-                        print(p)
-                        i_limiter += 1
-                    else:
-                        more_or_next(_results, open_dir)
-
-                        i_limiter = 0
 
         else:
             print(table)
