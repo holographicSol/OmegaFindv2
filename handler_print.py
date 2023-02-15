@@ -154,9 +154,10 @@ def display_new_custom_suffix_group(sfx_group):
 
 def display_suffixes(_msg: str, _list: list):
     print(_msg)
+    print('')
     chunks = handler_chunk.chunk_data(data=_list, chunk_size=6)
     for chunk in chunks:
-        print(chunk)
+        print(f' {chunk}')
 
 
 def show_suffix_group(suffix_group_name: str):
