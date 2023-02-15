@@ -267,3 +267,33 @@ ext_web = ["asp",
     "phtml",
     "scss",
     "wasm"]
+
+
+def get_specified_suffix_group(suffix_: str):
+    suffix = ''
+    if suffix_ == 'archive':
+        suffix = ext_archive
+    elif suffix_ == 'audio':
+        suffix = ext_audio
+    elif suffix_ == 'book':
+        suffix = ext_book
+    elif suffix_ == 'code':
+        suffix = ext_code
+    elif suffix_ == 'executable':
+        suffix = ext_executable
+    elif suffix_ == 'font':
+        suffix = ext_font
+    elif suffix_ == 'image':
+        suffix = ext_image
+    elif suffix_ == 'sheet':
+        suffix = ext_sheet
+    elif suffix_ == 'slide':
+        suffix = ext_slide
+    elif suffix_ == 'text':
+        suffix = ext_text
+    elif suffix_ == 'video':
+        suffix = ext_video
+    elif suffix_ == 'web':
+        suffix = ext_web
+    if suffix:
+        return suffix

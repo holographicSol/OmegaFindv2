@@ -1,8 +1,11 @@
 """ Written by Benjamin Jack Cullen """
 
 import tabulate
+
+import handler_chunk
 import power_time
 import cli_character_limits
+import variables_suffix
 
 
 # ------------------------------------------------------------------------------> banner
@@ -151,8 +154,16 @@ def display_new_custom_suffix_group(sfx_group):
 
 def display_suffixes(_msg: str, _list: list):
     print(_msg)
-    for _ in _list:
-        print('    ' + str(_))
+    chunks = handler_chunk.chunk_data(data=_list, chunk_size=6)
+    for chunk in chunks:
+        print(chunk)
+
+
+def show_suffix_group(suffix_group_name: str):
+    suffix = variables_suffix.get_specified_suffix_group(suffix_group_name)
+    display_suffixes(_msg=f'Suffix Group Compatibility ({suffix_group_name}):',
+                     _list=suffix)
+    # print('')
 
 
 # ------------------------------------------------------------------------------> saving

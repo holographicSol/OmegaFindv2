@@ -44,30 +44,7 @@ def mode(stdin: list) -> tuple:
         elif '-gsfx' in stdin:
             idx = stdin.index('-gsfx')
             suffix_ = stdin[idx + 1]
-            if suffix_ == 'archive':
-                suffix = variables_suffix.ext_archive
-            elif suffix_ == 'audio':
-                suffix = variables_suffix.ext_audio
-            elif suffix_ == 'book':
-                suffix = variables_suffix.ext_book
-            elif suffix_ == 'code':
-                suffix = variables_suffix.ext_code
-            elif suffix_ == 'executable':
-                suffix = variables_suffix.ext_executable
-            elif suffix_ == 'font':
-                suffix = variables_suffix.ext_font
-            elif suffix_ == 'image':
-                suffix = variables_suffix.ext_image
-            elif suffix_ == 'sheet':
-                suffix = variables_suffix.ext_sheet
-            elif suffix_ == 'slide':
-                suffix = variables_suffix.ext_slide
-            elif suffix_ == 'text':
-                suffix = variables_suffix.ext_text
-            elif suffix_ == 'video':
-                suffix = variables_suffix.ext_video
-            elif suffix_ == 'web':
-                suffix = variables_suffix.ext_web
+            suffix = variables_suffix.get_specified_suffix_group(suffix_)
         # custom suffix group
         elif '-csfx' in stdin:
             handler_print.display_searching_custom_suffix()
@@ -215,6 +192,10 @@ def run_and_exit(stdin: list, interact: bool):
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         handler_print.display_len_recognized_files(recognized_files)
         handler_print.display_len_recognized_suffixes(suffixes)
+
+    elif '-SGSFX' in stdin:
+        suffix_group_name = stdin[stdin.index('-SGSFX') + 1]
+        handler_print.show_suffix_group(suffix_group_name)
 
     elif '-nsfx' in stdin:
         make_suffix_group()
