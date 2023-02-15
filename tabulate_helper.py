@@ -21,8 +21,7 @@ tabulate_helper.display_rows_interactively(max_limit=75,
                                            message='\n--- more ---\n',
                                            function=a_module.a_function_that_takes_input)
 
-Note: a_function_that_takes_input may simply take digits that point at an index in results and
-do something.
+Note: a_function_that_takes_input may simply take digits that point at an index in results and do something.
 
 """
 

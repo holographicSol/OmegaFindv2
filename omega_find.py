@@ -133,8 +133,8 @@ if __name__ == '__main__':
                                               _pre_scan_time=pre_scan_time, interact=interact)
 
             # final clean of tmp
-            if os.path.exists(program_root+'\\tmp\\'):
-                handler_file.rem_dir(path=program_root+'\\tmp\\')
+            if os.path.exists(variable_paths.tmp_dir_path):
+                handler_file.rem_dir(path=variable_paths.tmp_dir_path)
 
         else:
             handler_print.display_invalid_input()

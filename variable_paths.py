@@ -30,3 +30,11 @@ data_dir_path = program_root + data_dir
 log_dir = '\\log\\'
 log_dir_path = program_root + log_dir
 
+# tmp
+tmp_dir = '\\tmp\\'
+tmp_dir_path = program_root + tmp_dir
+
+# custom group csfx
+csfx_dir = program_root
+csfx_file = 'csfx_group.txt'
+csfx_file_path = database_dir + csfx_file

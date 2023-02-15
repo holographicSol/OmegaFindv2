@@ -72,9 +72,9 @@ def mode(stdin: list) -> tuple:
         elif '-csfx' in stdin:
             handler_print.display_searching_custom_suffix()
             handler_print.display_spacer()
-            if os.path.exists(program_root+'\\suffix_group.txt'):
+            if os.path.exists(variable_paths.csfx_file_path):
                 custom_suffix_groups = []
-                with open(program_root+'\\suffix_group.txt', 'r', encoding='utf8') as fo:
+                with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
                     i = 0
                     for line in fo:
                         line = line.strip()
@@ -148,22 +148,22 @@ def make_suffix_group():
         create_new_suffix_group = handler_print.input_save()
         if create_new_suffix_group == 'Y' or create_new_suffix_group == 'y':
             handler_print.display_saving()
-            if not os.path.exists(program_root+'\\suffix_group.txt'):
-                open(program_root+'\\suffix_group.txt', 'w').close()
-            with open(program_root+'\\suffix_group.txt', 'a', encoding='utf8') as fo:
+            if not os.path.exists(variable_paths.csfx_file_path):
+                open(variable_paths.csfx_file_path, 'w').close()
+            with open(variable_paths.csfx_file_path, 'a', encoding='utf8') as fo:
                 fo.write(sfx_name + ' ' + str(sfx_group) + '\n')
             handler_print.display_completed()
 
 
 def clean_db(stdin: list) -> str:
-    _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
+    _db_recognized_files = variable_paths.database_dir_path
     if '-db' in stdin:
         _db_recognized_files = stdin[stdin.index('-db')+1]
     return _db_recognized_files
 
 
 def display_recognized(stdin: list) -> str:
-    _db_recognized_files = program_root+'\\db\\database_file_recognition.txt'
+    _db_recognized_files = variable_paths.database_dir_path
     if '-db' in stdin:
         _db_recognized_files = stdin[stdin.index('-db')+1]
     return _db_recognized_files
