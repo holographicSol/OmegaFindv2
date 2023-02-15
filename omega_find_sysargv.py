@@ -193,8 +193,8 @@ def run_and_exit(stdin: list, interact: bool):
         handler_print.display_len_recognized_files(recognized_files)
         handler_print.display_len_recognized_suffixes(suffixes)
 
-    elif '-C' in stdin:
-        handler_print.default_suffix_group_compat()
+    # elif '-C' in stdin:
+    #     handler_print.default_suffix_group_compat()
 
     elif '-SGSFX' in stdin:
         suffix_group_name = stdin[stdin.index('-SGSFX') + 1]
