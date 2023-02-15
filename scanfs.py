@@ -60,7 +60,7 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                                                        results=fp,
                                                        table=table_0,
                                                        extra_input=True,
-                                                       message='\n--- more ---\n',
+                                                       message='\n-- more --\n',
                                                        function=handler_file.call_input_open_dir)
         else:
             print(table_0)

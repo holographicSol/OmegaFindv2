@@ -70,7 +70,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
                                                        results=_results,
                                                        table=table_1,
                                                        extra_input=False,
-                                                       message='\n--- more ---\n',
+                                                       message='\n-- more --\n',
                                                        function=None)
         else:
             print(table_1)
