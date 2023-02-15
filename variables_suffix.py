@@ -1,3 +1,4 @@
+# todo alpha sort and dict {Name: list}
 ext_archive = ["7z",
     "a",
     "apk",
@@ -267,6 +268,33 @@ ext_web = ["asp",
     "phtml",
     "scss",
     "wasm"]
+
+
+ext_list = [ext_archive,
+            ext_audio,
+            ext_book,
+            ext_code,
+            ext_executable,
+            ext_font,
+            ext_image,
+            ext_sheet,
+            ext_slide,
+            ext_text,
+            ext_video,
+            ext_web]
+
+ext_name = ['Archive',
+            'Audio',
+            'Book',
+            'Code',
+            'Executable',
+            'Font',
+            'Image',
+            'Sheet',
+            'Sheet',
+            'Text',
+            'Video',
+            'Web']
 
 
 def get_specified_suffix_group(suffix_: str):

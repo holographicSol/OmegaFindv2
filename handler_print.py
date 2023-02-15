@@ -156,15 +156,25 @@ def display_suffixes(_msg: str, _list: list):
     print(_msg)
     print('')
     chunks = handler_chunk.chunk_data(data=_list, chunk_size=6)
-    for chunk in chunks:
-        print(f' {chunk}')
+    print(tabulate.tabulate(chunks, tablefmt='plain'))
 
 
 def show_suffix_group(suffix_group_name: str):
     suffix = variables_suffix.get_specified_suffix_group(suffix_group_name)
-    display_suffixes(_msg=f'Suffix Group Compatibility ({suffix_group_name}):',
+    display_suffixes(_msg=f'[Suffix Group Compatibility ({suffix_group_name})]',
                      _list=suffix)
-    # print('')
+
+
+def default_suffix_group_compat():
+    i = 0
+    for ext_group in variables_suffix.ext_list:
+        print('')
+        print(f'[Suffix Group Compatibility ({variables_suffix.ext_name[i]})]')
+        print('')
+        chunks = handler_chunk.chunk_data(data=ext_group, chunk_size=6)
+        print(tabulate.tabulate(chunks, tablefmt='plain'))
+        print('')
+        i += 1
 
 
 # ------------------------------------------------------------------------------> saving
