@@ -10,12 +10,12 @@ import tabulate_helper
 import power_time
 
 
-# todo: optional write results
+# todo: optional write results + table_to_file: no max columns (considering parsing), print_table: max columns(readable)
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool):
 
-    max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+    max_column_width = cli_character_limits.column_width_from_screen_size_using_tput(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
     print(tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
                             maxcolwidths=[max_column_width, max_column_width, max_column_width],
@@ -29,7 +29,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
                            interact: bool):
     if len(_results) >= 1:
         tables = []
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_tput(n=3)
         scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
         if _verbose is True:
             # verbose table: timings and things

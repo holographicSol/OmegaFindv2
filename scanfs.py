@@ -50,7 +50,7 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                     i_match += 1
                     pass
     if fp:
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=2, reduce=0, add=56)
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_tput(n=2, reduce=0, add=56)
         table_0 = tabulate.tabulate(fp,
                                     maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
                                     headers=(f'Index', 'Modified', 'Bytes', 'Files'),

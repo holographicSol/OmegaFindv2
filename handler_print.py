@@ -68,7 +68,7 @@ def display_mode(_verbose: bool, _mode: str):
 # ------------------------------------------------------------------------------> results
 
 def display_prescan_info(_files, _x_files, completion_time):
-    max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+    max_column_width = cli_character_limits.column_width_from_screen_size_using_tput(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(completion_time))
     print(tabulate.tabulate([[*[len(_files)], *[len(_x_files)], *[scan_time_human]]],
                             maxcolwidths=[max_column_width, max_column_width],
@@ -104,7 +104,7 @@ def display_search_scan_result(i_match, p):
 
 def display_zero_results(_results, _t_completion, _exc, _header_0):
     _results = []
-    max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+    max_column_width = cli_character_limits.column_width_from_screen_size_using_tput(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
     table_0 = tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
                                 maxcolwidths=[max_column_width, max_column_width],
