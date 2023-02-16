@@ -52,7 +52,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
                                     maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
-                                    headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
+                                    headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
         tables.append(table_1)
 
@@ -263,11 +263,11 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
     if _de_scan_bool is True:
         header_0 = 'De-Obfuscated/Unrecognized'
     elif _type_scan_bool is True:
-        header_0 = 'Files of Type Specified   '
+        header_0 = 'Type'
     elif _p_scan is True:
-        header_0 = 'Password Protected        '
+        header_0 = 'Password Protected'
     elif _reveal_scan is True:
-        header_0 = 'Files Revealed            '
+        header_0 = 'Revealed'
 
     if _results is not None:
         if len(_results) >= 1:
