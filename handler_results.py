@@ -2,6 +2,7 @@
 
 import asyncio
 import handler_file
+import handler_post_process
 import handler_print
 import tabulate
 import cli_character_limits
@@ -41,11 +42,29 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
             print('')
 
-        # results table
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=3)
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=4)
+        max_column_width_tot = int(cli_character_limits.column_width_from_screen_size_using_ratio(n=4)) * 4
+
+        max_dt = handler_post_process.longest_item(_results, idx=0)
+        max_buff = handler_post_process.longest_item(_results, idx=1)
+        max_bytes = handler_post_process.longest_item(_results, idx=2)
+        max_path = handler_post_process.longest_item(_results, idx=3)
+        new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes
+
+        # display values used to add to file_path max len.
+        # print('')
+        # print(f'max_dt:                {max_dt}')
+        # print(f'max_buff:              {max_buff}')
+        # print(f'max_bytes:             {max_bytes}')
+        # print(f'max_path:              {max_path}')
+        # print(f'max_column_width:      {max_column_width}')
+        # print(f'max_column_width_tot:  {max_column_width_tot}')
+        # print(f'new_max_path:          {new_max_path}')
+        # print('')
+
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
-                                    maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
+                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
                                     headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
         tables.append(table_1)
@@ -168,7 +187,6 @@ def result_handler_type_scan(_results: list, _extract: bool, _exc: list, _t_comp
                              _verbose: bool, _de_scan_bool: bool,
                              _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
                              interact: bool):
-    # print(_results)
     if _extract is False:
         result_handler_display(_results=_results,
                                _exc=_exc,

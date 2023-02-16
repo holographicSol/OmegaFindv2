@@ -51,3 +51,16 @@ def results_filter(_list: list) -> tuple:
                 new_l.append(item)
     e = handler_chunk.un_chunk_data(e, depth=1)
     return e, new_l
+
+
+def longest_item(_list: list, idx: int) -> int:
+    i_longest = 0
+    for item in _list:
+        # print(item)
+        try:
+            if len(str(item[idx])) >= i_longest:
+                i_longest = len(str(item[idx]))
+        except Exception as e:
+            print(item, e)
+            pass
+    return i_longest
