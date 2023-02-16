@@ -196,8 +196,8 @@ def run_and_exit(stdin: list, interact: bool):
     # elif '-C' in stdin:
     #     handler_print.default_suffix_group_compat()
 
-    elif '-SGSFX' in stdin:
-        suffix_group_name = stdin[stdin.index('-SGSFX') + 1]
+    elif '-C' in stdin:
+        suffix_group_name = stdin[stdin.index('-C') + 1]
         handler_print.show_suffix_group(suffix_group_name)
 
     elif '-nsfx' in stdin:
