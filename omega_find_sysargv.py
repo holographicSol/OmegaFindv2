@@ -186,8 +186,11 @@ def run_and_exit(stdin: list, interact: bool):
         handler_print.display_len_recognized_files(recognized_files)
         handler_print.display_len_recognized_suffixes(suffixes)
 
-    # elif '-C' in stdin:
-    #     handler_print.default_suffix_group_compat()
+    elif '-A' in stdin:
+        ext = stdin[stdin.index('-A') + 1]
+        db_recognized_files = display_recognized(stdin)
+        recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
+        handler_print.display_associations(recognized_files, suffixes, ext, interact)
 
     elif '-C' in stdin:
         suffix_group_name = stdin[stdin.index('-C') + 1]

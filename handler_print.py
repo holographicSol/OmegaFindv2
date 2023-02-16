@@ -1,11 +1,12 @@
 """ Written by Benjamin Jack Cullen """
 
 import tabulate
-
+import handler_post_process
 import handler_chunk
 import power_time
 import cli_character_limits
 import variables_suffix
+import tabulate_helper
 
 
 # ------------------------------------------------------------------------------> banner
@@ -108,7 +109,7 @@ def display_zero_results(_results, _t_completion, _exc, _header_0):
     max_column_width = cli_character_limits.column_width_from_tput(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
     table_0 = tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
-                                maxcolwidths=[max_column_width, max_column_width],
+                                maxcolwidths=[max_column_width, max_column_width, max_column_width],
                                 headers=(f'{_header_0}', 'Errors                ', 'Time                  '),
                                 stralign='right')
     print(table_0)
@@ -176,6 +177,34 @@ def default_suffix_group_compat():
         print(tabulate.tabulate(chunks, tablefmt='plain'))
         print('')
         i += 1
+
+
+def display_associations(recognized_files: list, suffixes: list, ext: str, interact: bool):
+    table_list = []
+    for recognized in recognized_files:
+        if str(recognized[0]).startswith(ext):
+            table_list.append(recognized)
+
+    # enumeration for reasonable column widths
+    max_column_width = cli_character_limits.column_width_from_tput(n=2)
+    max_column_width_tot = max_column_width * 2
+    max_0 = handler_post_process.longest_item(recognized_files, idx=0)
+    new_max_path = max_column_width_tot - max_0 - 1
+
+    table_0 = tabulate.tabulate(*[table_list],
+                                maxcolwidths=[max_0, new_max_path],
+                                headers=('Ext', 'Buffer                '),
+                                stralign='left')
+    # display results tale
+    if interact is True:
+        tabulate_helper.display_rows_interactively(max_limit=75,
+                                                   results=recognized_files,
+                                                   table=table_0,
+                                                   extra_input=False,
+                                                   message='\n-- more --\n',
+                                                   function=None)
+    else:
+        print(table_0)
 
 
 # ------------------------------------------------------------------------------> saving
