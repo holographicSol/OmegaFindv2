@@ -14,7 +14,6 @@ import power_time
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool):
-
     max_column_width = cli_character_limits.column_width_from_tput(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
     print(tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
@@ -42,34 +41,22 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
             print('')
 
+        # enumeration for reasonable column widths
         max_column_width = cli_character_limits.column_width_from_tput(n=4)
         max_column_width_tot = max_column_width * 4
-
         max_dt = handler_post_process.longest_item(_results, idx=0)
-        max_buff = handler_post_process.longest_item(_results, idx=1)
         max_bytes = handler_post_process.longest_item(_results, idx=2)
-        max_path = handler_post_process.longest_item(_results, idx=3)
-        new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes
+        new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 4
 
-        # display values used to add to file_path max len.
-        # print('')
-        # print(f'max_dt:                {max_dt}')
-        # print(f'max_buff:              {max_buff}')
-        # print(f'max_bytes:             {max_bytes}')
-        # print(f'max_path:              {max_path}')
-        # print(f'max_column_width:      {max_column_width}')
-        # print(f'max_column_width_tot:  {max_column_width_tot}')
-        # print(f'new_max_path:          {new_max_path}')
-        # print('')
-
+        # create results table
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
-                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path-4],
+                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
                                     headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
         tables.append(table_1)
 
-        # filename
+        # create filename
         part_fname = 'scan_results_'
         if _de_scan_bool is True:
             part_fname = 'de_scan'
@@ -84,6 +71,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         for table in tables:
             asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
+        # display results tale
         if interact is True:
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=_results,
