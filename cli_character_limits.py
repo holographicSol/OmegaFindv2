@@ -11,8 +11,7 @@ def column_width_from_screen_size_using_ratio(n: int, reduce=0, add=0, ratio=0.1
     for m in screeninfo.get_monitors():
         if m.is_primary is True:
             w = m.width
-    w = add_sub(n=int(int(w * ratio) / set_n(n)), reduce=reduce, add=add)
-    return w
+    return add_sub(n=int(int(w * ratio) / set_n(n)), reduce=reduce, add=add)
 
 
 def column_width_from_screen_size_using_os_get_terminal_size(n: int, reduce=0, add=0) -> int:
@@ -23,8 +22,7 @@ def column_width_from_screen_size_using_os_get_terminal_size(n: int, reduce=0, a
 def column_width_from_screen_size_using_tput(n: int, reduce=0, add=0) -> int:
 
     w = int(int(int(subprocess.Popen(['tput', 'cols'], stdout=subprocess.PIPE).communicate()[0].strip())) / set_n(n))
-    w = add_sub(n=w, reduce=reduce, add=add)
-    return w
+    return add_sub(n=w, reduce=reduce, add=add)
 
 
 def add_sub(n, reduce=0, add=0):
