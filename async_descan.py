@@ -49,7 +49,13 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                           _program_root: str) -> list:
     m = await asyncio.to_thread(handler_file.get_m_time, _file)
     s = await asyncio.to_thread(handler_file.get_size, _file)
-    _results = [[m, _buffer, s, _file]]
+    suffix = await asyncio.to_thread(handler_file.get_suffix, _file)
+    _results = await async_check.scan_check(_file, suffix, _buffer, _recognized_files)
+    if _results is not None:
+        _results = [_results]
+    else:
+        _results = []
+    # _results = [[m, _buffer, s, _file]]  # todo: remove
     _tmp = _program_root+'\\tmp\\'+str(handler_strings.randStr())
     result_bool, extraction = await asyncio.to_thread(handler_extraction_method.extract_nested_compressed,
                                                       file=_file, temp_directory=_tmp, _target=_target,
