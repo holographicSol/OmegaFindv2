@@ -196,7 +196,7 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
 
         table_0 = tabulate.tabulate(*[table_list],
                                     maxcolwidths=[max_0, new_max_path],
-                                    headers=('Ext', f'Buffers: {len(table_list)}/{len(recognized_files)}'),
+                                    headers=('Ext.', f'Buffers [{len(table_list)}/{len(recognized_files)}]'),
                                     stralign='left',
                                     showindex=True)
         # display results tale
@@ -221,7 +221,7 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
         new_max_path = max_column_width_tot - max_0 - 1
 
         table_0 = tabulate.tabulate(*[recognized_files],
-                                    headers=('Ext', f'Buffers: {len(recognized_files)}'),
+                                    headers=('Ext.', f'Buffers [{len(recognized_files)}]'),
                                     maxcolwidths=[max_0, new_max_path],
                                     stralign='left',
                                     showindex=True)
