@@ -182,29 +182,30 @@ def default_suffix_group_compat():
 def display_associations(recognized_files: list, suffixes: list, ext: str, interact: bool):
     table_list = []
     for recognized in recognized_files:
-        if str(recognized[0]).startswith(ext):
+        if str(recognized[0]).strip() == str(ext).strip():
             table_list.append(recognized)
 
-    # enumeration for reasonable column widths
-    max_column_width = cli_character_limits.column_width_from_tput(n=2)
-    max_column_width_tot = max_column_width * 2
-    max_0 = handler_post_process.longest_item(recognized_files, idx=0)
-    new_max_path = max_column_width_tot - max_0 - 1
+    if table_list:
+        # enumeration for reasonable column widths
+        max_column_width = cli_character_limits.column_width_from_tput(n=2)
+        max_column_width_tot = max_column_width * 2
+        max_0 = handler_post_process.longest_item(table_list, idx=0)
+        new_max_path = max_column_width_tot - max_0 - 1
 
-    table_0 = tabulate.tabulate(*[table_list],
-                                maxcolwidths=[max_0, new_max_path],
-                                headers=('Ext', 'Buffer                '),
-                                stralign='left')
-    # display results tale
-    if interact is True:
-        tabulate_helper.display_rows_interactively(max_limit=75,
-                                                   results=recognized_files,
-                                                   table=table_0,
-                                                   extra_input=False,
-                                                   message='\n-- more --\n',
-                                                   function=None)
-    else:
-        print(table_0)
+        table_0 = tabulate.tabulate(*[table_list],
+                                    maxcolwidths=[max_0, new_max_path],
+                                    headers=('Ext', 'Buffer                '),
+                                    stralign='left')
+        # display results tale
+        if interact is True:
+            tabulate_helper.display_rows_interactively(max_limit=75,
+                                                       results=table_list,
+                                                       table=table_0,
+                                                       extra_input=False,
+                                                       message='\n-- more --\n',
+                                                       function=None)
+        else:
+            print(table_0)
 
 
 # ------------------------------------------------------------------------------> saving
