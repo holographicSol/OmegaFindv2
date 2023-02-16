@@ -1,5 +1,6 @@
 # todo alpha sort and dict {Name: list}
-ext_archive = ["7z",
+ext_archive = [
+    "7z",
     "a",
     "apk",
     "ar",
@@ -14,6 +15,7 @@ ext_archive = ["7z",
     "jar",
     "lha",
     "mar",
+    "pak",
     "pea",
     "rar",
     "rpm",
@@ -26,12 +28,13 @@ ext_archive = ["7z",
     "war",
     "whl",
     "xpi",
+    "xz",
     "zip",
     "zipx",
-    "xz",
-    "pak"]
+]
 
-ext_audio = ["aac",
+ext_audio = [
+    "aac",
     "aiff",
     "ape",
     "au",
@@ -50,20 +53,23 @@ ext_audio = ["aac",
     "sid",
     "wav",
     "wma",
-    "xm"]
+    "xm",
+]
 
-ext_book = ["mobi",
-    "epub",
+ext_book = [
+    "azw",
     "azw1",
     "azw3",
     "azw4",
     "azw6",
-    "azw",
     "cbr",
-    "cbz"
-    ]
+    "cbz",
+    "epub",
+    "mobi",
+]
 
-ext_code = ["1.ada",
+ext_code = [
+    "1.ada",
     "2.ada",
     "ada",
     "adb",
@@ -74,8 +80,8 @@ ext_code = ["1.ada",
     "bas",
     "bash",
     "bat",
-    "c++",
     "c",
+    "c++",
     "cbl",
     "cc",
     "class",
@@ -141,65 +147,77 @@ ext_code = ["1.ada",
     "vcxproj",
     "xcodeproj",
     "xml",
-    "zsh"]
+    "zsh",
+]
 
-ext_executable = ["exe",
-    "msi",
+ext_executable = [
+    "bash",
+    "bat",
     "bin",
     "command",
-    "sh",
-    "bat",
     "crx",
-    "bash",
     "csh",
+    "exe",
     "fish",
     "ksh",
-    "zsh"]
+    "msi",
+    "sh",
+    "zsh",
+]
 
-ext_font = ["eot",
+ext_font = [
+    "eot",
     "otf",
     "ttf",
     "woff",
-    "woff2"]
+    "woff2",
+]
 
-ext_image = ["3dm",
-"3ds",
-"max",
-"bmp",
-"dds",
-"gif",
-"jpg",
-"jpeg",
-"png",
-"psd",
-"xcf",
-"tga",
-"thm",
-"tif",
-"tiff",
-"yuv",
-"ai",
-"eps",
-"ps",
-"svg",
-"dwg",
-"dxf",
-"gpx",
-"kml",
-"kmz",
-"webp"]
+ext_image = [
+    "3dm",
+    "3ds",
+    "ai",
+    "bmp",
+    "dds",
+    "dwg",
+    "dxf",
+    "eps",
+    "gif",
+    "gpx",
+    "jpeg",
+    "jpg",
+    "kml",
+    "kmz",
+    "max",
+    "png",
+    "ps",
+    "psd",
+    "svg",
+    "tga",
+    "thm",
+    "tif",
+    "tiff",
+    "webp",
+    "xcf",
+    "yuv",
+]
 
-ext_sheet = ["ods",
-    "xls",
-    "xlsx",
+ext_sheet = [
     "csv",
     "ics",
-    "vcf",]
+    "ods",
+    "vcf",
+    "xls",
+    "xlsx",
+]
 
-ext_slide = ["ppt",
-    "odp"]
+ext_slide = [
+    "odp",
+    "ppt",
+]
 
-ext_text = ["doc",
+ext_text = [
+    "doc",
     "docx",
     "ebook",
     "log",
@@ -209,14 +227,16 @@ ext_text = ["doc",
     "org",
     "pages",
     "pdf",
-    "rtf",
     "rst",
+    "rtf",
     "tex",
     "txt",
     "wpd",
-    "wps"]
+    "wps",
+]
 
-ext_video = ["3g2",
+ext_video = [
+    "3g2",
     "3gp",
     "aaf",
     "asf",
@@ -239,8 +259,8 @@ ext_video = ["3g2",
     "mxf",
     "nsv",
     "ogg",
-    "ogv",
     "ogm",
+    "ogv",
     "qt",
     "rm",
     "rmvb",
@@ -249,9 +269,11 @@ ext_video = ["3g2",
     "svi",
     "vob",
     "webm",
-    "wmv"]
+    "wmv",
+]
 
-ext_web = ["asp",
+ext_web = [
+    "asp",
     "aspx",
     "css",
     "htm",
@@ -267,7 +289,8 @@ ext_web = ["asp",
     "php5",
     "phtml",
     "scss",
-    "wasm"]
+    "wasm",
+]
 
 
 ext_list = [ext_archive,
