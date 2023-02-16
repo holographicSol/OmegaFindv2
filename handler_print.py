@@ -37,7 +37,7 @@ def omega_help():
     print(' -nsfx    New Suffix Group      Create new custom suffix group.')
     print(' -cmax    Chunk Max             Specify in digits max items to be processed at any one time.')
     print(' -bmax    Buffer Max            Specify in digits maximum number of bytes to read of each file.')
-    print(' -C       Compatible            Display specified suffix group.')
+    print(' -G       Group                 Display specified suffix group.')
     print(' -I       Interact              Disables interaction. No prompt mode.')
     print(' -R       Recognized            Display current learning XP.')
     print(' -A       Associations          Display buffer associations to specified suffix.')
