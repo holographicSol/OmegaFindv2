@@ -35,7 +35,7 @@ def omega_help():
     print(' -db      Database              Specify database to use while learning/scanning.')
     print(' -cmax    Chunk Max             Specify in digits max items to be processed at any one time.')
     print(' -bmax    Buffer Max            Specify in digits maximum number of bytes to read of each file.')
-    print(' -G       Compatible            Display specified suffix group.')
+    print(' -C       Compatible            Display specified suffix group.')
     print(' -I       Interact              Disables interaction. No prompt mode.')
     print(' -R       Recognized            Display current learning XP.')
     print('')
@@ -193,11 +193,11 @@ def display_completed():
 # ------------------------------------------------------------------------------> xp
 
 def display_len_recognized_files(recognized_files):
-    print(f' Recognized file types: {len(recognized_files)}')
+    print(f'Recognized file types: {len(recognized_files)}')
 
 
 def display_len_recognized_suffixes(suffixes):
-    print(f' Recognized suffixes:   {len(suffixes)}')
+    print(f'Recognized suffixes:   {len(suffixes)}')
 
 
 # ------------------------------------------------------------------------------> spacer

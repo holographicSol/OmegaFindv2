@@ -132,13 +132,6 @@ def make_suffix_group():
             handler_print.display_completed()
 
 
-def clean_db(stdin: list) -> str:
-    _db_recognized_files = variable_paths.database_file_path
-    if '-db' in stdin:
-        _db_recognized_files = stdin[stdin.index('-db')+1]
-    return _db_recognized_files
-
-
 def display_recognized(stdin: list) -> str:
     _db_recognized_files = variable_paths.database_file_path
     if '-db' in stdin:
