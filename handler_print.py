@@ -166,17 +166,18 @@ def display_suffixes(_msg: str, _list: list):
 
 def show_suffix_group(suffix_group_name: str):
     suffix = variables_suffix.get_specified_suffix_group(suffix_group_name)
-
     if suffix is None:
+        suffix = []
         with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
             i = 0
             for line in fo:
                 line = line.strip()
                 if line.startswith(suffix_group_name):
-                    print(line)
+                    line = line.split(' ')
+                    line.remove(line[0])
+                    suffix = line
                 i += 1
         fo.close()
-
     if suffix:
         display_suffixes(_msg=f'[ Suffix Group: {suffix_group_name} ]', _list=suffix)
 
