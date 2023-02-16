@@ -35,7 +35,7 @@ def omega_help():
     print(' -db      Database              Specify database to use while learning/scanning.')
     print(' -cmax    Chunk Max             Specify in digits max items to be processed at any one time.')
     print(' -bmax    Buffer Max            Specify in digits maximum number of bytes to read of each file.')
-    print(' -C       Compatible            Display specified suffix group.')
+    print(' -G       Compatible            Display specified suffix group.')
     print(' -I       Interact              Disables interaction. No prompt mode.')
     print(' -R       Recognized            Display current learning XP.')
     print('')
@@ -162,7 +162,7 @@ def display_suffixes(_msg: str, _list: list):
 
 def show_suffix_group(suffix_group_name: str):
     suffix = variables_suffix.get_specified_suffix_group(suffix_group_name)
-    display_suffixes(_msg=f'[Suffix Group Compatibility ({suffix_group_name})]',
+    display_suffixes(_msg=f'[ Suffix Group: {suffix_group_name} ]',
                      _list=suffix)
 
 
@@ -170,7 +170,7 @@ def default_suffix_group_compat():
     i = 0
     for ext_group in variables_suffix.ext_list:
         print('')
-        print(f'[Suffix Group Compatibility ({variables_suffix.ext_name[i]})]')
+        print(f'[ Suffix Group: {variables_suffix.ext_name[i]} ]')
         print('')
         chunks = handler_chunk.chunk_data(data=ext_group, chunk_size=6)
         print(tabulate.tabulate(chunks, tablefmt='plain'))
