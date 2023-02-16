@@ -39,6 +39,8 @@ def omega_help():
     print(' -C       Compatible            Display specified suffix group.')
     print(' -I       Interact              Disables interaction. No prompt mode.')
     print(' -R       Recognized            Display current learning XP.')
+    print(' -A       Associations          Display buffer associations to specified suffix.')
+    print(' -AV      All Associations      Display all known buffer associations.')
     print('')
     print(' -v       Verbosity             Increase verbosity.')
     print(' -h       Help                  Display this help message.')
@@ -231,6 +233,7 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
                                                        function=None)
         else:
             print(table_0)
+
 
 # ------------------------------------------------------------------------------> saving
 
