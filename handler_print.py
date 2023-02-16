@@ -7,6 +7,7 @@ import power_time
 import cli_character_limits
 import variables_suffix
 import tabulate_helper
+import variable_paths
 
 
 # ------------------------------------------------------------------------------> banner
@@ -165,8 +166,19 @@ def display_suffixes(_msg: str, _list: list):
 
 def show_suffix_group(suffix_group_name: str):
     suffix = variables_suffix.get_specified_suffix_group(suffix_group_name)
-    display_suffixes(_msg=f'[ Suffix Group: {suffix_group_name} ]',
-                     _list=suffix)
+
+    if suffix is None:
+        with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
+            i = 0
+            for line in fo:
+                line = line.strip()
+                if line.startswith(suffix_group_name):
+                    print(line)
+                i += 1
+        fo.close()
+
+    if suffix:
+        display_suffixes(_msg=f'[ Suffix Group: {suffix_group_name} ]', _list=suffix)
 
 
 def default_suffix_group_compat():

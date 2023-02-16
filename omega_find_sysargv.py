@@ -125,9 +125,7 @@ def make_suffix_group():
         create_new_suffix_group = handler_print.input_save()
         if create_new_suffix_group == 'Y' or create_new_suffix_group == 'y':
             handler_print.display_saving()
-            if not os.path.exists(variable_paths.csfx_file_path):
-                open(variable_paths.csfx_file_path, 'w').close()
-            with open(variable_paths.csfx_file_path, 'a', encoding='utf8') as fo:
+            with open(variable_paths.csfx_file_path, 'a+', encoding='utf8') as fo:
                 fo.write(sfx_name + ' ' + str(sfx_group) + '\n')
             handler_print.display_completed()
 

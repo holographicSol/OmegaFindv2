@@ -1,4 +1,3 @@
-# todo alpha sort and dict {Name: list}
 ext_archive = [
     "7z",
     "a",
@@ -30,7 +29,7 @@ ext_archive = [
     "xpi",
     "xz",
     "zip",
-    "zipx",
+    "zipx"
 ]
 
 ext_audio = [
@@ -53,7 +52,7 @@ ext_audio = [
     "sid",
     "wav",
     "wma",
-    "xm",
+    "xm"
 ]
 
 ext_book = [
@@ -65,7 +64,7 @@ ext_book = [
     "cbr",
     "cbz",
     "epub",
-    "mobi",
+    "mobi"
 ]
 
 ext_code = [
@@ -147,7 +146,7 @@ ext_code = [
     "vcxproj",
     "xcodeproj",
     "xml",
-    "zsh",
+    "zsh"
 ]
 
 ext_executable = [
@@ -162,7 +161,7 @@ ext_executable = [
     "ksh",
     "msi",
     "sh",
-    "zsh",
+    "zsh"
 ]
 
 ext_font = [
@@ -170,7 +169,7 @@ ext_font = [
     "otf",
     "ttf",
     "woff",
-    "woff2",
+    "woff2"
 ]
 
 ext_image = [
@@ -199,7 +198,7 @@ ext_image = [
     "tiff",
     "webp",
     "xcf",
-    "yuv",
+    "yuv"
 ]
 
 ext_sheet = [
@@ -208,12 +207,12 @@ ext_sheet = [
     "ods",
     "vcf",
     "xls",
-    "xlsx",
+    "xlsx"
 ]
 
 ext_slide = [
     "odp",
-    "ppt",
+    "ppt"
 ]
 
 ext_text = [
@@ -232,7 +231,7 @@ ext_text = [
     "tex",
     "txt",
     "wpd",
-    "wps",
+    "wps"
 ]
 
 ext_video = [
@@ -269,7 +268,7 @@ ext_video = [
     "svi",
     "vob",
     "webm",
-    "wmv",
+    "wmv"
 ]
 
 ext_web = [
@@ -289,7 +288,7 @@ ext_web = [
     "php5",
     "phtml",
     "scss",
-    "wasm",
+    "wasm"
 ]
 
 
