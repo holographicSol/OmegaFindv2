@@ -17,8 +17,7 @@ def column_width_from_screen_size_using_ratio(n: int, reduce=0, add=0, ratio=0.1
 
 def column_width_from_screen_size_using_os_get_terminal_size(n: int, reduce=0, add=0) -> int:
 
-    w = add_sub(n=int(int(os.get_terminal_size().columns) / set_n(n)), reduce=reduce, add=add)
-    return w
+    return add_sub(n=int(int(os.get_terminal_size().columns) / set_n(n)), reduce=reduce, add=add)
 
 
 def column_width_from_screen_size_using_tput(n: int, reduce=0, add=0) -> int:
