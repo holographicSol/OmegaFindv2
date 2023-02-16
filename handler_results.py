@@ -42,8 +42,8 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
             print('')
 
-        max_column_width = cli_character_limits.column_width_from_screen_size_using_ratio(n=4)
-        max_column_width_tot = int(cli_character_limits.column_width_from_screen_size_using_ratio(n=4)) * 4
+        max_column_width = cli_character_limits.column_width_from_screen_size_using_tput(n=4)
+        max_column_width_tot = max_column_width * 4
 
         max_dt = handler_post_process.longest_item(_results, idx=0)
         max_buff = handler_post_process.longest_item(_results, idx=1)
@@ -64,7 +64,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
 
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
-                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
+                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path-4],
                                     headers=('Modified', 'Buffer', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
         tables.append(table_1)
