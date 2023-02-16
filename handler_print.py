@@ -194,7 +194,7 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
 
         table_0 = tabulate.tabulate(*[table_list],
                                     maxcolwidths=[max_0, new_max_path],
-                                    headers=('Ext', 'Buffer                '),
+                                    headers=('Ext', f'Buffers: {len(recognized_files)}'),
                                     stralign='left')
         # display results tale
         if interact is True:
@@ -207,6 +207,30 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
         else:
             print(table_0)
 
+
+def display_all_associations(recognized_files: list, suffixes: list, interact: bool):
+
+    if recognized_files:
+        # enumeration for reasonable column widths
+        max_column_width = cli_character_limits.column_width_from_tput(n=2)
+        max_column_width_tot = max_column_width * 2
+        max_0 = handler_post_process.longest_item(recognized_files, idx=0)
+        new_max_path = max_column_width_tot - max_0 - 1
+
+        table_0 = tabulate.tabulate(*[recognized_files],
+                                    headers=('Ext', f'Buffers: {len(recognized_files)}'),
+                                    maxcolwidths=[max_0, new_max_path],
+                                    stralign='left')
+        # display results tale
+        if interact is True:
+            tabulate_helper.display_rows_interactively(max_limit=75,
+                                                       results=recognized_files,
+                                                       table=table_0,
+                                                       extra_input=False,
+                                                       message='\n-- more --\n',
+                                                       function=None)
+        else:
+            print(table_0)
 
 # ------------------------------------------------------------------------------> saving
 

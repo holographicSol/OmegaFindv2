@@ -192,6 +192,11 @@ def run_and_exit(stdin: list, interact: bool):
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         handler_print.display_associations(recognized_files, suffixes, ext, interact)
 
+    elif '-AV' in stdin:
+        db_recognized_files = display_recognized(stdin)
+        recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
+        handler_print.display_all_associations(recognized_files, suffixes, interact)
+
     elif '-C' in stdin:
         suffix_group_name = stdin[stdin.index('-C') + 1]
         handler_print.show_suffix_group(suffix_group_name)
