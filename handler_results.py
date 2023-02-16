@@ -208,19 +208,18 @@ def result_handler_p_scan(_results: list, _extract: bool, _exc: list, _t_complet
                           _verbose: bool, _de_scan_bool: bool,
                           _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
                           interact: bool):
-    if _extract is False:
-        result_handler_display(_results=_results,
-                               _exc=_exc,
-                               _t_completion=_t_completion,
-                               _pre_scan_time=_pre_scan_time,
-                               _verbose=_verbose,
-                               _de_scan_bool=_de_scan_bool,
-                               _type_scan_bool=_type_scan_bool,
-                               _p_scan=_p_scan,
-                               _reveal_scan=_reveal_scan,
-                               _dt=_dt,
-                               _header_0=_header_0,
-                               interact=interact)
+    result_handler_display(_results=_results,
+                           _exc=_exc,
+                           _t_completion=_t_completion,
+                           _pre_scan_time=_pre_scan_time,
+                           _verbose=_verbose,
+                           _de_scan_bool=_de_scan_bool,
+                           _type_scan_bool=_type_scan_bool,
+                           _p_scan=_p_scan,
+                           _reveal_scan=_reveal_scan,
+                           _dt=_dt,
+                           _header_0=_header_0,
+                           interact=interact)
 
 
 def result_handler_reveal_scan(_results: list, _extract: bool, _exc: list, _t_completion: str, _pre_scan_time: str,
@@ -259,6 +258,7 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                       _type_scan_bool: bool, _p_scan: bool, _dt: str, _exc: list, _reveal_scan: bool,
                       _t_completion: str, _extract: bool, _verbose: bool, _pre_scan_time: str,
                       interact: bool):
+
     header_0 = 'Results'
     if _de_scan_bool is True:
         header_0 = 'De-Obfuscated/Unrecognized'
@@ -268,6 +268,7 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
         header_0 = 'Password Protected        '
     elif _reveal_scan is True:
         header_0 = 'Files Revealed            '
+
     if _results is not None:
         if len(_results) >= 1:
             if len(_results[0]) >= 1:
@@ -277,7 +278,6 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                                  _t_completion=_t_completion,
                                                  _pre_scan_time=_pre_scan_time,
                                                  _verbose=_verbose)
-
                     asyncio.run(handler_file.write_definitions(*_results, file=_db_recognized_files))
                     asyncio.run(handler_file.clean_database(fname=_db_recognized_files))
 
@@ -295,6 +295,7 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                            _dt=_dt,
                                            _header_0=header_0,
                                            interact=interact)
+
                 elif _type_scan_bool is True:
                     result_handler_type_scan(_results=_results,
                                              _extract=_extract,
