@@ -196,7 +196,7 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
 
         table_0 = tabulate.tabulate(*[table_list],
                                     maxcolwidths=[max_0, new_max_path],
-                                    headers=('Ext', f'Buffers: {len(recognized_files)}'),
+                                    headers=('Ext', f'Buffers: {len(table_list)}/{len(recognized_files)}'),
                                     stralign='left')
         # display results tale
         if interact is True:
