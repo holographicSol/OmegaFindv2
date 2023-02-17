@@ -71,6 +71,8 @@ def display_rows_interactively(max_limit: int, results: list, table: str, extra_
 
         else:
             print(table)
+            if extra_input is True:
+                more_or_next(results=results, extra_input=extra_input, function=function, message=message)
 
     except KeyboardInterrupt:
         handler_print.display_spacer()

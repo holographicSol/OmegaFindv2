@@ -47,7 +47,7 @@ async def read_file(file: str):
     return data
 
 
-async def read_report(fname: str, interact: bool):
+async def read_report(fname: str):
     _data = await read_file(file=fname)
 
     # get report subject column indexes
@@ -62,12 +62,16 @@ async def read_report(fname: str, interact: bool):
     # parse report by indexes
     _results = []
     for item in _data_split:
-        item_str = str(item)
-        mtime = item_str[:indexes[0]]
-        buff = item_str[indexes[0]:indexes[0]+indexes[1]+2].strip()
-        _bytes = item_str[indexes[0]+indexes[1]+2:indexes[0]+indexes[1]+indexes[2]+4].strip()
-        filepath = item_str[indexes[0]+indexes[1]+indexes[2]+4:indexes[0]+indexes[1]+indexes[2]+indexes[3]+6].strip()
-        _results.append([mtime, buff, _bytes, filepath])
+        if item is not None:
+            item_str = str(item)
+            try:
+                mtime = item_str[:indexes[0]]
+                buff = item_str[indexes[0]:indexes[0]+indexes[1]+2].strip()
+                _bytes = item_str[indexes[0]+indexes[1]+2:indexes[0]+indexes[1]+indexes[2]+4].strip()
+                filepath = item_str[indexes[0]+indexes[1]+indexes[2]+4:indexes[0]+indexes[1]+indexes[2]+indexes[3]+6].strip()
+                _results.append([mtime, buff, _bytes, filepath])
+            except:
+                pass
 
     # enumeration for reasonable column widths
     max_column_width = cli_character_limits.column_width_from_tput(n=4)
@@ -82,15 +86,15 @@ async def read_report(fname: str, interact: bool):
                                 maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
                                 stralign='left')
     # display results table
-    if interact is True:
-        tabulate_helper.display_rows_interactively(max_limit=75,
-                                                   results=_results,
-                                                   table=table_1,
-                                                   extra_input=False,
-                                                   message='\n-- more --\n',
-                                                   function=None)
-    else:
-        print(table_1)
+    print('')
+    print(f'[Scan Report] {fname}')
+    print('')
+    tabulate_helper.display_rows_interactively(max_limit=75,
+                                               results=_results,
+                                               table=table_1,
+                                               extra_input=False,
+                                               message='\n-- more --\n',
+                                               function=None)
 
 
 async def read_definitions(fname: str) -> tuple:

@@ -9,6 +9,9 @@ import scanfs
 import handler_print
 import variable_paths
 import handler_strings
+import cli_character_limits
+import tabulate
+import tabulate_helper
 
 program_root = variable_paths.get_executable_path()
 
@@ -199,9 +202,31 @@ def run_and_exit(stdin: list, interact: bool):
         suffix_group_name = stdin[stdin.index('-G') + 1]
         handler_print.show_suffix_group(suffix_group_name)
 
-    elif '-O' in stdin:
-        fname = stdin[stdin.index('-O') + 1]
-        asyncio.run(handler_file.read_report(fname=fname, interact=interact))
+    elif '-L' in stdin:
+
+        # get report files
+        i = 0
+        fp = []
+        for dirName, subdir, filelist in os.walk(variable_paths.data_dir_path):
+            for fname in filelist:
+                if fname.endswith('.txt') and 'pre_scan' not in fname:
+                    fp.append([i, os.path.join(dirName, fname)])
+                    i += 1
+
+        # display report files
+        if fp:
+            max_column_width = cli_character_limits.column_width_from_tput(n=2, reduce=0)
+            table_0 = tabulate.tabulate(fp,
+                                        maxcolwidths=[max_column_width, max_column_width],
+                                        headers=(f'Index', 'Files'),
+                                        stralign='left')
+
+            tabulate_helper.display_rows_interactively(max_limit=75,
+                                                       results=fp,
+                                                       table=table_0,
+                                                       extra_input=True,
+                                                       message='\n-- more --\n',
+                                                       function=handler_strings.input_select_report)
 
     elif '-nsfx' in stdin:
         make_suffix_group()
