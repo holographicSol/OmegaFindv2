@@ -8,6 +8,7 @@ import handler_print
 import tabulate
 import tabulate_helper
 import handler_file
+import handler_post_process
 
 x_files = []
 
@@ -50,9 +51,14 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                     i_match += 1
                     pass
     if fp:
-        max_column_width = cli_character_limits.column_width_from_tput(n=2, reduce=0, add=56)
+        max_column_width = cli_character_limits.column_width_from_tput(n=4, reduce=0)
+        max_column_width_tot = max_column_width * 4
+        max_index = handler_post_process.longest_item(fp, idx=0)+5
+        max_dt = handler_post_process.longest_item(fp, idx=1)
+        max_bytes = handler_post_process.longest_item(fp, idx=2)
+        new_max_path = max_column_width_tot - max_index - max_dt - max_bytes - 4
         table_0 = tabulate.tabulate(fp,
-                                    maxcolwidths=[max_column_width, max_column_width, max_column_width, max_column_width],
+                                    maxcolwidths=[max_index, max_dt, max_bytes, new_max_path],
                                     headers=(f'Index', 'Modified', 'Bytes', 'Files'),
                                     stralign='left')
         if interact is True:
