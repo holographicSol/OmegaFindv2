@@ -37,7 +37,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
                                         headers=(f'{_header_0}', 'Errors                ', 'Time                  '),
                                         stralign='right')
             print(table_0)
-            tables.append(table_0)
+            # tables.append(table_0)
             print('')
             print('')
 
