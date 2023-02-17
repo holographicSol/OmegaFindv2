@@ -51,7 +51,6 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         # create results table
         table_1 = tabulate.tabulate(_results,
                                     colalign=('left', 'right', 'right', 'left'),
-                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
                                     headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
                                     stralign='left')
         tables.append(table_1)
@@ -70,6 +69,13 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         # write results
         for table in tables:
             asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
+
+        # create results table
+        table_1 = tabulate.tabulate(_results,
+                                    colalign=('left', 'right', 'right', 'left'),
+                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
+                                    headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
+                                    stralign='left')
 
         # display results tale
         if interact is True:

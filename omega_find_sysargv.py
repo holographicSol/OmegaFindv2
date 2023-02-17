@@ -199,6 +199,10 @@ def run_and_exit(stdin: list, interact: bool):
         suffix_group_name = stdin[stdin.index('-G') + 1]
         handler_print.show_suffix_group(suffix_group_name)
 
+    elif '-O' in stdin:
+        fname = stdin[stdin.index('-O') + 1]
+        asyncio.run(handler_file.read_report(fname=fname, interact=interact))
+
     elif '-nsfx' in stdin:
         make_suffix_group()
 

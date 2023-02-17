@@ -13,6 +13,10 @@ import handler_print
 import variable_paths
 import variable_strings
 import handler_strings
+import tabulate
+import cli_character_limits
+import handler_post_process
+import tabulate_helper
 
 debug = False
 result = []
@@ -41,6 +45,52 @@ async def read_file(file: str):
         async with aiofiles.open(file, mode='r', encoding='utf8') as handle:
             data = await handle.read()
     return data
+
+
+async def read_report(fname: str, interact: bool):
+    _data = await read_file(file=fname)
+
+    # get report subject column indexes
+    _data_split = _data.split('\n')
+    indexes = []
+    for item in _data_split:
+        if item.startswith('---'):
+            item = item.split(' ')
+            indexes = [len(item[0]), len(item[2]), len(item[4]), len(item[6])]
+            break
+
+    # parse report by indexes
+    _results = []
+    for item in _data_split:
+        item_str = str(item)
+        mtime = item_str[:indexes[0]]
+        buff = item_str[indexes[0]:indexes[0]+indexes[1]+2].strip()
+        _bytes = item_str[indexes[0]+indexes[1]+2:indexes[0]+indexes[1]+indexes[2]+4].strip()
+        filepath = item_str[indexes[0]+indexes[1]+indexes[2]+4:indexes[0]+indexes[1]+indexes[2]+indexes[3]+6].strip()
+        _results.append([mtime, buff, _bytes, filepath])
+
+    # enumeration for reasonable column widths
+    max_column_width = cli_character_limits.column_width_from_tput(n=4)
+    max_column_width_tot = max_column_width * 4
+    max_dt = handler_post_process.longest_item(_results, idx=0)
+    max_bytes = handler_post_process.longest_item(_results, idx=2)
+    new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 4
+
+    # create results table
+    table_1 = tabulate.tabulate(_results,
+                                colalign=('left', 'right', 'right', 'left'),
+                                maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
+                                stralign='left')
+    # display results table
+    if interact is True:
+        tabulate_helper.display_rows_interactively(max_limit=75,
+                                                   results=_results,
+                                                   table=table_1,
+                                                   extra_input=False,
+                                                   message='\n-- more --\n',
+                                                   function=None)
+    else:
+        print(table_1)
 
 
 async def read_definitions(fname: str) -> tuple:
