@@ -40,7 +40,7 @@ def omega_help():
     print(' -nsfx    New Suffix Group      Create new custom suffix group.')
     print('')
     print(' -A       Associations          Display buffer associations to specified suffix.')
-    print(' -AV      All Associations      Display all known buffer associations.')
+    print(' -AV      All Associations      Display all known suffix buffer associations.')
     print(' -G       Group                 Display specified suffix group.')
     print(' -I       Interact              Disables interaction. No prompt mode.')
     print(' -L       List Scan Reports     List and select previously completed scan report.')
