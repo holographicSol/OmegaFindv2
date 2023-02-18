@@ -20,13 +20,3 @@ def un_chunk_data(data: list, depth: int) -> list:
                         new_sub_data.append(x)
         new_data = new_sub_data
     return new_data
-
-
-def sub_int_sort(_list: list) -> list:
-    return sorted(_list, key=lambda x: x[0])
-
-
-def rem_tags(_list: list) -> list:
-    for x in _list:
-        x.remove(x[0])
-    return _list

@@ -281,5 +281,4 @@ def rem_dir(path: str):
 
 def call_input_open_dir(_results):
     if handler_strings.input_open_dir(_list=_results) is True:
-        # got digit: ask again
         call_input_open_dir(_results)

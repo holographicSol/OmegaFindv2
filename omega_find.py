@@ -119,8 +119,6 @@ if __name__ == '__main__':
             # post-processing
             if p_scan_bool is True:
                 results = asyncio.run(handler_post_process.pscan(_list=results))
-            elif type_scan_bool is True:
-                results = handler_post_process.typescan(_list=results, _recognized_files=recognized_files)
             elif de_scan_bool is True and extract is True:
                 results = handler_post_process.descan(_list=results, _recognized_files=recognized_files)
 

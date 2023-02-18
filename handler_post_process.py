@@ -3,10 +3,6 @@
 import handler_chunk
 
 
-def typescan(_list: list, _recognized_files: list):
-    return _list
-
-
 def descan(_list: list, _recognized_files: list):
     new = []
     for item in _list:
@@ -56,7 +52,6 @@ def results_filter(_list: list) -> tuple:
 def longest_item(_list: list, idx: int) -> int:
     i_longest = 0
     for item in _list:
-        # print(item)
         try:
             if len(str(item[idx])) >= i_longest:
                 i_longest = len(str(item[idx]))

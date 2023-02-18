@@ -6,7 +6,7 @@ import screeninfo
 
 
 def column_width_from_screen_size_using_ratio(n: int, reduce=0, add=0, ratio=0.134) -> int:
-    """ Default ratio defined for font size 12. """
+    """ Default ratio defined for font size 12 at screen width 1920. """
     w = 64
     for m in screeninfo.get_monitors():
         if m.is_primary is True:

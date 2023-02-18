@@ -58,21 +58,6 @@ def display_exception(_msg: str, e: Exception):
     print(_msg, e)
 
 
-# ------------------------------------------------------------------------------> mode
-def display_mode(_verbose: bool, _mode: str):
-    if _verbose is True:
-        if _mode == '-l':
-            print('Mode: Learning\n\n')
-        elif _mode == '-d':
-            print('Mode: Deobfuscation\n\n')
-        elif _mode == '-t':
-            print('Mode: Type Scan\n\n')
-        elif _mode == '-p':
-            print('Mode: Password Scan\n\n')
-        elif _mode == '-r':
-            print('Mode: Reveal Scan\n\n')
-
-
 # ------------------------------------------------------------------------------> results
 
 def display_prescan_info(_files, _x_files, completion_time):
@@ -84,30 +69,6 @@ def display_prescan_info(_files, _x_files, completion_time):
                             stralign='right'))
     print('')
     print('')
-
-
-def display_reveal_scan_results_overview(_results, _exc, _t_completion):
-    print(f'Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}\n')
-
-
-def display_de_scan_results_overview(_results, _exc, _t_completion):
-    print(f'Found {len(_results)} unrecognized or obfuscated files (errors: {len(_exc)}). time: {_t_completion}\n')
-
-
-def display_type_scan_results_overview(_results, _exc, _t_completion):
-    print(f'Found {len(_results)} files (errors: {len(_exc)}). time: {_t_completion}\n')
-
-
-def display_p_scan_results_overview(_results, _exc, _t_completion):
-    print(f'Found {len(_results)} password protected files (errors: {len(_exc)}). time: {_t_completion}\n')
-
-
-def display_more_results_available():
-    print(' More results available in results file.')
-
-
-def display_search_scan_result(i_match, p):
-    print(f'[{i_match}] {p}')
 
 
 def display_zero_results(_results, _t_completion, _exc, _header_0):
@@ -183,18 +144,6 @@ def show_suffix_group(suffix_group_name: str):
         fo.close()
     if suffix:
         display_suffixes(_msg=f'[ Suffix Group: {suffix_group_name} ]', _list=suffix)
-
-
-def default_suffix_group_compat():
-    i = 0
-    for ext_group in variables_suffix.ext_list:
-        print('')
-        print(f'[ Suffix Group: {variables_suffix.ext_name[i]} ]')
-        print('')
-        chunks = handler_chunk.chunk_data(data=ext_group, chunk_size=6)
-        print(tabulate.tabulate(chunks, tablefmt='plain'))
-        print('')
-        i += 1
 
 
 def display_associations(recognized_files: list, suffixes: list, ext: str, interact: bool):
