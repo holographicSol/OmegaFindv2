@@ -60,9 +60,17 @@ async def read_report(fname: str):
             break
 
     # parse report by indexes
+    headers = []
     _results = []
+    i_line = 0
     for item in _data_split:
-        if item is not None:
+        if i_line == 0:
+            item_str = str(item)
+            item_list = item_str.split('  ')
+            no_empty_strings = [string for string in item_list if string != ""]
+            headers = [no_empty_strings[0], no_empty_strings[1], no_empty_strings[2],
+                       no_empty_strings[3] + '    ' + no_empty_strings[4]]
+        if item is not None and i_line >= 2:
             item_str = str(item)
             try:
                 mtime = item_str[:indexes[0]]
@@ -72,6 +80,7 @@ async def read_report(fname: str):
                 _results.append([mtime, buff, _bytes, filepath])
             except:
                 pass
+        i_line += 1
 
     # enumeration for reasonable column widths
     max_column_width = cli_character_limits.column_width_from_tput(n=4)
@@ -84,10 +93,14 @@ async def read_report(fname: str):
     table_1 = tabulate.tabulate(_results,
                                 colalign=('left', 'right', 'right', 'left'),
                                 maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
-                                stralign='left')
+                                stralign='left',
+                                tablefmt='simple',
+                                headers=(headers[0], headers[1], headers[2], headers[3]))
     # display results table
     print('')
+    print('')
     print(f'[Scan Report] {fname}')
+    print('')
     print('')
     tabulate_helper.display_rows_interactively(max_limit=75,
                                                results=_results,
