@@ -79,6 +79,10 @@ Developer:
     iterables as there is no manager.dict and obviously no previously set globals for
     the child processes. Lines edited: 337, 339, 345.
 
+    Todo: Feed any errors encountered by patool back into the exception log.
+          Refine exception log.
+          Further test extraction compatibilies for adding further extractin compatibility.
+
 
 Extraction Compatibility (Below compatibility accounts for many more file suffixes listed as different suffixes use
     the same compression as below. Like epubs for one example):
@@ -92,5 +96,5 @@ Extraction Compatibility (Below compatibility accounts for many more file suffix
 
 Gratitude and Thanks:
 
-    Powered by asyncio, aiomultiprocess, aiofiles, python-magic, patool and of course
+    Powered by asyncio, aiomultiprocess, aiofiles, python-magic, patool, tabulate and of course
     the python standard library.
