@@ -64,7 +64,7 @@ User:
     * Ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system while also considering buffer_max.
     * If using --extract then ensure sufficient storage in working directory while also considering buffer_max and chunk_max.
     * Recommended use: 1TB external Storage containing omegaFindv2 at root, so that if using -e argument, there
-      is plenty of space available for omegaFindv2's to extract files back into its working directory to scan the
+      is plenty of space available for omegaFindv2 to extract files back into its working directory to scan the
       extracted files. OmegaFindv2 + at least 1TB external drive makes OmegaFindv2 plug n' play on many systems.
 
 
