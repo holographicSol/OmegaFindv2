@@ -34,7 +34,7 @@ def omega_help():
     print('                                archive, audio, book, code, exe, font, image, sheet, slide, text, video, web.')
     print('')
     print(' -db      Database              Specify database to use while learning/scanning.')
-    print(' -e       Extract               Attempt to extract archive while scanning.')
+    print(' -e       Extract               Attempt archive extraction while scanning.')
     print(' -bmax    Buffer Max            Specify in digits maximum number of bytes to read of each file.')
     print(' -cmax    Chunk Max             Specify in digits max items to be processed at any one time.')
     print(' -nsfx    New Suffix Group      Create new custom suffix group.')
