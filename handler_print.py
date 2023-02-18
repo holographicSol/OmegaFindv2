@@ -30,7 +30,7 @@ def omega_help():
     print(' -t       Type                  Display all files of type.')
     print(' -sfx     Suffix                Specify suffix. Used with -t.')
     print(' -csfx    Custom Suffix         Specify custom suffix group. Used with -t.')
-    print(' -gsfx    Group Suffix          Specify default group suffix group. Used with -t.')
+    print(' -gsfx    Group Suffix          Specify default suffix group. Used with -t.')
     print('                                archive, audio, book, code, exe, font, image, sheet, slide, text, video, web.')
     print('')
     print(' -db      Database              Specify database to use while learning/scanning.')
