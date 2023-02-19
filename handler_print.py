@@ -61,7 +61,7 @@ def display_exception(_msg: str, e: Exception):
 # ------------------------------------------------------------------------------> results
 
 def display_prescan_info(_files, _x_files, completion_time):
-    max_column_width = cli_character_limits.column_width_from_tput(n=3)
+    max_column_width = cli_character_limits.column_width_from_shutil(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(completion_time))
     print(tabulate.tabulate([[*[len(_files)], *[len(_x_files)], *[scan_time_human]]],
                             maxcolwidths=[max_column_width, max_column_width],
@@ -73,7 +73,7 @@ def display_prescan_info(_files, _x_files, completion_time):
 
 def display_zero_results(_results, _t_completion, _exc, _header_0):
     _results = []
-    max_column_width = cli_character_limits.column_width_from_tput(n=3)
+    max_column_width = cli_character_limits.column_width_from_shutil(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
     table_0 = tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
                                 maxcolwidths=[max_column_width, max_column_width, max_column_width],
@@ -154,7 +154,7 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
 
     if table_list:
         # enumeration for reasonable column widths
-        max_column_width = cli_character_limits.column_width_from_tput(n=2)
+        max_column_width = cli_character_limits.column_width_from_shutil(n=2)
         max_column_width_tot = max_column_width * 2
         max_0 = handler_post_process.longest_item(table_list, idx=0)
         new_max_path = max_column_width_tot - max_0 - 1
@@ -179,7 +179,7 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
 
     if recognized_files:
         # enumeration for reasonable column widths
-        max_column_width = cli_character_limits.column_width_from_tput(n=2)
+        max_column_width = cli_character_limits.column_width_from_shutil(n=2)
         max_column_width_tot = max_column_width * 2
         max_0 = handler_post_process.longest_item(recognized_files, idx=0)
         new_max_path = max_column_width_tot - max_0 - 1

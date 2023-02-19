@@ -3,6 +3,7 @@
 import os
 import subprocess
 import screeninfo
+import shutil
 
 
 def column_width_from_screen_size_using_ratio(n: int, reduce=0, add=0, ratio=0.134) -> int:
@@ -20,6 +21,11 @@ def column_width_from_os_get_terminal_size(n: int, reduce=0, add=0) -> int:
 
 def column_width_from_tput(n: int, reduce=0, add=0) -> int:
     w = int(int(int(subprocess.Popen(['tput', 'cols'], stdout=subprocess.PIPE).communicate()[0].strip())) / set_n(n))
+    return add_sub(n=w, reduce=reduce, add=add)
+
+
+def column_width_from_shutil(n: int, reduce=0, add=0):
+    w = int(int(shutil.get_terminal_size().columns) / int(set_n(n)))
     return add_sub(n=w, reduce=reduce, add=add)
 
 

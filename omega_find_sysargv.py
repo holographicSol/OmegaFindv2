@@ -215,7 +215,7 @@ def run_and_exit(stdin: list, interact: bool):
 
         # display report files
         if fp:
-            max_column_width = cli_character_limits.column_width_from_tput(n=2, reduce=0)
+            max_column_width = cli_character_limits.column_width_from_shutil(n=2, reduce=0)
             table_0 = tabulate.tabulate(fp,
                                         maxcolwidths=[max_column_width, max_column_width],
                                         headers=(f'Index', 'Files'),

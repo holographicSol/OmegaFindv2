@@ -83,7 +83,7 @@ async def read_report(fname: str):
         i_line += 1
 
     # enumeration for reasonable column widths
-    max_column_width = cli_character_limits.column_width_from_tput(n=4)
+    max_column_width = cli_character_limits.column_width_from_shutil(n=4)
     max_column_width_tot = max_column_width * 4
     max_dt = handler_post_process.longest_item(_results, idx=0)
     max_bytes = handler_post_process.longest_item(_results, idx=2)

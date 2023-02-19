@@ -64,7 +64,6 @@ if __name__ == '__main__':
 
     # check for light requests.
     if omega_find_sysargv.run_and_exit(stdin=STDIN, interact=interact) is False:
-
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
         mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix, reveal_scan_bool = omega_find_sysargv.mode(STDIN)
         if type_scan_bool is True and not len(type_suffix) >= 1:

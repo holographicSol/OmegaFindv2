@@ -51,7 +51,7 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                     i_match += 1
                     pass
     if fp:
-        max_column_width = cli_character_limits.column_width_from_tput(n=4, reduce=0)
+        max_column_width = cli_character_limits.column_width_from_shutil(n=4, reduce=0)
         max_column_width_tot = max_column_width * 4
         max_index = handler_post_process.longest_item(fp, idx=0)+5
         max_dt = handler_post_process.longest_item(fp, idx=1)
