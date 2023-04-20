@@ -139,9 +139,12 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
         output = xcmd.stdout.readline()
         if output == '' and xcmd.poll() is not None:
             break
-        if output and _verbose is True:
+        if output:
             output_str = str(output.decode("utf-8").strip())
-            print(output_str)
+            if _verbose is True:
+                print(output_str)
+            if 'Error' in output_str:
+                break
         else:
             break
     rc = xcmd.poll()
@@ -151,44 +154,87 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
 
 async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _program_root: str) -> list:
     """ todo -->
-    Intention: File reader method filter for string matching.
-               Methods should be filtered by buffer not a fname suffix (for power).
-    * add further compatibility:
-        1. anything incompatible with unoconv.
-        2. anything that although compatible with unoconv that would also be faster to not convert to .txt.
+    Intention: Filter different types of files into different read functions and then parse the file contents
+               for _query.
+    Adding compatibility:
+        Try do do as much in memory as possible.
+        Try to avoid defaulting to unoconv (to avoid touching disk and for speed/efficiency).
+        Develop both standard_read_filters and unoconv_read_filters by analyzing files extensively (time consuming).
+        Performance can greatly improve by developing standard_read_filters and unoconv_read_filters and by adding
+        more compatibility before resorting to unoconv.
     """
+
+    # Buffers for standard read filter
+    standard_read_filters = ['ASCII text',
+                             'XML',
+                             'Rich Text Format']
+
+    # Buffers for unoconv filter  # uncomment to use this filter (this filter is incomplete).
+    # unoconv_read_filters = ['Composite Document File V2 Document',
+    #                         'OpenDocument Text',
+    #                         'OpenDocument Text Template']
 
     if _verbose is True:
         print(f'scanning: {file}')
 
-    if 'ASCII text' in _buffer:
-        _result = await str_in_txt(file_in=file, _search_str=_query)
-        if _result:
-            return [_result]
+    read_mode = int(0)
 
-    elif 'PDF' in _buffer:
-        _result = await str_in_pdf(file_in=file, _search_str=_query)
-        if _result:
-            return [_result]
+    # PDF: Specific PDF method
+    if read_mode is int(0):
+        if 'PDF' in _buffer:
+            if _verbose is True:
+                print(f'-- using pdf-method: {file}')
+            read_mode = int(1)
+            _result = await str_in_pdf(file_in=file, _search_str=_query)
+            if _result:
+                return [_result]
 
-    elif 'EPUB' in _buffer:
-        _result = await str_in_epub(file_in=file, _search_str=_query)
-        if _result:
-            return [_result]
+    # EPUB Specific EPUB method
+    if read_mode is int(0):
+        if 'EPUB' in _buffer:
+            if _verbose is True:
+                print(f'-- using epub-method: {file}')
+            read_mode = int(1)
+            _result = await str_in_epub(file_in=file, _search_str=_query)
+            if _result:
+                return [_result]
 
-    else:
-        """ todo (next up) --> limit unoconv fallback to only certain files (using buffer matching) """
+    # Standard Filter (Text) Examples: txt, html, xml, sh, py, etc.
+    # This method covers a lot of different file types both executable and non-executable.
+    if read_mode is int(0):
+        for standard_read_filter in standard_read_filters:
+            if standard_read_filter in _buffer:
+                if _verbose is True:
+                    print(f'-- using standard-method: {file}')
+                read_mode = int(1)
+                _result = await str_in_txt(file_in=file, _search_str=_query)
+                if _result:
+                    return [_result]
+
+    # Unoconv Filter (Documents) Examples: docx, otg, ott, odt, odd, etc.
+    if read_mode is int(0):
+        # unoconv_read_filters is incomplete and would take a great amount of work, however can greatly speed things
+        # up if used, for now the filter is not in use, (it's your life).
+        # uncomment to use unoconv_read_filter anyway (not recommended unless unoconv_read_filter list is more complete)
+        # for unoconv_read_filter in unoconv_read_filters:
+        #     if unoconv_read_filter in _buffer:
+        if _verbose is True:
+            print(f'-- using unoconv-method: {file}')
+
         _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
                                                       _verbose=_verbose)
         if _tmp_file:
-            if _verbose is True:
-                print(f'-- attempting to read: {_tmp_file}')
+            read_mode = int(1)
             _result = await str_in_txt(file_in=_tmp_file, _search_str=_query)
             if os.path.exists(_tmp_dir):
                 handler_file.rem_dir(path=_tmp_dir)
-            _result[1] = file
+
             if _result:
+                _result = file
                 return [_result]
+
+    if read_mode is int(0):
+        print(f'-- add compatibility for: {file}')
 
 
 async def read_report(fname: str):
