@@ -177,6 +177,7 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
             return [_result]
 
     else:
+        """ todo (next up) --> limit unoconv fallback to only certain files (using buffer matching) """
         _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
                                                       _verbose=_verbose)
         if _tmp_file:
