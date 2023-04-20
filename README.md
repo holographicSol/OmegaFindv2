@@ -60,7 +60,7 @@ Help:
     [Author] Developed and written by Benjamin Jack Cullen.
 
 Download executable and source code bundled with compatible LibreOffice version:
-
+    !UPDATE IN PROGRESS! I WILL REMOVE THIS LINE ONCE UPLOAD IS COMPLETE.
     https://drive.google.com/drive/folders/16z-UuosDoe2DnTaiCxjqh-Sh8RUYtPC2?usp=sharing
 
 
