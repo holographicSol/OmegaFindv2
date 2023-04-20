@@ -18,19 +18,22 @@ program_root = variable_paths.get_executable_path()
 
 def mode(stdin: list) -> tuple:
     # modes: learn, de-obfuscation, type-scan, password-protected-scan, reveal-scan.
-    modes = ['-l', '-d', '-t', '-p', '-r']
+    modes = ['-l', '-d', '-t', '-p', '-r', '-c']
     _mode = ''
     learn = False
     de_scan = False
     type_scan = False
     p_scan = False
     reveal_scan = False
+    contents_scan = False
     suffix = []
     for m in modes:
         if m in stdin:
             _mode = m
     if _mode == '-l':
         learn = True
+    elif _mode == '-c':
+        contents_scan = True
     elif _mode == '-d':
         de_scan = True
     elif _mode == '-p':
@@ -75,11 +78,24 @@ def mode(stdin: list) -> tuple:
                     suffix = sfx_group
             else:
                 handler_print.display_no_custom_suffix()
-    return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan
+    return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan, contents_scan
 
 
 def target(stdin: list, _mode) -> str:
     return stdin[stdin.index(_mode)+1]
+
+
+def query(stdin: list) -> str:
+    _query = ''
+    if '-q' in stdin:
+        idx = stdin.index('-q')+1
+        i = 0
+        for x in stdin:
+            if i >= idx:
+                _query = _query + ' ' + x
+            i += 1
+        _query = _query.strip()
+    return _query
 
 
 def chunk_max(stdin: list) -> int:

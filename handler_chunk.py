@@ -14,9 +14,10 @@ def un_chunk_data(data: list, depth: int) -> list:
     for i in range(0, depth):
         new_sub_data = []
         for dat in new_data:
-            for x in dat:
-                if x is not None:
-                    if x not in new_sub_data:
-                        new_sub_data.append(x)
+            if dat is not None:
+                for x in dat:
+                    if x is not None:
+                        if x not in new_sub_data:
+                            new_sub_data.append(x)
         new_data = new_sub_data
     return new_data

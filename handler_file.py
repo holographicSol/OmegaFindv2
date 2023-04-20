@@ -17,6 +17,16 @@ import tabulate
 import cli_character_limits
 import handler_post_process
 import tabulate_helper
+import PyPDF2
+import ebooklib
+from ebooklib import epub
+import subprocess
+import handler_file
+
+info = subprocess.STARTUPINFO()
+info.dwFlags = 1
+info.wShowWindow = 0
+main_pid = int()
 
 debug = False
 result = []
@@ -39,12 +49,145 @@ async def async_read_bytes(file: str, _buffer_max: int) -> bytes:
     return await asyncio.to_thread(file_sub_ops, _bytes)
 
 
-async def read_file(file: str):
+async def read_file(file: str) -> list:
     data = []
     if os.path.exists(file):
         async with aiofiles.open(file, mode='r', encoding='utf8') as handle:
             data = await handle.read()
     return data
+
+
+async def async_read_all_bytes(file: str) -> list:
+    data = []
+    if os.path.exists(file):
+        async with aiofiles.open(file, mode='rb') as handle:
+            data = await handle.read()
+    return data
+
+
+def pytopdf_read(pdf_file: str):
+    return PyPDF2.PdfReader(pdf_file, strict=False)
+
+
+def pytopdf_get_pages(pdf_reader) -> int:
+    return len(pdf_reader.pages)
+
+
+def pytoodf_extract(page_num: int, _search_str: str, pdf_reader):
+    page_text = pdf_reader.pages[page_num].extract_text()
+    return page_text
+
+
+def string_match(_search_str: str, _text: str):
+    if handler_strings.canonical_caseless(_search_str) in handler_strings.canonical_caseless(_text):
+        return True
+
+
+def read_all_bytes(file_in: str):
+    return open(file_in, 'rb')
+
+
+async def str_in_pdf(file_in='', _search_str=''):
+    """ look for search_str in file """
+    try:
+        pdf_file = await asyncio.to_thread(read_all_bytes, file_in=file_in)
+        pdf_reader = await asyncio.to_thread(pytopdf_read, pdf_file=pdf_file)
+        n_pages = await asyncio.to_thread(pytopdf_get_pages, pdf_reader=pdf_reader)
+        for page_num in range(n_pages):
+            _text = await asyncio.to_thread(pytoodf_extract,
+                                            page_num=page_num, pdf_reader=pdf_reader, _search_str=_search_str)
+            _text = str(_text).strip()
+            _result = await asyncio.to_thread(string_match, _search_str=_search_str, _text=_text)
+            if _result is True:
+                pdf_file.close()
+                return file_in
+        pdf_file.close()
+    except Exception as e:
+        print(f'{e} {file_in}')
+        return ['[ERROR] ', str(e), str(file_in)]
+
+
+async def str_in_epub(file_in='', _search_str=''):
+
+    book = epub.read_epub(file_in)
+    for item in book.get_items():
+        if item.get_type() == ebooklib.ITEM_DOCUMENT:
+            content = item.get_content()
+            if handler_strings.canonical_caseless(_search_str) in handler_strings.canonical_caseless(str(content)).strip():
+                return file_in
+
+
+async def str_in_txt(file_in='', _search_str=''):
+    with codecs.open(file_in, 'r', encoding='utf8') as fo:
+        for line in fo:
+            line = line.strip()
+            if string_match(_search_str=_search_str, _text=line) is True:
+                return file_in
+
+
+def convert_all_to_text(file_in='', _program_root='', _verbose=False):
+    _tmp_dir = _program_root + '\\tmp\\' + str(handler_strings.randStr()) + '\\'
+    filename_idx = file_in.rfind('\\')
+    filename = file_in[filename_idx:]
+    _tmp = _tmp_dir + filename+'.txt'
+
+    cmd = '"./python.exe" ./unoconv/unoconv -o "' + _tmp + '" -f txt "' + file_in + '"'
+    if _verbose is True:
+        print(f'-- running command: {cmd}')
+    xcmd = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, startupinfo=info)
+    while True:
+        output = xcmd.stdout.readline()
+        if output == '' and xcmd.poll() is not None:
+            break
+        if output and _verbose is True:
+            output_str = str(output.decode("utf-8").strip())
+            print(output_str)
+        else:
+            break
+    rc = xcmd.poll()
+    if os.path.exists(_tmp):
+        return _tmp, _tmp_dir
+
+
+async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _program_root: str) -> list:
+    """ todo -->
+    Intention: File reader method filter for string matching.
+               Methods should be filtered by buffer not a fname suffix (for power).
+    * add further compatibility:
+        1. anything incompatible with unoconv.
+        2. anything that although compatible with unoconv that would also be faster to not convert to .txt.
+    """
+
+    if _verbose is True:
+        print(f'scanning: {file}')
+
+    if 'ASCII text' in _buffer:
+        _result = await str_in_txt(file_in=file, _search_str=_query)
+        if _result:
+            return [_result]
+
+    elif 'PDF' in _buffer:
+        _result = await str_in_pdf(file_in=file, _search_str=_query)
+        if _result:
+            return [_result]
+
+    elif 'EPUB' in _buffer:
+        _result = await str_in_epub(file_in=file, _search_str=_query)
+        if _result:
+            return [_result]
+
+    else:
+        _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
+                                                      _verbose=_verbose)
+        if _tmp_file:
+            if _verbose is True:
+                print(f'-- attempting to read: {_tmp_file}')
+            _result = await str_in_txt(file_in=_tmp_file, _search_str=_query)
+            if os.path.exists(_tmp_dir):
+                handler_file.rem_dir(path=_tmp_dir)
+            _result[1] = file
+            if _result:
+                return [_result]
 
 
 async def read_report(fname: str):

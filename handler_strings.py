@@ -9,6 +9,7 @@ import variable_strings
 import handler_print
 import asyncio
 import handler_file
+import unicodedata
 
 
 def get_dt() -> str:
@@ -17,6 +18,14 @@ def get_dt() -> str:
 
 def randStr(chars=string.ascii_uppercase + string.digits, n=32) -> str:
     return ''.join(random.choice(chars) for _ in range(n))
+
+
+def NFD(text):
+    return unicodedata.normalize('NFD', text)
+
+
+def canonical_caseless(text):
+    return NFD(NFD(text).casefold())
 
 
 def sub_str(_buffer: bytes) -> str:
