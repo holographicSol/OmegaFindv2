@@ -58,6 +58,14 @@ Help:
     [Author] Developed and written by Benjamin Jack Cullen.
 
 
+Requirements:
+
+    * LibreOffice_7.5.2_Win_x86-64.msi (This specific version of LibreOffice is currently required to ensure
+      compatibiity between unoconv and the bundled python.exe version 3.11.2 so that unoconv can work correctly).
+      I will try to bundle a portable LibreOffice with OmegaFindv2 to remove the LibreOffice installation dependancy.
+      Unoconv is required to work properly only if OmegaFindv2 -c (contents scan) argument is used. 
+
+
 User:
 
     * Portable. Except where sys.executabe path may not be path to omega_find.exe.
