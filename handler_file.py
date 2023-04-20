@@ -167,7 +167,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     # Buffers for standard read filter
     standard_read_filters = ['ASCII text',
                              'XML',
-                             'Rich Text Format']
+                             'Rich Text Format',
+                             'UTF-8 Unicode text']
 
     # Buffers for unoconv filter  # uncomment to use this filter (this filter is incomplete).
     # unoconv_read_filters = ['Composite Document File V2 Document',
