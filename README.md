@@ -107,5 +107,5 @@ Extraction Compatibility (Below compatibility accounts for many more file suffix
 
 Gratitude and Thanks:
 
-    Powered by asyncio, aiomultiprocess, aiofiles, python-magic, patool, tabulate and of course
+    Powered by asyncio, aiomultiprocess, aiofiles, python-magic, patool, tabulate, unoconv and of course
     the python standard library.
