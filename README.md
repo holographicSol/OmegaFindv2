@@ -30,10 +30,12 @@ Help:
     [OmegaFind v2] Forensics tool. Search differently.
     
      -l       Learn                 Specify location to learn from.
+     -c       Contents Scan         Specify a directory in which file contents will be scanned.
      -d       De-Obfuscation        Attempt to find files where suffix does not match contents.
      -p       Password Protected    Only scan for password protected archives.
      -r       Reveal                Display all file types.
      -t       Type                  Display all files of type.
+     -q       Query                 Specify a search query. Used with -c. -c PATH -q QUERY.
      -sfx     Suffix                Specify suffix. Used with -t.
      -csfx    Custom Suffix         Specify custom suffix group. Used with -t.
      -gsfx    Group Suffix          Specify default suffix group. Used with -t.
@@ -42,7 +44,7 @@ Help:
      -db      Database              Specify database to use while learning/scanning.
      -e       Extract               Attempt archive extraction while scanning.
      -bmax    Buffer Max            Specify in digits maximum number of bytes to read of each file.
-     -cmax    Chunk Max             Specify in digits max items to be processed at any one time.
+     -cmax    Chunk Max             Specify in digits max chunk size.
      -nsfx    New Suffix Group      Create new custom suffix group.
     
      -A       Associations          Display buffer associations to specified suffix.
@@ -56,7 +58,6 @@ Help:
      -h       Help                  Display this help message.
     
     [Author] Developed and written by Benjamin Jack Cullen.
-
 
 Download executable and source code bundled with compatible LibreOffice version:
 
