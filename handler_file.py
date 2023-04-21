@@ -4,6 +4,8 @@ import datetime
 import os
 import re
 import codecs
+import time
+
 import aiofiles
 import asyncio
 import magic
@@ -103,7 +105,7 @@ async def str_in_pdf(file_in='', _search_str=''):
                 return file_in
         pdf_file.close()
     except Exception as e:
-        print(f'{e} {file_in}')
+        # print(f'{e} {file_in}')
         return ['[ERROR] ', str(e), str(file_in)]
 
 
@@ -135,6 +137,7 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
     if _verbose is True:
         print(f'-- running command: {cmd}')
     xcmd = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, startupinfo=info)
+    try_again = False
     while True:
         output = xcmd.stdout.readline()
         if output == '' and xcmd.poll() is not None:
@@ -143,11 +146,16 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
             output_str = str(output.decode("utf-8").strip())
             if _verbose is True:
                 print(output_str)
-            if 'Error' in output_str:
+            if 'Error' in output_str or 'Exception' in output or 'UnoException' in output_str or 'untimeException' in output_str:
+                try_again = True
                 break
+            break
         else:
             break
     rc = xcmd.poll()
+    if try_again is True:
+        time.sleep(1)
+        convert_all_to_text(file_in=file_in, _program_root=_program_root, _verbose=_verbose)
     if os.path.exists(_tmp):
         return _tmp, _tmp_dir
 
@@ -164,16 +172,18 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
         more compatibility before resorting to unoconv.
     """
 
-    # Buffers for standard read filter
+    # Buffers for standard read filter (this filter is incomplete).
     standard_read_filters = ['ASCII text',
                              'XML',
                              'Rich Text Format',
-                             'UTF-8 Unicode text']
+                             'UTF-8 Unicode text',
+                             'UTF-8 Unicode (with BOM) text']
 
     # Buffers for unoconv filter  # uncomment to use this filter (this filter is incomplete).
-    # unoconv_read_filters = ['Composite Document File V2 Document',
-    #                         'OpenDocument Text',
-    #                         'OpenDocument Text Template']
+    unoconv_read_filters = ['Composite Document File V2 Document',
+                            'OpenDocument Text',
+                            'OpenDocument Text Template',
+                            'Zip archive data']
 
     if _verbose is True:
         print(f'scanning: {file}')
@@ -214,25 +224,23 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
 
     # Unoconv Filter (Documents) Examples: docx, otg, ott, odt, odd, etc.
     if read_mode is int(0):
-        # unoconv_read_filters is incomplete and would take a great amount of work, however can greatly speed things
-        # up if used, for now the filter is not in use, (it's your life).
-        # uncomment to use unoconv_read_filter anyway (not recommended unless unoconv_read_filter list is more complete)
-        # for unoconv_read_filter in unoconv_read_filters:
-        #     if unoconv_read_filter in _buffer:
-        if _verbose is True:
-            print(f'-- using unoconv-method: {file}')
+        for unoconv_read_filter in unoconv_read_filters:
+            if unoconv_read_filter in _buffer:
+                if _verbose is True:
+                    print(f'-- using unoconv-method: {file}')
 
-        _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
-                                                      _verbose=_verbose)
-        if _tmp_file:
-            read_mode = int(1)
-            _result = await str_in_txt(file_in=_tmp_file, _search_str=_query)
-            if os.path.exists(_tmp_dir):
-                handler_file.rem_dir(path=_tmp_dir)
+                _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
+                                                              _verbose=_verbose)
+                if _tmp_file:
+                    read_mode = int(1)
+                    _result = await str_in_txt(file_in=_tmp_file, _search_str=_query)
+                    if os.path.exists(_tmp_dir):
+                        handler_file.rem_dir(path=_tmp_dir)
 
-            if _result:
-                _result = file
-                return [_result]
+                    if _result:
+                        _result = file
+                        return [_result]
+                    break
 
     if read_mode is int(0):
         print(f'-- add compatibility for: {file}')
