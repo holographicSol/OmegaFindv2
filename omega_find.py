@@ -83,6 +83,7 @@ if __name__ == '__main__':
             extract = omega_find_sysargv.extract(STDIN)
             query = omega_find_sysargv.query(STDIN)
             sort_mode = omega_find_sysargv.sort_mode(STDIN)
+            write_bool = omega_find_sysargv.write_bool(STDIN)
 
             if os.path.exists(target) and os.path.exists(db_recognized_files):
 
@@ -106,8 +107,10 @@ if __name__ == '__main__':
                     files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose, _recursive=recursive)
                 elif os.path.isfile(target):
                     files = [target]
-                asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
-                asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
+
+                if write_bool is True:
+                    asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
+                    asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
                 # chunk data ready for async multiprocess
                 chunks = handler_chunk.chunk_data(files, chunk_max)
@@ -138,7 +141,8 @@ if __name__ == '__main__':
                 # for result in results:
                 #     print(result)
                 exc, results = handler_post_process.results_filter(results)
-                asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
+                if write_bool is True:
+                    asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
                 # post-processing
                 if p_scan_bool is True:
@@ -175,7 +179,7 @@ if __name__ == '__main__':
                                                   _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool,
                                                   _t_completion=t_completion, _extract=extract, _verbose=verbose,
                                                   _pre_scan_time=pre_scan_time, interact=interact,
-                                                  _contents_scan=contents_scan, _query=query)
+                                                  _contents_scan=contents_scan, _query=query, write_bool=write_bool)
 
                 # final clean of tmp
                 if os.path.exists(variable_paths.tmp_dir_path):

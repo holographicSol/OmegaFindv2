@@ -47,6 +47,7 @@ def omega_help():
     print(' -G       Group                 Display specified suffix group.')
     print(' -I       Interact              Disables interaction. No prompt mode.')
     print(' -L       List Scan Reports     List and select previously completed scan report.')
+    print(' -O       Write Output          Save logging and results to file. Takes no further arguments.')
     print(' -R       Recursive             Scan directories recursively. (Scans all sub-directories).')
     print(' -XP      Experience            Display how many associations have been learned.')
     print('')

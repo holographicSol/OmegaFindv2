@@ -208,6 +208,13 @@ def sort_mode(stdin: list) -> str:
     return _sort_mode
 
 
+def write_bool(stdin: list) -> bool:
+    _write_bool = False
+    if '-O' in stdin:
+        _write_bool = True
+    return _write_bool
+
+
 def loop_scandir_results(_list: list):
     try:
         handler_strings.input_open_dir(_list=_list)

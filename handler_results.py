@@ -25,7 +25,7 @@ def learn_result_handler_display(_results: list, _exc: list, _t_completion: str,
 def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool,
                            _de_scan_bool: bool, _type_scan_bool: bool, _p_scan: bool,
                            _reveal_scan: bool, _dt: str, _header_0: str,
-                           interact: bool, _contents_scan: bool, write_bool=True, _query=''):
+                           interact: bool, _contents_scan: bool, write_bool: bool, _query=''):
     if len(_results) >= 1:
         tables = []
         max_column_width = cli_character_limits.column_width_from_shutil(n=3)
@@ -95,7 +95,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
 def result_handler_extract_method_0(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str,
                                     _verbose: bool, _de_scan_bool: bool,
                                     _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
-                                    interact: bool, _contents_scan: bool, write_bool=True):
+                                    interact: bool, _contents_scan: bool, write_bool: bool):
     _sub_results = []
     for result in _results:
         for sub_result in result:
@@ -113,13 +113,14 @@ def result_handler_extract_method_0(_results: list, _exc: list, _t_completion: s
                            _dt=_dt,
                            _header_0=_header_0,
                            interact=interact,
-                           _contents_scan=_contents_scan)
+                           _contents_scan=_contents_scan,
+                           write_bool=write_bool)
 
 
 def result_handler_extract_method_1(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str,
                                     _verbose: bool, _de_scan_bool: bool,
                                     _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
-                                    interact: bool, _contents_scan: bool, write_bool=True):
+                                    interact: bool, _contents_scan: bool, write_bool: bool):
 
     _sub_results = []
     for result in _results:
@@ -144,13 +145,14 @@ def result_handler_extract_method_1(_results: list, _exc: list, _t_completion: s
                            _dt=_dt,
                            _header_0=_header_0,
                            interact=interact,
-                           _contents_scan=_contents_scan)
+                           _contents_scan=_contents_scan,
+                           write_bool=write_bool)
 
 
 def result_handler_de_scan(_results: list, _extract: bool, _exc: list, _t_completion: str, _pre_scan_time: str,
                            _verbose: bool, _de_scan_bool: bool,
                            _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
-                           interact: bool, _contents_scan: bool, write_bool=True):
+                           interact: bool, _contents_scan: bool, write_bool: bool):
     if _extract is False:
         result_handler_display(_results=_results,
                                _exc=_exc,
@@ -164,7 +166,8 @@ def result_handler_de_scan(_results: list, _extract: bool, _exc: list, _t_comple
                                _dt=_dt,
                                _header_0=_header_0,
                                interact=interact,
-                               _contents_scan=_contents_scan)
+                               _contents_scan=_contents_scan,
+                               write_bool=write_bool)
     elif _extract is True:
         result_handler_extract_method_0(_results=_results,
                                         _exc=_exc,
@@ -178,13 +181,14 @@ def result_handler_de_scan(_results: list, _extract: bool, _exc: list, _t_comple
                                         _dt=_dt,
                                         _header_0=_header_0,
                                         interact=interact,
-                                        _contents_scan=_contents_scan)
+                                        _contents_scan=_contents_scan,
+                                        write_bool=write_bool)
 
 
 def result_handler_type_scan(_results: list, _extract: bool, _exc: list, _t_completion: str, _pre_scan_time: str,
                              _verbose: bool, _de_scan_bool: bool,
                              _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
-                             interact: bool, _contents_scan: bool, write_bool=True):
+                             interact: bool, _contents_scan: bool, write_bool: bool):
     if _extract is False:
         result_handler_display(_results=_results,
                                _exc=_exc,
@@ -198,7 +202,8 @@ def result_handler_type_scan(_results: list, _extract: bool, _exc: list, _t_comp
                                _dt=_dt,
                                _header_0=_header_0,
                                interact=interact,
-                               _contents_scan=_contents_scan)
+                               _contents_scan=_contents_scan,
+                               write_bool=write_bool)
 
     elif _extract is True:
         result_handler_extract_method_0(_results=_results,
@@ -213,13 +218,14 @@ def result_handler_type_scan(_results: list, _extract: bool, _exc: list, _t_comp
                                         _dt=_dt,
                                         _header_0=_header_0,
                                         interact=interact,
-                                        _contents_scan=_contents_scan)
+                                        _contents_scan=_contents_scan,
+                                        write_bool=write_bool)
 
 
 def result_handler_p_scan(_results: list, _extract: bool, _exc: list, _t_completion: str, _pre_scan_time: str,
                           _verbose: bool, _de_scan_bool: bool,
                           _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
-                          interact: bool, _contents_scan: bool, write_bool=True):
+                          interact: bool, _contents_scan: bool, write_bool: bool):
     result_handler_display(_results=_results,
                            _exc=_exc,
                            _t_completion=_t_completion,
@@ -232,13 +238,14 @@ def result_handler_p_scan(_results: list, _extract: bool, _exc: list, _t_complet
                            _dt=_dt,
                            _header_0=_header_0,
                            interact=interact,
-                           _contents_scan=_contents_scan)
+                           _contents_scan=_contents_scan,
+                           write_bool=write_bool)
 
 
 def result_handler_reveal_scan(_results: list, _extract: bool, _exc: list, _t_completion: str, _pre_scan_time: str,
                                _verbose: bool, _de_scan_bool: bool,
                                _type_scan_bool: bool, _p_scan: bool, _reveal_scan: bool, _dt: str, _header_0: str,
-                               interact: bool, _contents_scan: bool, write_bool=True):
+                               interact: bool, _contents_scan: bool, write_bool: bool):
     if _extract is False:
         result_handler_display(_results=_results,
                                _exc=_exc,
@@ -252,7 +259,8 @@ def result_handler_reveal_scan(_results: list, _extract: bool, _exc: list, _t_co
                                _dt=_dt,
                                _header_0=_header_0,
                                interact=interact,
-                               _contents_scan=_contents_scan)
+                               _contents_scan=_contents_scan,
+                               write_bool=write_bool)
     elif _extract is True:
         result_handler_extract_method_1(_results=_results,
                                         _exc=_exc,
@@ -266,13 +274,14 @@ def result_handler_reveal_scan(_results: list, _extract: bool, _exc: list, _t_co
                                         _dt=_dt,
                                         _header_0=_header_0,
                                         interact=interact,
-                                        _contents_scan=_contents_scan)
+                                        _contents_scan=_contents_scan,
+                                        write_bool=write_bool)
 
 
 def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bool, _de_scan_bool: bool,
                       _type_scan_bool: bool, _p_scan: bool, _dt: str, _exc: list, _reveal_scan: bool,
                       _t_completion: str, _extract: bool, _verbose: bool, _pre_scan_time: str,
-                      interact: bool, _contents_scan: bool, _query: str):
+                      interact: bool, _contents_scan: bool, _query: str, write_bool: bool):
 
     if _verbose is True:
         print('')
@@ -316,7 +325,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                            _dt=_dt,
                                            _header_0=header_0,
                                            interact=interact,
-                                           _contents_scan=_contents_scan)
+                                           _contents_scan=_contents_scan,
+                                           write_bool=write_bool)
 
                 elif _type_scan_bool is True:
                     result_handler_type_scan(_results=_results,
@@ -332,7 +342,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                              _dt=_dt,
                                              _header_0=header_0,
                                              interact=interact,
-                                             _contents_scan=_contents_scan)
+                                             _contents_scan=_contents_scan,
+                                             write_bool=write_bool)
 
                 elif _p_scan is True:
                     result_handler_p_scan(_results=_results,
@@ -348,7 +359,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                           _dt=_dt,
                                           _header_0=header_0,
                                           interact=interact,
-                                          _contents_scan=_contents_scan)
+                                          _contents_scan=_contents_scan,
+                                          write_bool=write_bool)
 
                 elif _reveal_scan is True:
                     result_handler_reveal_scan(_results=_results,
@@ -364,7 +376,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                                _dt=_dt,
                                                _header_0=header_0,
                                                interact=interact,
-                                               _contents_scan=_contents_scan)
+                                               _contents_scan=_contents_scan,
+                                               write_bool=write_bool)
 
                 elif _contents_scan is True:
                     result_handler_display(_results=_results,
@@ -380,7 +393,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                            _header_0=header_0,
                                            interact=interact,
                                            _contents_scan=_contents_scan,
-                                           _query=_query)
+                                           _query=_query,
+                                           write_bool=write_bool)
             else:
                 if _verbose is True:
                     handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
