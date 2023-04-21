@@ -185,6 +185,29 @@ def interactive(stdin: list) -> bool:
     return interact
 
 
+def sort_mode(stdin: list) -> str:
+    _sort_mode = '--sort=mtime'
+
+    if '--sort=mtime' in stdin:
+        _sort_mode = '--sort=mtime'
+    elif '--sort=buffer' in stdin:
+        _sort_mode = '--sort=buffer'
+    elif '--sort=size' in stdin:
+        _sort_mode = '--sort=size'
+    elif '--sort=file' in stdin:
+        _sort_mode = '--sort=file'
+
+    elif '--sort-reverse=mtime' in stdin:
+        _sort_mode = '--sort-reverse=mtime'
+    elif '--sort-reverse=buffer' in stdin:
+        _sort_mode = '--sort-reverse=buffer'
+    elif '--sort-reverse=size' in stdin:
+        _sort_mode = '--sort-reverse=size'
+    elif '--sort-reverse=file' in stdin:
+        _sort_mode = '--sort-reverse=file'
+    return _sort_mode
+
+
 def loop_scandir_results(_list: list):
     try:
         handler_strings.input_open_dir(_list=_list)

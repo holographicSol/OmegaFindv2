@@ -82,6 +82,7 @@ if __name__ == '__main__':
             db_recognized_files = omega_find_sysargv.database(STDIN)
             extract = omega_find_sysargv.extract(STDIN)
             query = omega_find_sysargv.query(STDIN)
+            sort_mode = omega_find_sysargv.sort_mode(STDIN)
 
             if os.path.exists(target) and os.path.exists(db_recognized_files):
 
@@ -147,6 +148,25 @@ if __name__ == '__main__':
                 elif contents_scan is True and extract is True:
                     # results = asyncio.run(handler_post_process.cscan(_list=results))
                     results = handler_chunk.un_chunk_data(results, depth=1)
+
+                # sort
+                if sort_mode == '--sort=mtime':
+                    results = sorted(results, key=lambda x: x[0])
+                elif sort_mode == '--sort=buffer':
+                    results = sorted(results, key=lambda x: x[1])
+                elif sort_mode == '--sort=size':
+                    results = sorted(results, key=lambda x: x[2])
+                elif sort_mode == '--sort=file':
+                    results = sorted(results, key=lambda x: x[3])
+
+                elif sort_mode == '--sort-reverse=mtime':
+                    results = sorted(results, key=lambda x: x[0], reverse=True)
+                elif sort_mode == '--sort-reverse=buffer':
+                    results = sorted(results, key=lambda x: x[1], reverse=True)
+                elif sort_mode == '--sort-reverse=size':
+                    results = sorted(results, key=lambda x: x[2], reverse=True)
+                elif sort_mode == '--sort-reverse=file':
+                    results = sorted(results, key=lambda x: x[3], reverse=True)
 
                 # post-scan results
                 handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
