@@ -1,4 +1,5 @@
-OmegaFind v2. Multi-processed async for better performance.
+OmegaFind v2. Search differently.
+              Multi-processed async for better performance.
 
 
 Overview:
@@ -85,7 +86,7 @@ Overview:
     be ignored. Recurive depth specification will likely be in an update soon.
 
     [ Interact ]
-    Great care has been taken for special custom displaying of tables and has been
+    Great care has been taken for special custom displaying of tables which has been
     implemented so that output does not get lost in the terminal buffer if there
     should be many lines of output.
     However this default behaviour can be turned of using -I which may be useful if
