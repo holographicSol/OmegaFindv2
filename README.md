@@ -203,8 +203,8 @@ Summary:
     So maybe your wondering what that file really is? Need to search contents of all kinds of different files for
     information, or you lost some files of a certain type somewhere? Or are you wondering if someone buried some
     videos in somewhere like system32 and renamed those videos as .bat and .exe files to try and hide them? Or
-    perhaps your just curious? Maybe for whatever reason you need a handle on what your looking for other than a
-    simple string match in a filename search?
+    perhaps your just curious? Maybe for whatever reason you need a better  handle on what your looking for
+    other than a simple string match in a filename search?
     Then OmegaFindv2 may be suibtable for your needs.
     Note that running this software is potentially extremely resource intensive so it is also potentially expensive
     to run.
