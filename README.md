@@ -218,6 +218,7 @@ Summary:
     While OmegaFindv2 is designed to run and present its output much like dir or ls it is also designed with running
     promptlessly in mind to 'make friendly' being ran by another program that could have any intention, like
     security or forensic analysis for example.
+    Think of scan techniques as filters, while a reveal scan attempts to reveal everything it can.
     Note that running this software is potentially extremely resource intensive so it is also potentially expensive
     to run.
 
