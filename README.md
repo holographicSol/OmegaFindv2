@@ -35,6 +35,7 @@ Help:
      -p       Password Protected    Only scan for password protected archives.
      -r       Reveal                Display all file types.
      -t       Type                  Display all files of type.
+     -s       String Scan           Display all files containing string. Used with -q.
      -q       Query                 Specify a search query. Used with -c. -c PATH -q QUERY.
      -sfx     Suffix                Specify suffix. Used with -t.
      -csfx    Custom Suffix         Specify custom suffix group. Used with -t.
@@ -52,7 +53,8 @@ Help:
      -G       Group                 Display specified suffix group.
      -I       Interact              Disables interaction. No prompt mode.
      -L       List Scan Reports     List and select previously completed scan report.
-     -R       Recognized            Display current learning XP.
+     -R       Recursive             Scan directories recursively, scanning all sub-directories.
+     -XP      Experience            Display how many associations have been learned.
     
      -v       Verbosity             Increase verbosity.
      -h       Help                  Display this help message.
