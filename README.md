@@ -185,6 +185,7 @@ Developer:
     Todo: Feed any errors encountered by patool back into the exception log.
           Refine exception log.
           Further test extraction compatibilies for adding further extraction compatibilities.
+          Possibly cat files. (There is a lot of file compatibility here).
 
     Omegafindv2 output tries to blend in with the dir/ls command. Simple and clean non verbose output.
 
