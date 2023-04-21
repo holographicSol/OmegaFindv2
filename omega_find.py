@@ -99,6 +99,10 @@ if __name__ == '__main__':
                 # print(recognized_files)
 
                 # pre-scan
+                # todo:
+                #     * if target is file then skip scanfs.
+                #     * if target is directory use filelist on directory.
+                #     * if -R in stdin then perform recursive scanfs as normal.
                 files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose)
                 asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
                 asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
