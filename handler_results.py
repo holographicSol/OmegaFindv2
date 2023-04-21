@@ -381,8 +381,11 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                            _contents_scan=_contents_scan,
                                            _query=_query)
             else:
-                handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
+                if _verbose is True:
+                    handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
         else:
-            handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
+            if _verbose is True:
+                handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
     else:
-        handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
+        if _verbose is True:
+            handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
