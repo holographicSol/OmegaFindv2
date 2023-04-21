@@ -25,7 +25,7 @@ def learn_result_handler_display(_results: list, _exc: list, _t_completion: str,
 def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool,
                            _de_scan_bool: bool, _type_scan_bool: bool, _p_scan: bool,
                            _reveal_scan: bool, _dt: str, _header_0: str,
-                           interact: bool, _contents_scan: bool, write_bool=True):
+                           interact: bool, _contents_scan: bool, write_bool=True, _query=''):
     if len(_results) >= 1:
         tables = []
         max_column_width = cli_character_limits.column_width_from_shutil(n=3)
@@ -41,16 +41,10 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             print('')
 
         # create results table
-        if _contents_scan is True:
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'right', 'left'),
-                                        headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
-                                        stralign='left')
-        else:
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'right', 'left'),
-                                        headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
-                                        stralign='left')
+        table_1 = tabulate.tabulate(_results,
+                                    colalign=('left', 'right', 'right', 'left'),
+                                    headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
+                                    stralign='left')
         tables.append(table_1)
 
         # create filename
@@ -71,31 +65,17 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             for table in tables:
                 asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
-        # create results table
-        if _contents_scan is True:
-            # enumeration for reasonable column widths
-            max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-            max_column_width_tot = max_column_width * 4
-            max_dt = handler_post_process.longest_item(_results, idx=0)
-            max_bytes = handler_post_process.longest_item(_results, idx=2)
-            new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 4
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'right', 'left'),
-                                        maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
-                                        headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
-                                        stralign='left')
-        else:
-            # enumeration for reasonable column widths
-            max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-            max_column_width_tot = max_column_width * 4
-            max_dt = handler_post_process.longest_item(_results, idx=0)
-            max_bytes = handler_post_process.longest_item(_results, idx=2)
-            new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 4
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'right', 'left'),
-                                        maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
-                                        headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
-                                        stralign='left')
+        # enumeration for reasonable column widths
+        max_column_width = cli_character_limits.column_width_from_shutil(n=4)
+        max_column_width_tot = max_column_width * 4
+        max_dt = handler_post_process.longest_item(_results, idx=0)
+        max_bytes = handler_post_process.longest_item(_results, idx=2)
+        new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 4
+        table_1 = tabulate.tabulate(_results,
+                                    colalign=('left', 'right', 'right', 'left'),
+                                    maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
+                                    headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {len(_results)}    Errors: {len(_exc)}]'),
+                                    stralign='left')
 
         # display results tale
         if interact is True:
@@ -294,17 +274,20 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                       _t_completion: str, _extract: bool, _verbose: bool, _pre_scan_time: str,
                       interact: bool, _contents_scan: bool, _query: str):
 
+    if _verbose is True:
+        print('-- formulating tabulated results...')
+        print('')
     header_0 = 'Results'
     if _de_scan_bool is True:
-        header_0 = 'De-Obfuscated/Unrecognized'
+        header_0 = 'De-Scan'
     elif _type_scan_bool is True:
-        header_0 = 'Type'
+        header_0 = 'Type Scan'
     elif _p_scan is True:
-        header_0 = 'Password Protected'
+        header_0 = 'Password Protected Scan'
     elif _reveal_scan is True:
-        header_0 = 'Revealed'
+        header_0 = 'Reveal Scan'
     elif _contents_scan is True:
-        header_0 = 'Contents Scan [' + _query + ']'
+        header_0 = 'Contents Scan: ' + _query
 
     if _results is not None:
         if len(_results) >= 1:
@@ -395,7 +378,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                            _dt=_dt,
                                            _header_0=header_0,
                                            interact=interact,
-                                           _contents_scan=_contents_scan)
+                                           _contents_scan=_contents_scan,
+                                           _query=_query)
             else:
                 handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
         else:
