@@ -170,6 +170,8 @@ Developer:
           Refine exception log.
           Further test extraction compatibilies for adding further extraction compatibilities.
 
+    Omegafindv2 output tries to blend in with the dir/ls command. Simple and clean non verbose output.
+
 
 Extraction Compatibility (Below compatibility accounts for many more file suffixes listed as different suffixes use
     the same compression as below. Like epubs for one example):
