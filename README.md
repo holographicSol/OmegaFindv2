@@ -10,7 +10,7 @@ Overview:
     from. A database compiled on both Linux and Windows operating systems is included
     however OmegaFindv2 can learn from scratch at any time. You may prefer to learn from
     scratch so that you have more control over what OmegaFindv2 learns and so that you
-    can further trust OmegaFindv2 to return expected results from  various scan techniques.
+    can further trust OmegaFindv2 to return expected results from various scan techniques.
 
     [ Contents Scan (C-SCAN) ]
     Return files containing string.
