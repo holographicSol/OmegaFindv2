@@ -3,6 +3,8 @@ OmegaFind v2. Multi-processed async for better performance.
 
 Overview:
 
+                                       [SCANNING]
+
     [ Learn ]
     Compiles a database of 'trusted' suffix, buffer associations which can be used when
     performing various scan techniques. Various scan techniques are only as good as the
@@ -41,7 +43,24 @@ Overview:
     [ String Scan (S-Scan) ]
     Return files containing x string.
     Regular filename search. Search for filenames containing specified string.
+
+                                       [OPTIONS]
  
+    [ Query ]
+    Pass a space delimeted search string after -q argument. This should always be the last
+    argument if used.
+
+    [ Database ]
+    OmegaFindv2 stores all learned suffix to buffer associations to it's database during
+    learning. The database can be specified with -db argument.
+
+    [ Extract ]
+    OmegaFindv2 is capable of extraction/decompression of nested compressed files unless
+    files are password protected. Extraction helps maximize the yield of various scan
+    techniques where otherwise files may evade the gaze of OmegaFindv2. 
+    Ensure enough spare disk space on any drive OmegaFindv2 is running on before using
+    the -e argument.
+
 
 Help:
 
