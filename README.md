@@ -76,6 +76,14 @@ Overview:
     also considering that BMAX minimum should be at least 2048 bytes to get a good
     idea of what each file really is.
 
+    [ RECURSIVE ]
+    Scan techniques can be performed recursivley through all sub-directories of a
+    specified directory by using -R switch.
+    Omitting -R while specifying a directory should force OmegaFindv2 to only scan
+    files in the immediate directory (no scanning in sub-directories).
+    A file can also be specified with no extra arguments and -R if included should
+    be ignored. Recurive depth specification will likely be in an update soon.
+
 
 Help:
 
