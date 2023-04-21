@@ -41,9 +41,9 @@ def search_scan(path: str, q: str, interact: bool) -> list:
         if q in p:
             if p not in fp:
                 try:
-                    sz = os.path.getsize(p)
-                    mt = os.path.getmtime(p)
-                    mt = datetime.datetime.fromtimestamp(mt)
+                    sz = handler_file.get_size(p)
+                    mt = handler_file.get_m_time(p)
+                    # mt = datetime.datetime.fromtimestamp(mt)
                     fp.append([i_match, mt, sz, p])
                     i_match += 1
                 except Exception as e:
