@@ -27,6 +27,9 @@ Overview:
     obfuscated in a particular way. Attempted exposition is performed by comparing suffixes
     and buffers of files during deobfuscation scans to 'trusted' buffer, suffix associations
     in the database.
+    False positives can simply be unrecognized files (no suffix to buffer relationship exists
+    in the database for that suffix and buffer) and the solution to false positives is
+    to learn -l more.
 
     [ Reveal Scan (R-SCAN) ]
     Return the file type of all files encountered during scan. 
