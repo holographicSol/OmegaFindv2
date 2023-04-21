@@ -228,7 +228,6 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
             if unoconv_read_filter in _buffer:
                 if _verbose is True:
                     print(f'-- using unoconv-method: {file}')
-
                 _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
                                                               _verbose=_verbose)
                 if _tmp_file:
@@ -243,7 +242,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                     break
 
     if read_mode is int(0):
-        print(f'-- add compatibility for: {file}')
+        if _verbose is True:
+            print(f'-- add compatibility for: {file}')
 
 
 async def read_report(fname: str):
