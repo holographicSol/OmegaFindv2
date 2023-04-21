@@ -69,6 +69,12 @@ Overview:
     For now just know the LOWER the CMAX the MORE potential processes will be active
     during scanning which will be potentially much more CPU intensive.
 
+    [ BMAX ]
+    Buffer max. OmegaFindv2 is reading files to ascertain what the files are during
+    various scan techniques. BMAX specifies how many bytes of each file to read.
+    If you have very large files on the system then be careful increasing BMAX, while
+    also considering that BMAX minium should be at least 2048 Bytes.
+
 
 Help:
 
