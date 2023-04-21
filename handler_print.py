@@ -29,6 +29,7 @@ def omega_help():
     print(' -p       Password Protected    Only scan for password protected archives.')
     print(' -r       Reveal                Display all file types.')
     print(' -t       Type                  Display all files of type.')
+    print(' -s       String Scan           Display all files containing string. Used with -q.')
     print(' -q       Query                 Specify a search query. Used with -c. -c PATH -q QUERY.')
     print(' -sfx     Suffix                Specify suffix. Used with -t.')
     print(' -csfx    Custom Suffix         Specify custom suffix group. Used with -t.')
