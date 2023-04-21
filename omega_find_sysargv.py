@@ -194,7 +194,8 @@ def run_and_exit(stdin: list, interact: bool):
             _q = stdin[stdin.index('-q') + 1]
             results = scanfs.search_scan(path=_path, q=_q, interact=interact)
             if interact is True:
-                loop_scandir_results(_list=results)
+                if results:
+                    loop_scandir_results(_list=results)
 
     elif '-h' in stdin:
         handler_print.omega_help()
