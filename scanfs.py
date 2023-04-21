@@ -59,7 +59,7 @@ def search_scan(path: str, q: str, interact: bool) -> list:
         new_max_path = max_column_width_tot - max_index - max_dt - max_bytes - 4
         table_0 = tabulate.tabulate(fp,
                                     maxcolwidths=[max_index, max_dt, max_bytes, new_max_path],
-                                    headers=(f'Index', 'Modified', 'Bytes', 'Files'),
+                                    headers=(f'[Index]', '[Modified]', '[Bytes]', f'[Files: {len(fp)}]'),
                                     stralign='left')
         if interact is True:
             if len(fp) > 75:
