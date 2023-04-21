@@ -133,7 +133,7 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
     filename = file_in[filename_idx:]
     _tmp = _tmp_dir + filename+'.txt'
 
-    cmd = '"./python.exe" ./unoconv/unoconv -o "' + _tmp + '" -f txt "' + file_in + '"'
+    cmd = '"./python.exe" "./unoconv/unoconv" -o "' + _tmp + '" -f txt "' + file_in + '"'
     if _verbose is True:
         print(f'-- running command: {cmd}')
     xcmd = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, startupinfo=info)
@@ -146,10 +146,13 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
             output_str = str(output.decode("utf-8").strip())
             if _verbose is True:
                 print(output_str)
-            if 'Error' in output_str or 'Exception' in output or 'UnoException' in output_str or 'untimeException' in output_str:
+            # if 'Error' in output_str:
+            #     try_again = True
+            #     break
+            if 'Error' in output_str or 'Exception' in output_str or 'UnoException' in output_str or 'untimeException' in output_str:
                 try_again = True
                 break
-            break
+            # break
         else:
             break
     rc = xcmd.poll()
