@@ -26,9 +26,9 @@ Overview:
 
     [ Password Scan (P-SCAN) ]
     Return files that may be password protected.
-    pScan attempts to find password protected archives.
-    Skips reading database, does not hand database through to child processes and
-    performs no buffer/suffix association checks.
+    pScan attempts to find password protected archives by first reading the files with magic
+    to see if the file may be an archive of some kind. If the file appears to be
+    compressed/archive then OmegaFindv2 will attempt to extract/decompress the file.
 
     [ String Scan (S-Scan) ]
     Return files containing x string.
