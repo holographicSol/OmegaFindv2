@@ -19,7 +19,7 @@ Overview:
     and buffers of files during deobfuscation scans to 'trusted' buffer, suffix associations
     in the database.
 
-    [ Reveal Scan (R-Scan) ]
+    [ Reveal Scan (R-SCAN) ]
     Return the file type of all files encountered during scan. 
 
     [ Type Scan (T-SCAN) ]
