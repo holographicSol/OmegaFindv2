@@ -33,6 +33,19 @@ def scan(path: str) -> list:
     return [fp, x_files]
 
 
+def scan_depth_zero(path: str) -> list:
+    global x_files
+    path_list = os.listdir(path)
+    file_list = []
+    idx = 0
+    for f in path_list:
+        path_list[idx] = os.path.join(path, f)
+        if os.path.isfile(path_list[idx]):
+            file_list.append(path_list[idx])
+        idx += 1
+    return [file_list, []]
+
+
 def search_scan(path: str, q: str, interact: bool) -> list:
     fp = []
     i_match = 0
@@ -76,9 +89,12 @@ def search_scan(path: str, q: str, interact: bool) -> list:
     return fp
 
 
-def pre_scan_handler(_target: str, _verbose: bool) -> tuple:
+def pre_scan_handler(_target: str, _verbose: bool, _recursive: bool) -> tuple:
     t = time.perf_counter()
-    scan_results = scan(path=_target)
+    if _recursive is True:
+        scan_results = scan(path=_target)
+    else:
+        scan_results = scan_depth_zero(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
     completion_time = time.perf_counter()-t

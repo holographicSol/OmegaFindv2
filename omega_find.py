@@ -76,6 +76,7 @@ if __name__ == '__main__':
 
         else:
             target = omega_find_sysargv.target(STDIN, mode)
+            recursive = omega_find_sysargv.recursive(STDIN)
             chunk_max = omega_find_sysargv.chunk_max(STDIN)
             buffer_max = omega_find_sysargv.buffer_max(STDIN)
             db_recognized_files = omega_find_sysargv.database(STDIN)
@@ -99,11 +100,11 @@ if __name__ == '__main__':
                 # print(recognized_files)
 
                 # pre-scan
-                # todo:
-                #     * if target is file then skip scanfs.
-                #     * if target is directory use filelist on directory.
-                #     * if -R in stdin then perform recursive scanfs as normal.
-                files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose)
+                files, x_files, pre_scan_time = [], [], int(0)
+                if os.path.isdir(target):
+                    files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose, _recursive=recursive)
+                elif os.path.isfile(target):
+                    files = [target]
                 asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
                 asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 

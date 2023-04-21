@@ -88,6 +88,11 @@ def target(stdin: list, _mode) -> str:
     return _target
 
 
+def recursive(stdin: list) -> bool:
+    if '-R' in stdin:
+        return True
+
+
 def query(stdin: list) -> str:
     _query = ''
     if '-q' in stdin:
@@ -203,7 +208,7 @@ def run_and_exit(stdin: list, interact: bool):
     elif '-h' in stdin:
         handler_print.omega_help()
 
-    elif '-R' in stdin:
+    elif '-xp' in stdin:
         db_recognized_files = display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         handler_print.display_len_recognized_files(recognized_files)

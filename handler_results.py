@@ -275,6 +275,7 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                       interact: bool, _contents_scan: bool, _query: str):
 
     if _verbose is True:
+        print('')
         print('-- formulating tabulated results...')
         print('')
     header_0 = 'Results'
