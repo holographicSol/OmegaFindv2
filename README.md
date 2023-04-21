@@ -15,6 +15,8 @@ Overview:
     however OmegaFindv2 can learn from scratch at any time. You may prefer to learn from
     scratch so that you have more control over what OmegaFindv2 learns and so that you
     can further trust OmegaFindv2 to return expected results from various scan techniques.
+    Learning feature is designed to make suffix to buffer associations fast and hands free,
+    creating associations faster and easier than it would take to do manually.
 
     [ Contents Scan (C-SCAN) ]
     Return files containing string.
@@ -28,8 +30,9 @@ Overview:
     and buffers of files during deobfuscation scans to 'trusted' buffer, suffix associations
     in the database.
     False positives can simply be unrecognized files (no suffix to buffer relationship exists
-    in the database for that suffix and buffer) and the solution to false positives is
-    to learn -l more.
+    in the database for that suffix and buffer) or you learned something that is incorrect
+    (creating a suffix buffer association that is not true) and the solution
+    to false positives is to learn -l more and learn carefully.
 
     [ Reveal Scan (R-SCAN) ]
     Return the file type of all files encountered during scan. 
