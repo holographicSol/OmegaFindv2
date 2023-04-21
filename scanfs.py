@@ -43,7 +43,6 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                 try:
                     sz = handler_file.get_size(p)
                     mt = handler_file.get_m_time(p)
-                    # mt = datetime.datetime.fromtimestamp(mt)
                     fp.append([i_match, mt, sz, p])
                     i_match += 1
                 except Exception as e:
@@ -63,9 +62,9 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                                     stralign='left')
         if interact is True:
             if len(fp) > 75:
-                _message = '\n-- enter for more or enter digit to select --\n'
+                _message = '\n-- more or select --\n'
             else:
-                _message = '\n-- enter digit to select --\n'
+                _message = '\n-- select --\n'
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=fp,
                                                        table=table_0,
