@@ -61,6 +61,14 @@ Overview:
     Ensure enough spare disk space on any drive OmegaFindv2 is running on before using
     the -e argument.
 
+    [ CMAX ]
+    Chunk max. OmegaFindv2 scan teechniques are asynchronous and multiprocessed. CMAX
+    specifies how many files will be in each chunk fed into the child processes.
+    CMAX may soon be replaced with PMAX (Process Max) which will do the math required
+    to know how many processes may result from a given CMAX.
+    For now just know the lower the CMAX the more potential processes will be active
+    during scanning which will be potentially much more CPU intensive.
+
 
 Help:
 
