@@ -206,6 +206,11 @@ Summary:
     perhaps your just curious? Maybe for whatever reason you need a better handle on what your looking for
     other than a simple string match in a filename search?
     Then OmegaFindv2 may be suibtable for your needs.
+    Like Apple/IOS systems, python-magic allows OmegaFindv2 to know what a file really is. This is infinitely useful
+    in infinite different ways. And depending what your looking for may determine how you scan, and then of course
+    what you decide to do with/about the results.
+    OmegaFindv2 is designed to run promptlessly to 'make friendly' being ran by another program that could have any
+    intention, like security or forensic discovery for example.
     Note that running this software is potentially extremely resource intensive so it is also potentially expensive
     to run.
 
