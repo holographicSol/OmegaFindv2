@@ -84,6 +84,12 @@ Overview:
     A file can also be specified with no extra arguments and -R if included should
     be ignored. Recurive depth specification will likely be in an update soon.
 
+    [ Interact ]
+    Great care has been taken for special custom displaying of tables and has been
+    implemented so that output does not get lost in the terminal buffer if there
+    should be many lines of output.
+    However this default behaviour can be turned of using -I which may be useful if
+    running OmegaFindv2 with scripts that require promptless output.
 
 Help:
 
