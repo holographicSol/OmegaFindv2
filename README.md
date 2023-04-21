@@ -1,5 +1,6 @@
 OmegaFind v2. Search differently.
-              Multi-processed async for better performance.
+
+Multi-processed async for better performance.
 
 
 Overview:
