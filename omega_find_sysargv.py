@@ -188,11 +188,13 @@ def loop_scandir_results(_list: list):
 
 def run_and_exit(stdin: list, interact: bool):
 
-    if os.path.exists(stdin[1]):
-        _path = stdin[1]
-        _q = stdin[2]
-        results = scanfs.search_scan(path=_path, q=_q, interact=interact)
-        loop_scandir_results(_list=results)
+    if '-s' in stdin:
+        _path = stdin[stdin.index('-s') + 1]
+        if os.path.exists(_path):
+            _q = stdin[stdin.index('-q') + 1]
+            results = scanfs.search_scan(path=_path, q=_q, interact=interact)
+            if interact is True:
+                loop_scandir_results(_list=results)
 
     elif '-h' in stdin:
         handler_print.omega_help()

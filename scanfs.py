@@ -62,15 +62,18 @@ def search_scan(path: str, q: str, interact: bool) -> list:
                                     headers=(f'Index', 'Modified', 'Bytes', 'Files'),
                                     stralign='left')
         if interact is True:
+            if len(fp) > 75:
+                _message = '\n-- enter for more or enter digit to select --\n'
+            else:
+                _message = '\n-- enter digit to select --\n'
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=fp,
                                                        table=table_0,
                                                        extra_input=True,
-                                                       message='\n-- more --\n',
+                                                       message=_message,
                                                        function=handler_file.call_input_open_dir)
         else:
             print(table_0)
-        handler_print.display_spacer()
     return fp
 
 
