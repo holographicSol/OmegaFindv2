@@ -101,12 +101,13 @@ Help:
      -c       Contents Scan         Specify a directory in which file contents will be scanned.
      -d       De-Obfuscation        Attempt to find files where suffix does not match contents.
      -p       Password Protected    Only scan for password protected archives.
-     -r       Reveal                Display all file types.
-     -t       Type                  Display all files of type.
+     -r       Reveal Scan           Display all file types.
+     -t       Type Scan             Display all files of type.
      -s       String Scan           Display all files containing string. Used with -q.
      -q       Query                 Specify a search query. Used with -c. -c PATH -q QUERY.
      -sfx     Suffix                Specify suffix. Used with -t.
      -csfx    Custom Suffix         Specify custom suffix group. Used with -t.
+     -nsfx    New Suffix Group      Create new custom suffix group.
      -gsfx    Group Suffix          Specify default suffix group. Used with -t.
                                     archive, audio, book, code, exe, font, image, sheet, slide, text, video, web.
     
@@ -114,20 +115,29 @@ Help:
      -e       Extract               Attempt archive extraction while scanning.
      -bmax    Buffer Max            Specify in digits maximum number of bytes to read of each file.
      -cmax    Chunk Max             Specify in digits max chunk size.
-     -nsfx    New Suffix Group      Create new custom suffix group.
     
      -A       Associations          Display buffer associations to specified suffix.
      -AV      All Associations      Display all known suffix buffer associations.
      -G       Group                 Display specified suffix group.
      -I       Interact              Disables interaction. No prompt mode.
      -L       List Scan Reports     List and select previously completed scan report.
-     -R       Recursive             Scan directories recursively, scanning all sub-directories.
+     -R       Recursive             Scan directories recursively. (Scans all sub-directories).
      -XP      Experience            Display how many associations have been learned.
+    
+     --sort=mtime                   Sort by Modified Time
+     --sort=buffer                  Sort by Buffer
+     --sort=size                    Sort by Size
+     --sort=file                    Sort by Filename
+     --sort-reverse=mtime           Sort by Modified Time
+     --sort-reverse=buffer          Sort by Buffer
+     --sort-reverse=size            Sort by Size
+     --sort-reverse=file            Sort by Filename
     
      -v       Verbosity             Increase verbosity.
      -h       Help                  Display this help message.
     
     [Author] Developed and written by Benjamin Jack Cullen.
+
 
 Download executable and source code bundled with compatible LibreOffice version:
 
