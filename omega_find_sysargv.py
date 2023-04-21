@@ -186,7 +186,7 @@ def interactive(stdin: list) -> bool:
 
 
 def sort_mode(stdin: list) -> str:
-    _sort_mode = '--sort=mtime'
+    _sort_mode = '--sort=file'
 
     if '--sort=mtime' in stdin:
         _sort_mode = '--sort=mtime'
