@@ -168,7 +168,7 @@ Developer:
 
     Todo: Feed any errors encountered by patool back into the exception log.
           Refine exception log.
-          Further test extraction compatibilies for adding further extractin compatibility.
+          Further test extraction compatibilies for adding further extraction compatibilities.
 
 
 Extraction Compatibility (Below compatibility accounts for many more file suffixes listed as different suffixes use
@@ -183,7 +183,7 @@ Extraction Compatibility (Below compatibility accounts for many more file suffix
 
 Examples:
 
-    python .\omega_find.py -cmax 1 -r ".\unoconv_test_files\"
+    omega_find -cmax 1 -r ".\unoconv_test_files\"
 
 
 Gratitude and Thanks:
