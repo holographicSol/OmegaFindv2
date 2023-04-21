@@ -66,7 +66,7 @@ Overview:
     specifies how many files will be in each chunk fed into the child processes.
     CMAX may soon be replaced with PMAX (Process Max) which will do the math required
     to know how many processes may result from a given CMAX.
-    For now just know the lower the CMAX the more potential processes will be active
+    For now just know the LOWER the CMAX the MORE potential processes will be active
     during scanning which will be potentially much more CPU intensive.
 
 
