@@ -144,8 +144,8 @@ Requirements:
 
 User:
 
-    * Portable. Except where sys.executabe path may not be path to omega_find.exe.
-    * Ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system while also considering buffer_max.
+    * Ensure sufficient ram/page-file/swap if changing buffer_max. Ensure chunk_max suits your system while also
+      considering buffer_max. Think memory and think free disk space.
     * If using --extract then ensure sufficient storage in working directory while also considering buffer_max and chunk_max.
     * Recommended use: 1TB external Storage containing omegaFindv2 at root, so that if using -e argument, there
       is plenty of space available for omegaFindv2 to extract files back into its working directory to scan the
