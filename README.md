@@ -5,7 +5,12 @@ Overview:
 
     [ Learn ]
     Compiles a database of 'trusted' suffix, buffer associations which can be used when
-    performing various scan techniques.
+    performing various scan techniques. Various scan techniques are only as good as the
+    database(s) compiled using this learn feature. Use 'trusted' directories to learn
+    from. A database compiled on both Linux and Windows operating systems is included
+    however OmegaFindv2 can learn from scratch at any time. You may prefer to learn from
+    scratch so that you have more control over what OmegaFindv2 learns and so that you
+    can further trust OmegaFindv2 to return expected results from  various scan techniques.
 
     [ Contents Scan (C-SCAN) ]
     Return files containing string.
