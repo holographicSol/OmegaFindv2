@@ -19,6 +19,9 @@ Overview:
     and buffers of files during deobfuscation scans to 'trusted' buffer, suffix associations
     in the database.
 
+    [ Reveal Scan (R-Scan) ]
+    Return the file type of all files encountered during scan. 
+
     [ Type Scan (T-SCAN) ]
     Return files of certain types.
     Aggregates all file types specified. Again not by suffix but by known suffix, buffer
@@ -121,6 +124,11 @@ Extraction Compatibility (Below compatibility accounts for many more file suffix
     LRZIP (.lrz), LZH (.lha, .lzh), LZIP (.lz), LZMA (.lzma), LZOP (.lzo), RPM (.rpm), RAR (.rar), RZIP (.rz), SHN
     (.shn), TAR (.tar), XZ (.xz), ZIP (.zip, .jar), ZOO (.zoo) and ZPAQ (.zpaq) formats.
     It relies on helper applications to handle those archive formats (for example bzip2 for BZIP2 archives).
+
+
+Examples:
+
+    python .\omega_find.py -cmax 1 -r ".\unoconv_test_files\"
 
 
 Gratitude and Thanks:
