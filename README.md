@@ -73,7 +73,8 @@ Overview:
     Buffer max. OmegaFindv2 is reading files to ascertain what the files are during
     various scan techniques. BMAX specifies how many bytes of each file to read.
     If you have very large files on the system then be careful increasing BMAX, while
-    also considering that BMAX minium should be at least 2048 Bytes.
+    also considering that BMAX minimum should be at least 2048 bytes to get a good
+    idea of what each file really is.
 
 
 Help:
