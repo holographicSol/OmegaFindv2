@@ -82,7 +82,10 @@ def mode(stdin: list) -> tuple:
 
 
 def target(stdin: list, _mode) -> str:
-    return stdin[stdin.index(_mode)+1]
+    _target = str(stdin[stdin.index(_mode)+1]).strip()
+    if _target.endswith('"'):
+        _target = _target[:-1]
+    return _target
 
 
 def query(stdin: list) -> str:
