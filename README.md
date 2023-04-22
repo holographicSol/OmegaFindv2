@@ -230,7 +230,42 @@ Extraction Compatibility (Below compatibility accounts for many more file suffix
 
 Examples:
 
-    omega_find -cmax 1 -r ".\unoconv_test_files\"
+    Learn (Asynchronous and Multiprocessed):
+    omega_find -l ".\test_files\"
+    omega_find -R -l ".\test_files\"
+
+    Contents Scan (Asynchronous and Multiprocessed):
+    omega_find -cmax 1 -c ".\test_files\" -q string
+    omega_find -cmax 1 -R -c ".\test_files\" -q string
+    omega_find -cmax 1 -R -e -c ".\test_files\" -q string
+
+    De-Obfuscation Scan (Asynchronous and Multiprocessed):
+    omega_find -cmax 1 --digitless -d ".\test_files\"
+    omega_find -cmax 1 --digitless -R -d ".\test_files\"
+    omega_find -cmax 1 --digitless -R -d ".\test_files\"
+    omega_find -cmax 1 --digitless -R -e -d ".\test_files\"
+
+    Type Scan (Built in Group Suffix) (Asynchronous and Multiprocessed):
+    omega_find -cmax 1 --digitless -t ".\test_files\" -gsfx video
+    omega_find -cmax 1 --digitless -R -t ".\test_files\" -gsfx video
+    omega_find -cmax 1 --digitless -R -e -t ".\test_files\" -gsfx video
+
+    Type Scan (Specified Suffix) (Asynchronous and Multiprocessed):
+    omega_find -cmax 1 --digitless -t ".\test_files\" -sfx mp4
+    omega_find -cmax 1 --digitless -R -t ".\test_files\" -sfx mp4
+    omega_find -cmax 1 --digitless -R -e -t ".\test_files\" -sfx mp4
+
+    Type Scan (Custom Group Suffix) (Asynchronous and Multiprocessed):
+    omega_find -cmax 1 --digitless -R -e -t ".\test_files\" -csfx
+
+    Reveal Scan (Asynchronous and Multiprocessed):
+    omega_find -cmax 1 -r ".\test_files\"
+    omega_find -cmax 1 -R -r ".\test_files\"
+    omega_find -cmax 1 -R -e -r ".\test_files\"
+
+    Regular String in filename search (Linear Synchronous):
+    omega_find -s ".\test_files\" -q .mp4
+    omega_find -s ".\test_files\" -q partoffilename
 
 
 Summary:
