@@ -172,17 +172,27 @@ if __name__ == '__main__':
                     if _bench is True:
                         t0 = time.perf_counter()
                     # todo: experiment with different methods
+
+                    # method 1
                     # results = handler_chunk.un_chunk_data_0(results)
+
+                    # method 2
                     results[:] = [item for sublist in results for item in sublist]
+
                     if _bench is True:
                         print(f'unchunk extract=False time: {time.perf_counter()-t0}')
                 else:
                     if _bench is True:
                         t0 = time.perf_counter()
                     # todo: experiment with different methods
+
+                    # method 1
                     # results = handler_chunk.un_chunk_data_1(results)
+
+                    # method 2
                     results[:] = [item for sublist in results for item in sublist if item is not None]
                     results[:] = [item for sublist in results for item in sublist]
+
                     if _bench is True:
                         print(f'unchunk extract=True time: {time.perf_counter()-t0}')
 
