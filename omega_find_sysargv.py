@@ -245,7 +245,7 @@ def run_and_exit(stdin: list, interact: bool):
     elif '-h' in stdin:
         handler_print.omega_help()
 
-    elif '-xp' in stdin:
+    elif '-XP' in stdin:
         db_recognized_files = display_recognized(stdin)
         recognized_files, suffixes = asyncio.run(handler_file.read_definitions(fname=db_recognized_files))
         handler_print.display_len_recognized_files(recognized_files)
