@@ -114,9 +114,9 @@ if __name__ == '__main__':
                     files = [target]
 
                 # todo
-                # if write_bool is True:
-                #     asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
-                #     asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
+                if write_bool is True:
+                    asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
+                    asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
                 # chunk data ready for async multiprocess
                 chunks = handler_chunk.chunk_data(files, chunk_max)
@@ -150,8 +150,8 @@ if __name__ == '__main__':
                 exc, results = handler_post_process.results_filter(results)
 
                 # todo
-                # if write_bool is True:
-                #     asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
+                if write_bool is True:
+                    asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
                 # post-processing
                 if p_scan_bool is True:
