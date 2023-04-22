@@ -303,8 +303,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
         if len(_results) >= 1:
             if len(_results[0]) >= 1:
                 if _learn_bool is True:
-                    print(_results)
-                    print(_db_recognized_files)
+                    # print(_results)
+                    # print(_db_recognized_files)
                     learn_result_handler_display(_results=_results,
                                                  _exc=_exc,
                                                  _t_completion=_t_completion,
