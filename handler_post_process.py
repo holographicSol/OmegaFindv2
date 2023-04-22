@@ -28,7 +28,8 @@ def results_filter(_list: list) -> tuple:
         if found_error is False:
             if item:
                 new_l.append(item)
-    e = handler_chunk.un_chunk_data(e, depth=1)
+    # e = handler_chunk.un_chunk_data(e, depth=1)
+    e[:] = [item for sublist in e for item in sublist]
     return e, new_l
 
 

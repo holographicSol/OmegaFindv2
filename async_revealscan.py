@@ -56,7 +56,8 @@ async def extract_reveal_scan(_buffer: bytes, _file: str, _buffer_max: int, _tar
                                                       _static_tmp=_tmp)
     if result_bool is True:
         sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
-        sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+        # sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+        sub_files[:] = [item for sublist in sub_files for item in sublist]
         for sub_file in sub_files:
             buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
             m = await asyncio.to_thread(handler_file.get_m_time, sub_file)

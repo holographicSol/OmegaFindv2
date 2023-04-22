@@ -25,7 +25,7 @@ def un_chunk_data(data: list, depth: int) -> list:
 
 
 def un_chunk_data_0(data: list) -> list:
-    # good but slow with a huge list
+    # good but slow with a huge list (avoid this function as it will be removed soon)
     new_data = []
     for zero in data:
         for one in zero:

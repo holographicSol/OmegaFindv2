@@ -72,6 +72,7 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
         if os.path.exists(_tmp):
             sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
             sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+            # sub_files[:] = [item for sublist in sub_files for item in sublist]
             for sub_file in sub_files:
                 res = await contents_scan(file=sub_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                           _program_root=_program_root)

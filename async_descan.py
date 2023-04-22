@@ -64,7 +64,8 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
     if result_bool is True:
         if os.path.exists(_tmp):
             sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
-            sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+            # sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+            sub_files[:] = [item for sublist in sub_files for item in sublist]
             for sub_file in sub_files:
                 buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)

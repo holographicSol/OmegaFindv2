@@ -33,6 +33,7 @@ main_pid = int()
 debug = False
 result = []
 program_root = variable_paths.program_root
+retry_limit_convert_all_to_text = 3
 
 
 def ensure_dir(path: str):
@@ -128,6 +129,8 @@ async def str_in_txt(file_in='', _search_str=''):
 
 
 def convert_all_to_text(file_in='', _program_root='', _verbose=False):
+    global retry_limit_convert_all_to_text
+
     _tmp_dir = _program_root + '\\tmp\\' + str(handler_strings.randStr()) + '\\'
     filename_idx = file_in.rfind('\\')
     filename = file_in[filename_idx:]
@@ -146,19 +149,20 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
             output_str = str(output.decode("utf-8").strip())
             if _verbose is True:
                 print(output_str)
-            # if 'Error' in output_str:
-            #     try_again = True
-            #     break
-            if 'Error' in output_str or 'Exception' in output_str or 'UnoException' in output_str or 'untimeException' in output_str:
+            if 'Error' in output_str or 'Exception' in output_str or 'UnoException' in output_str or \
+                    'untimeException' in output_str:
                 try_again = True
                 break
-            # break
         else:
             break
     rc = xcmd.poll()
     if try_again is True:
-        time.sleep(1)
-        convert_all_to_text(file_in=file_in, _program_root=_program_root, _verbose=_verbose)
+        print(f'retry_limit_convert_all_to_text: {retry_limit_convert_all_to_text}')
+        if retry_limit_convert_all_to_text > int(0):
+            retry_limit_convert_all_to_text -= 1
+            time.sleep(1)
+            convert_all_to_text(file_in=file_in, _program_root=_program_root, _verbose=_verbose)
+    retry_limit_convert_all_to_text = 3
     if os.path.exists(_tmp):
         return _tmp, _tmp_dir
 
