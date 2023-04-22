@@ -32,7 +32,8 @@ async def de_scan(file: str, _recognized_files: list, _buffer_max: int, _extract
         _result = await async_check.scan_check(file, suffix, buffer, _recognized_files, _digits)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
-    return _result
+    if _result:
+        return _result
 
 
 async def de_scan_extract(file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str,
@@ -44,7 +45,8 @@ async def de_scan_extract(file: str, _recognized_files: list, _buffer_max: int, 
                                         _program_root=_program_root)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
-    return _result
+    if _result:
+        return _result
 
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str,
@@ -74,4 +76,5 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
         if 'Password required' in extraction:
             _results = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
-    return _results
+    if _results:
+        return _results

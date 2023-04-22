@@ -234,6 +234,13 @@ def loop_scandir_results(_list: list):
         pass
 
 
+def dev_bench(stdin: list) -> bool:
+    _bench = False
+    if '--bench' in stdin:
+        _bench = True
+    return _bench
+
+
 def run_and_exit(stdin: list, interact: bool):
 
     if '-s' in stdin:

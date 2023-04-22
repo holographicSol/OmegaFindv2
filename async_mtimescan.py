@@ -24,6 +24,7 @@ async def mtime_scan(file: str, _extract: bool, _target: str, _program_root: str
     try:
         m = await asyncio.to_thread(handler_file.get_m_time, file)
         s = await asyncio.to_thread(handler_file.get_size, file)
+        # print(m, s, file)
         return [m, s, file]
 
     except Exception as e:

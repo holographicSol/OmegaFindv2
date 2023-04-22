@@ -88,6 +88,7 @@ if __name__ == '__main__':
             sort_mode = omega_find_sysargv.sort_mode(STDIN)
             write_bool = omega_find_sysargv.write_bool(STDIN)
             _digits = omega_find_sysargv.sub_digits(STDIN)
+            _bench = omega_find_sysargv.dev_bench(STDIN)
 
             if os.path.exists(target) and os.path.exists(db_recognized_files):
 
@@ -107,18 +108,30 @@ if __name__ == '__main__':
                 # print(recognized_files)
 
                 # pre-scan
+                if _bench is True:
+                    t0 = time.perf_counter()
                 files, x_files, pre_scan_time = [], [], int(0)
                 if os.path.isdir(target):
                     files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose, _recursive=recursive)
                 elif os.path.isfile(target):
                     files = [target]
+                if _bench is True:
+                    print(f'prescan time: {time.perf_counter()-t0}')
 
+                if _bench is True:
+                    t0 = time.perf_counter()
                 if write_bool is True:
                     asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
                     asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
+                if _bench is True:
+                    print(f'prescan write time: {time.perf_counter()-t0}')
 
                 # chunk data ready for async multiprocess
+                if _bench is True:
+                    t0 = time.perf_counter()
                 chunks = handler_chunk.chunk_data(files, chunk_max)
+                if _bench is True:
+                    print(f'chunk data time: {time.perf_counter()-t0}')
 
                 # developer view (replace verbose here with a --debug switch)
                 # if verbose is True:
@@ -139,27 +152,67 @@ if __name__ == '__main__':
                                                          _digits=_digits)
 
                 # run the async multiprocess operation(s)
+                if _bench is True:
+                    t0 = time.perf_counter()
                 t = time.perf_counter()
                 results = asyncio.run(main(chunks, multiproc_dict, mode))
                 t_completion = str(time.perf_counter()-t)
-                results = handler_chunk.un_chunk_data(results, depth=1)
-                # print('final results:')
-                # for result in results:
-                #     print(result)
+                if _bench is True:
+                    print(f'main operation time: {time.perf_counter()-t0}')
+
+                # todo: SPEED UP UN-CHUNK TIME -> either faster unchunk method or change data structure before here
+                # uncomment to view data structure
+                # print('before post-processing')
+                # for r in results:
+                #     print(len(r), r)
+                # print('')
+
+                # Note: un-chunking approximately doubles the overall completion time on my system.
+                if extract is False:
+                    if _bench is True:
+                        t0 = time.perf_counter()
+                    # todo: experiment with different methods
+                    # results = handler_chunk.un_chunk_data_0(results)
+                    results[:] = [item for sublist in results for item in sublist]
+                    if _bench is True:
+                        print(f'unchunk extract=False time: {time.perf_counter()-t0}')
+                else:
+                    if _bench is True:
+                        t0 = time.perf_counter()
+                    # todo: experiment with different methods
+                    # results = handler_chunk.un_chunk_data_1(results)
+                    results[:] = [item for sublist in results for item in sublist if item is not None]
+                    results[:] = [item for sublist in results for item in sublist]
+                    if _bench is True:
+                        print(f'unchunk extract=True time: {time.perf_counter()-t0}')
+
+                # uncomment to view data structure
+                # print('before post-processing')
+                # for r in results:
+                #     print(len(r), r)
+                # print('')
+
+                # post-process: filter results from errors
+                if _bench is True:
+                    t0 = time.perf_counter()
                 exc, results = handler_post_process.results_filter(results)
+
+                if p_scan_bool is True:
+                    results = handler_chunk.un_chunk_data_0(results)
+                if _bench is True:
+                    print(f'post-process time: {time.perf_counter()-t0}')
+
+                # uncomment to view data structure
+                # print('after post-processing')
+                # for r in results:
+                #     print(len(r), r)
+                # print('')
 
                 if write_bool is True:
                     asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
-                # post-processing
-                if p_scan_bool is True:
-                    results = asyncio.run(handler_post_process.pscan(_list=results))
-                elif de_scan_bool is True and extract is True:
-                    results = handler_post_process.descan(_list=results, _recognized_files=recognized_files)
-                elif contents_scan is True and extract is True:
-                    # results = asyncio.run(handler_post_process.cscan(_list=results))
-                    results = handler_chunk.un_chunk_data(results, depth=1)
-
+                if _bench is True:
+                    t0 = time.perf_counter()
                 if learn_bool is False and mtime_scan is False:
                     # sort
                     if sort_mode == '--sort=mtime':
@@ -195,6 +248,8 @@ if __name__ == '__main__':
                         results = sorted(results, key=lambda x: x[1], reverse=True)
                     elif sort_mode == '--sort-reverse=file':
                         results = sorted(results, key=lambda x: x[2], reverse=True)
+                if _bench is True:
+                    print(f'sort results time: {time.perf_counter()-t0}')
 
                 # post-scan results
                 handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
@@ -204,7 +259,7 @@ if __name__ == '__main__':
                                                   _t_completion=t_completion, _extract=extract, _verbose=verbose,
                                                   _pre_scan_time=pre_scan_time, interact=interact,
                                                   _contents_scan=contents_scan, _query=query, write_bool=write_bool,
-                                                  _mtime_scan=mtime_scan)
+                                                  _mtime_scan=mtime_scan, _bench=_bench)
 
                 # final clean of tmp
                 if os.path.exists(variable_paths.tmp_dir_path):

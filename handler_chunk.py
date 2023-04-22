@@ -15,11 +15,34 @@ def un_chunk_data(data: list, depth: int) -> list:
     for i in range(0, depth):
         new_sub_data = []
         for dat in new_data:
-            # print(dat)
             if dat is not None:
                 for x in dat:
                     if x is not None:
                         if x not in new_sub_data:
                             new_sub_data.append(x)
         new_data = new_sub_data
+    return new_data
+
+
+def un_chunk_data_0(*args: list) -> list:
+    new_data = []
+    for arg in args:
+        new_data.append([*arg])
+    return new_data
+    # good but slow with a huge list
+    # new_data = []
+    # for zero in data:
+    #     for one in zero:
+    #         if one not in new_data and one is not None:
+    #             new_data.append(one)
+    # return new_data
+
+
+def un_chunk_data_1(data: list) -> list:
+    new_data = []
+    for zero in data:
+        for one in zero:
+            for two in one:
+                if two not in new_data and two is not None:
+                    new_data.append(two)
     return new_data
