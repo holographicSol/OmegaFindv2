@@ -157,7 +157,6 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
             break
     rc = xcmd.poll()
     if try_again is True:
-        print(f'retry_limit_convert_all_to_text: {retry_limit_convert_all_to_text}')
         if retry_limit_convert_all_to_text > int(0):
             retry_limit_convert_all_to_text -= 1
             time.sleep(1)
