@@ -113,7 +113,6 @@ if __name__ == '__main__':
                 elif os.path.isfile(target):
                     files = [target]
 
-                # todo
                 if write_bool is True:
                     asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
                     asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
@@ -149,7 +148,6 @@ if __name__ == '__main__':
                 #     print(result)
                 exc, results = handler_post_process.results_filter(results)
 
-                # todo
                 if write_bool is True:
                     asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
