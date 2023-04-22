@@ -112,7 +112,7 @@ if __name__ == '__main__':
                     t0 = time.perf_counter()
                 files, x_files, pre_scan_time = [], [], int(0)
                 if os.path.isdir(target):
-                    files, x_files, pre_scan_time = scanfs.pre_scan_handler(_target=target, _verbose=verbose, _recursive=recursive)
+                    files, x_files = scanfs.pre_scan_handler(_target=target, _verbose=verbose, _recursive=recursive)
                 elif os.path.isfile(target):
                     files = [target]
                 if _bench is True:
@@ -260,6 +260,7 @@ if __name__ == '__main__':
                         results = sorted(results, key=lambda x: x[2], reverse=True)
                 if _bench is True:
                     print(f'sort results time: {time.perf_counter()-t0}')
+                    print('')
 
                 # post-scan results
                 handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
@@ -267,7 +268,7 @@ if __name__ == '__main__':
                                                   _type_scan_bool=type_scan_bool, _p_scan=p_scan_bool,
                                                   _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool,
                                                   _t_completion=t_completion, _extract=extract, _verbose=verbose,
-                                                  _pre_scan_time=pre_scan_time, interact=interact,
+                                                  interact=interact,
                                                   _contents_scan=contents_scan, _query=query, write_bool=write_bool,
                                                   _mtime_scan=mtime_scan, _bench=_bench)
 

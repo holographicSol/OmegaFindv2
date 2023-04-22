@@ -1,6 +1,8 @@
 """ Written by Benjamin Jack Cullen """
 
 import asyncio
+
+import handler_chunk
 import handler_file
 import handler_post_process
 import handler_print
@@ -10,10 +12,8 @@ import tabulate_helper
 import power_time
 import time
 
-# todo: optional write results + table_to_file: no max columns (considering parsing), print_table: max columns(readable)
 
-
-def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool):
+def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _verbose: bool):
     max_column_width = cli_character_limits.column_width_from_shutil(n=3)
     scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
     print(tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
@@ -22,40 +22,12 @@ def learn_result_handler_display(_results: list, _exc: list, _t_completion: str,
                             stralign='right'))
 
 
-def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_scan_time: str, _verbose: bool,
+def result_handler_display(_results: list, _exc: list, _t_completion: str, _verbose: bool,
                            _de_scan_bool: bool, _type_scan_bool: bool, _p_scan: bool,
                            _reveal_scan: bool, _dt: str, _header_0: str,
                            interact: bool, _contents_scan: bool, write_bool: bool, _mtime_scan: bool,
                            _bench: bool, _query=''):
     if len(_results) >= 1:
-        if _bench is True:
-            t0 = time.perf_counter()
-        tables = []
-        max_column_width = cli_character_limits.column_width_from_shutil(n=3)
-        scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(_t_completion))
-        if _verbose is True:
-            # verbose table: timings and things
-            table_0 = tabulate.tabulate([[*[len(_results)], *[len(_exc)], *[scan_time_human]]],
-                                        maxcolwidths=[max_column_width, max_column_width, max_column_width],
-                                        headers=(f'{_header_0}', 'Errors                ', 'Time                  '),
-                                        stralign='right')
-            print('')
-            print(table_0)
-            print('')
-
-        # create results table
-        if _mtime_scan is False:
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'right', 'left'),
-                                        headers=('Modified', f'Buffer [{_header_0}]', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
-                                        stralign='left')
-            tables.append(table_1)
-        elif _mtime_scan is True:
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'left'),
-                                        headers=('Modified', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
-                                        stralign='left')
-            tables.append(table_1)
 
         # create filename
         part_fname = 'scan_results_'
@@ -72,48 +44,100 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
         elif _mtime_scan is True:
             part_fname = 'mtime_scan'
 
-        # write results
+        # create table for file: each entry should be on one line for ease of parsing.
         if write_bool is True:
-            for table in tables:
-                asyncio.run(handler_file.write_scan_results(table, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
+            if _mtime_scan is False:
+                table_file = tabulate.tabulate(_results,
+                                               colalign=('left', 'right', 'right', 'left'),
+                                               headers=('Modified', f'Buffer [{_header_0}]', 'Bytes',
+                                                        f'Files: {len(_results)}    Errors: {len(_exc)}'),
+                                               stralign='left')
+            else:
+                table_file = tabulate.tabulate(_results,
+                                               colalign=('left', 'right', 'left'),
+                                               headers=(
+                                                   'Modified', 'Bytes', f'Files: {len(_results)}    Errors: {len(_exc)}'),
+                                               stralign='left')
+            asyncio.run(handler_file.write_scan_results(table_file, file=part_fname + '_' + _dt + '.txt', _dt=_dt))
 
-        # enumeration for reasonable column widths
-        if _mtime_scan is False:
-            max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-            max_column_width_tot = max_column_width * 4
-            max_dt = handler_post_process.longest_item(_results, idx=0)
-            max_bytes = handler_post_process.longest_item(_results, idx=2)
-            new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'right', 'left'),
-                                        maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
-                                        headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {len(_results)}    Errors: {len(_exc)}]'),
-                                        stralign='left')
-        elif _mtime_scan is True:
-            max_column_width = cli_character_limits.column_width_from_shutil(n=3)
-            max_column_width_tot = max_column_width * 3
-            max_dt = handler_post_process.longest_item(_results, idx=0)
-            max_bytes = handler_post_process.longest_item(_results, idx=1)
-            new_max_path = max_column_width_tot - max_dt - max_bytes - 8
-            table_1 = tabulate.tabulate(_results,
-                                        colalign=('left', 'right', 'left'),
-                                        maxcolwidths=[max_dt, max_bytes, new_max_path],
-                                        headers=('[Modified]', '[Bytes]', f'[Files: {len(_results)}    Errors: {len(_exc)}]'),
-                                        stralign='left')
+        # create table to be displayed:
+        # tabulation in stages to greatly reduce tabulation time which was exceeding a 3rd of main operation time
 
-        if _bench is True:
-            print(f'tabulation time: {time.perf_counter() - t0}')
-            print('')
-
-        # display results tale
         if interact is True:
-            tabulate_helper.display_rows_interactively(max_limit=75,
-                                                       results=_results,
-                                                       table=table_1,
-                                                       extra_input=False,
-                                                       message='\n-- more --\n',
-                                                       function=None)
-        else:
+            # interact table solution below may be temporary as I would like all the columns to be consistently sized
+            # in one big table as with previous versions however speed takes much precedence over generating one
+            # big table. The formula below can generate one big table however time is of the essence.
+            # One big table: 30-50% of scan time + scan time (1hour scan = 1hour scan + up to 30minutes tabulation time)
+            # Many small tables: Practically instant.
+            # It seems most of the tabulation time is when maxcolwidths is used, so with smaller tables we can
+            # basically eliminate tabulation time while maintaining maxcolwidths per table rather than maintaining
+            # maxcolwidths for one big table which can be infinitely time-consuming.
+            _results_len = len(_results)
+            chunk_size = 75
+            _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+            if _mtime_scan is False:
+                # 4 column table
+                for _result in _results:
+                    max_column_width = cli_character_limits.column_width_from_shutil(n=4)
+                    max_column_width_tot = max_column_width * 4
+                    max_dt = handler_post_process.longest_item(_result, idx=0)
+                    max_bytes = handler_post_process.longest_item(_result, idx=2)
+                    new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
+                    table_1 = tabulate.tabulate(_result,
+                                                colalign=('left', 'right', 'right', 'left'),
+                                                maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
+                                                headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
+                                                stralign='left')
+                    print(table_1)
+                    print('')
+                    input('-- more --')
+                    print('')
+            else:
+                # 3 column table
+                for _result in _results:
+                    max_column_width = cli_character_limits.column_width_from_shutil(n=3)
+                    max_column_width_tot = max_column_width * 3
+                    max_dt = handler_post_process.longest_item(_result, idx=0)
+                    max_bytes = handler_post_process.longest_item(_result, idx=1)
+                    new_max_path = max_column_width_tot - max_dt - max_bytes - 8
+                    table_1 = tabulate.tabulate(_result,
+                                                colalign=('left', 'right', 'left'),
+                                                maxcolwidths=[max_dt, max_bytes, new_max_path],
+                                                headers=('[Modified]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
+                                                stralign='left')
+                    print(table_1)
+                    print('')
+                    input('-- more --')
+                    print('')
+
+        if interact is False:
+            table_1 = []
+            if _mtime_scan is False:
+                # 4 column table
+                max_column_width = cli_character_limits.column_width_from_shutil(n=4)
+                max_column_width_tot = max_column_width * 4
+                max_dt = handler_post_process.longest_item(_results, idx=0)
+                max_bytes = handler_post_process.longest_item(_results, idx=2)
+                new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
+                table_1 = tabulate.tabulate(_results,
+                                            colalign=('left', 'right', 'right', 'left'),
+                                            maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
+                                            headers=('[Modified]', f'[Buffer: {_header_0.replace(": " + _query, "")}]',
+                                                     '[Bytes]', f'[Files: {len(_results)}    Errors: {len(_exc)}]'),
+                                            stralign='left')
+            elif _mtime_scan is True:
+                # 3 column table
+                max_column_width = cli_character_limits.column_width_from_shutil(n=3)
+                max_column_width_tot = max_column_width * 3
+                max_dt = handler_post_process.longest_item(_results, idx=0)
+                max_bytes = handler_post_process.longest_item(_results, idx=1)
+                new_max_path = max_column_width_tot - max_dt - max_bytes - 8
+                table_1 = tabulate.tabulate(_results,
+                                            colalign=('left', 'right', 'left'),
+                                            maxcolwidths=[max_dt, max_bytes, new_max_path],
+                                            headers=('[Modified]', '[Bytes]',
+                                                     f'[Files: {len(_results)}    Errors: {len(_exc)}]'),
+                                            stralign='left')
             print(table_1)
 
     else:
@@ -122,7 +146,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
 
 def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bool, _de_scan_bool: bool,
                       _type_scan_bool: bool, _p_scan: bool, _dt: str, _exc: list, _reveal_scan: bool,
-                      _t_completion: str, _extract: bool, _verbose: bool, _pre_scan_time: str,
+                      _t_completion: str, _extract: bool, _verbose: bool,
                       interact: bool, _contents_scan: bool, _query: str, write_bool: bool, _mtime_scan: bool,
                       _bench: bool):
 
@@ -151,7 +175,6 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                     learn_result_handler_display(_results=_results,
                                                  _exc=_exc,
                                                  _t_completion=_t_completion,
-                                                 _pre_scan_time=_pre_scan_time,
                                                  _verbose=_verbose)
                     asyncio.run(handler_file.write_definitions(*_results, file=_db_recognized_files))
                     asyncio.run(handler_file.clean_database(fname=_db_recognized_files))
@@ -160,7 +183,6 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                     result_handler_display(_results=_results,
                                            _exc=_exc,
                                            _t_completion=_t_completion,
-                                           _pre_scan_time=_pre_scan_time,
                                            _verbose=_verbose,
                                            _de_scan_bool=_de_scan_bool,
                                            _type_scan_bool=_type_scan_bool,

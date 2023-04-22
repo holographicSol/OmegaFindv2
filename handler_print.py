@@ -76,17 +76,6 @@ def display_exception(_msg: str, e: Exception):
 
 # ------------------------------------------------------------------------------> results
 
-def display_prescan_info(_files, _x_files, completion_time):
-    max_column_width = cli_character_limits.column_width_from_shutil(n=3)
-    scan_time_human = power_time.convert_seconds_to_hours_minutes_seconds_time_delta(float(completion_time))
-    print(tabulate.tabulate([[*[len(_files)], *[len(_x_files)], *[scan_time_human]]],
-                            maxcolwidths=[max_column_width, max_column_width],
-                            headers=('Pre-Scan Files            ', 'Errors                ', 'Time                  '),
-                            stralign='right'))
-    print('')
-    print('')
-
-
 def display_zero_results(_results, _t_completion, _exc, _header_0):
     _results = []
     max_column_width = cli_character_limits.column_width_from_shutil(n=3)

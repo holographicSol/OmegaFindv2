@@ -97,7 +97,4 @@ def pre_scan_handler(_target: str, _verbose: bool, _recursive: bool) -> tuple:
         scan_results = scan_depth_zero(path=_target)
     _files = scan_results[0]
     _x_files = scan_results[1]
-    completion_time = time.perf_counter()-t
-    if _verbose is True:
-        handler_print.display_prescan_info(_files, _x_files, completion_time)
-    return _files, _x_files, completion_time
+    return _files, _x_files

@@ -1,7 +1,6 @@
 """ Written by Benjamin Jack Cullen """
 
 import os
-import handler_chunk
 import asyncio
 import handler_strings
 import handler_file
