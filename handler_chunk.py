@@ -24,18 +24,14 @@ def un_chunk_data(data: list, depth: int) -> list:
     return new_data
 
 
-def un_chunk_data_0(*args: list) -> list:
-    new_data = []
-    for arg in args:
-        new_data.append([*arg])
-    return new_data
+def un_chunk_data_0(data: list) -> list:
     # good but slow with a huge list
-    # new_data = []
-    # for zero in data:
-    #     for one in zero:
-    #         if one not in new_data and one is not None:
-    #             new_data.append(one)
-    # return new_data
+    new_data = []
+    for zero in data:
+        for one in zero:
+            if one not in new_data and one is not None:
+                new_data.append(one)
+    return new_data
 
 
 def un_chunk_data_1(data: list) -> list:

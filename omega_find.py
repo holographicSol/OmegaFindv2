@@ -208,6 +208,7 @@ if __name__ == '__main__':
 
                 if p_scan_bool is True:
                     results = handler_chunk.un_chunk_data_0(results)
+                    # results[:] = [item for sublist in results for item in sublist if item not in results]
                 if _bench is True:
                     print(f'post-process time: {time.perf_counter()-t0}')
 
