@@ -312,7 +312,7 @@ async def read_report(fname: str):
                                                function=None)
 
 
-async def read_definitions(fname: str) -> tuple:
+async def read_definitions(fname: str, _digits=True) -> tuple:
     recognized_files, suffixes = [], []
     _data = await read_file(file=fname)
     _data = _data.split('\n')
@@ -320,14 +320,15 @@ async def read_definitions(fname: str) -> tuple:
         idx = datas.find(' ')
         suffix = datas[:idx]
         buffer = datas[idx+1:]
-        buffer = re.sub(variable_strings.digi_str, '', buffer)
+        if _digits is False:
+            buffer = await asyncio.to_thread(handler_strings.sub_str, _buffer=buffer)  # digitless
         recognized_files.append([suffix, buffer])
         if suffix not in suffixes:
             suffixes.append(suffix)
     return recognized_files, suffixes
 
 
-async def read_type_definitions(fname: str, _type_suffix: list) -> tuple:
+async def read_type_definitions(fname: str, _type_suffix: list, _digits=True) -> tuple:
     recognized_files, suffixes = [], []
     _data = await read_file(file=fname)
     _data = _data.split('\n')
@@ -336,7 +337,8 @@ async def read_type_definitions(fname: str, _type_suffix: list) -> tuple:
         suffix = datas[:idx]
         if suffix in _type_suffix:
             buffer = datas[idx+1:]
-            buffer = re.sub(variable_strings.digi_str, '', buffer)
+            if _digits is False:
+                buffer = await asyncio.to_thread(handler_strings.sub_str, _buffer=buffer)  # digitless
             recognized_files.append([buffer])
             if suffix not in suffixes:
                 suffixes.append(suffix)
@@ -403,13 +405,14 @@ async def clean_database(fname: str):
 
 
 def db_read_handler(_learn_bool: bool, _de_scan_bool: bool, _type_scan_bool: bool,
-                    _db_recognized_files: str, _type_suffix: list) -> tuple:
+                    _db_recognized_files: str, _type_suffix: list, _digits=True) -> tuple:
     recognized_files, suffixes = [], []
     if _learn_bool is True or _de_scan_bool is True:
-        recognized_files, suffixes = asyncio.run(read_definitions(fname=_db_recognized_files))
+        recognized_files, suffixes = asyncio.run(read_definitions(fname=_db_recognized_files, _digits=_digits))
     elif _type_scan_bool is True:
         recognized_files, suffixes = asyncio.run(read_type_definitions(fname=_db_recognized_files,
-                                                                       _type_suffix=_type_suffix))
+                                                                       _type_suffix=_type_suffix,
+                                                                       _digits=_digits))
     return recognized_files, suffixes
 
 

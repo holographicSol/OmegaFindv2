@@ -51,6 +51,7 @@ def omega_help():
     print(' -R       Recursive             Scan directories recursively. (Scans all sub-directories).')
     print(' -XP      Experience            Display how many associations have been learned.')
     print('')
+    print(' --digitless                    Omit versioning,timestamps,dimensions etc. when comparing magic buffers.')
     print(' --sort=mtime                   Sort by Modified Time')
     print(' --sort=buffer                  Sort by Buffer')
     print(' --sort=size                    Sort by Size')

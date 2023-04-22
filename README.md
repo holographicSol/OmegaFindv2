@@ -99,6 +99,28 @@ Overview:
     However this default behaviour can be turned of using -I which may be useful if
     running OmegaFindv2 with scripts that require promptless output.
 
+    [ Digitless ]
+    For the most part digits in a files resulting magic buffer read will pertain to
+    things like, versioning, dimensions and timestamps.
+    When OmegaFindv2 learns, digits are recorded in the database however when
+    performing various scan techniques it may be preferrable to perform a digitless
+    compartison of files being scanned against records in the database. This is so
+    that if OmegaFindv2 learns an association between say a PNG of certain dimensions
+    for example, OmegaFindv2 can then identify any similar PNG of any dimensions,
+    with any verion number etc. This makes OmegaFindv2 extremely powerful at
+    identification.
+    Learning takes place with digits being recorded to the database however when
+    performing various scan techniques (namely D-SCAN and T-SCAN) the buffer strings
+    resulting from files being scanned during the scan technique can be digitlessly
+    compared to the database enabling a powerful digitless comparison of buffer
+    strings.
+    This reduces false positives in a D-SCAN and increases identification yield in
+    a T-SCAN.
+    To perform digitless comparisons use --digitless argument.
+    For strict comparisons that do include digits simply omit --digitless argument
+    when calling OmegaFindv2.
+    
+
 Help:
 
     [OmegaFind v2] Forensics tool. Search differently.
@@ -127,9 +149,11 @@ Help:
      -G       Group                 Display specified suffix group.
      -I       Interact              Disables interaction. No prompt mode.
      -L       List Scan Reports     List and select previously completed scan report.
+     -O       Write Output          Save logging and results to file. Takes no further arguments.
      -R       Recursive             Scan directories recursively. (Scans all sub-directories).
      -XP      Experience            Display how many associations have been learned.
     
+     --digitless                    Omit versioning,timestamps,dimensions etc. when comparing magic buffers.
      --sort=mtime                   Sort by Modified Time
      --sort=buffer                  Sort by Buffer
      --sort=size                    Sort by Size

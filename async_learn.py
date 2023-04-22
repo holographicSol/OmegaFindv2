@@ -15,7 +15,7 @@ async def entry_point_learn(chunk: list, **kwargs) -> list:
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
     global x_learn
-    buffer = handler_strings.sub_str(_buffer=buffer)
+    # buffer = handler_strings.sub_str(_buffer=buffer)  # digitless
     if [suffix, buffer] not in x_learn:
         x_learn.append([suffix, buffer])
         if [suffix, buffer] not in _recognized_files:

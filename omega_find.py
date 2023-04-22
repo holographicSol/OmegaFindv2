@@ -84,6 +84,7 @@ if __name__ == '__main__':
             query = omega_find_sysargv.query(STDIN)
             sort_mode = omega_find_sysargv.sort_mode(STDIN)
             write_bool = omega_find_sysargv.write_bool(STDIN)
+            _digits = omega_find_sysargv.sub_digits(STDIN)
 
             if os.path.exists(target) and os.path.exists(db_recognized_files):
 
@@ -97,7 +98,8 @@ if __name__ == '__main__':
                                                                               _de_scan_bool=de_scan_bool,
                                                                               _type_scan_bool=type_scan_bool,
                                                                               _db_recognized_files=db_recognized_files,
-                                                                              _type_suffix=type_suffix)
+                                                                              _type_suffix=type_suffix,
+                                                                              _digits=_digits)
 
                 # print(recognized_files)
 
@@ -130,7 +132,8 @@ if __name__ == '__main__':
                                                          _extract=extract, _target=target, _reveal_scan=reveal_scan_bool,
                                                          _program_root=program_root,
                                                          _contents_scan=contents_scan, _query=query,
-                                                         _verbose=verbose)
+                                                         _verbose=verbose,
+                                                         _digits=_digits)
 
                 # run the async multiprocess operation(s)
                 t = time.perf_counter()
@@ -153,24 +156,25 @@ if __name__ == '__main__':
                     # results = asyncio.run(handler_post_process.cscan(_list=results))
                     results = handler_chunk.un_chunk_data(results, depth=1)
 
-                # sort
-                if sort_mode == '--sort=mtime':
-                    results = sorted(results, key=lambda x: x[0])
-                elif sort_mode == '--sort=buffer':
-                    results = sorted(results, key=lambda x: x[1])
-                elif sort_mode == '--sort=size':
-                    results = sorted(results, key=lambda x: x[2])
-                elif sort_mode == '--sort=file':
-                    results = sorted(results, key=lambda x: x[3])
+                if learn_bool is False:
+                    # sort
+                    if sort_mode == '--sort=mtime':
+                        results = sorted(results, key=lambda x: x[0])
+                    elif sort_mode == '--sort=buffer':
+                        results = sorted(results, key=lambda x: x[1])
+                    elif sort_mode == '--sort=size':
+                        results = sorted(results, key=lambda x: x[2])
+                    elif sort_mode == '--sort=file':
+                        results = sorted(results, key=lambda x: x[3])
 
-                elif sort_mode == '--sort-reverse=mtime':
-                    results = sorted(results, key=lambda x: x[0], reverse=True)
-                elif sort_mode == '--sort-reverse=buffer':
-                    results = sorted(results, key=lambda x: x[1], reverse=True)
-                elif sort_mode == '--sort-reverse=size':
-                    results = sorted(results, key=lambda x: x[2], reverse=True)
-                elif sort_mode == '--sort-reverse=file':
-                    results = sorted(results, key=lambda x: x[3], reverse=True)
+                    elif sort_mode == '--sort-reverse=mtime':
+                        results = sorted(results, key=lambda x: x[0], reverse=True)
+                    elif sort_mode == '--sort-reverse=buffer':
+                        results = sorted(results, key=lambda x: x[1], reverse=True)
+                    elif sort_mode == '--sort-reverse=size':
+                        results = sorted(results, key=lambda x: x[2], reverse=True)
+                    elif sort_mode == '--sort-reverse=file':
+                        results = sorted(results, key=lambda x: x[3], reverse=True)
 
                 # post-scan results
                 handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,

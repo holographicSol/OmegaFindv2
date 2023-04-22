@@ -83,8 +83,8 @@ def mode(stdin: list) -> tuple:
 
 def target(stdin: list, _mode) -> str:
     _target = str(stdin[stdin.index(_mode)+1]).strip()
-    if _target.endswith('"'):
-        _target = _target[:-1]
+    _target = _target.replace('"', '')
+    _target = _target.replace("'", "")
     return _target
 
 
@@ -183,6 +183,13 @@ def interactive(stdin: list) -> bool:
     if '-I' in stdin:
         interact = False
     return interact
+
+
+def sub_digits(stdin: list):
+    _digits = True
+    if '--digitless' in stdin:
+        _digits = False
+    return _digits
 
 
 def sort_mode(stdin: list) -> str:
