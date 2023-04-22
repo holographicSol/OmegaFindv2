@@ -235,11 +235,13 @@ Examples:
     omega_find -R -l ".\test_files\"
 
     Contents Scan (Asynchronous and Multiprocessed):
+    omega_find -c ".\test_files\afile.xyz" -q string
     omega_find -cmax 1 -c ".\test_files\" -q string
     omega_find -cmax 1 -R -c ".\test_files\" -q string
     omega_find -cmax 1 -R -e -c ".\test_files\" -q string
 
     De-Obfuscation Scan (Asynchronous and Multiprocessed):
+    omega_find --digitless -d ".\test_files\afile.xyz"
     omega_find -cmax 1 --digitless -d ".\test_files\"
     omega_find -cmax 1 --digitless -R -d ".\test_files\"
     omega_find -cmax 1 --digitless -R -d ".\test_files\"
@@ -259,6 +261,7 @@ Examples:
     omega_find -cmax 1 --digitless -R -e -t ".\test_files\" -csfx
 
     Reveal Scan (Asynchronous and Multiprocessed):
+    omega_find -r ".\test_files\afile.xyz"
     omega_find -cmax 1 -r ".\test_files\"
     omega_find -cmax 1 -R -r ".\test_files\"
     omega_find -cmax 1 -R -e -r ".\test_files\"
