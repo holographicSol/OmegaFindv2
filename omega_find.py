@@ -133,11 +133,10 @@ if __name__ == '__main__':
                 if _bench is True:
                     print(f'chunk data time: {time.perf_counter()-t0}')
 
-                # developer view (replace verbose here with a --debug switch)
-                # if verbose is True:
-                #     print(f'[CHUNKS]')
-                #     for chunk in chunks:
-                #         print(chunk)
+                # uncomment to view chunks
+                # print(f'[CHUNKS]')
+                # for chunk in chunks:
+                #     print(chunk)
 
                 # prepare a dictionary for each child process (requires my modified aiomultiprocess pool.py)
                 multiproc_dict = handler_dict.dict_maker(_recognized_files=recognized_files,
@@ -162,7 +161,7 @@ if __name__ == '__main__':
 
                 # todo: SPEED UP UN-CHUNK TIME -> either faster unchunk method or change data structure before here
                 # uncomment to view data structure
-                # print('before post-processing')
+                # print('before un-chunking:')
                 # for r in results:
                 #     print(len(r), r)
                 # print('')
@@ -197,7 +196,7 @@ if __name__ == '__main__':
                         print(f'unchunk extract=True time: {time.perf_counter()-t0}')
 
                 # uncomment to view data structure
-                # print('before post-processing')
+                # print('after un-chunking:')
                 # for r in results:
                 #     print(len(r), r)
                 # print('')
