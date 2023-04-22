@@ -116,10 +116,14 @@ Overview:
     strings.
     This reduces false positives in a D-SCAN and increases identification yield in
     a T-SCAN.
+    Digitless is only recommended if you have a reason to be more strict.
     To perform digitless comparisons use --digitless argument.
     For strict comparisons that do include digits simply omit --digitless argument
     when calling OmegaFindv2.
-    
+    Note: Digitless was on by default (inculuding when learning). If you have a
+    digitless database then re-learning is reommended as now OmegaFindv2 learns
+    with digits included.
+
 
 Help:
 
