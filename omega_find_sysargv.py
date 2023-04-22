@@ -18,7 +18,7 @@ program_root = variable_paths.get_executable_path()
 
 def mode(stdin: list) -> tuple:
     # modes: learn, de-obfuscation, type-scan, password-protected-scan, reveal-scan.
-    modes = ['-l', '-d', '-t', '-p', '-r', '-c']
+    modes = ['-l', '-d', '-t', '-p', '-r', '-c', '-m']
     _mode = ''
     learn = False
     de_scan = False
@@ -26,6 +26,7 @@ def mode(stdin: list) -> tuple:
     p_scan = False
     reveal_scan = False
     contents_scan = False
+    mtime_scan = False
     suffix = []
     for m in modes:
         if m in stdin:
@@ -40,6 +41,8 @@ def mode(stdin: list) -> tuple:
         p_scan = True
     elif _mode == '-r':
         reveal_scan = True
+    elif _mode == '-m':
+        mtime_scan = True
     elif _mode == '-t':
         type_scan = True
         # suffix
@@ -78,7 +81,7 @@ def mode(stdin: list) -> tuple:
                     suffix = sfx_group
             else:
                 handler_print.display_no_custom_suffix()
-    return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan, contents_scan
+    return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan, contents_scan, mtime_scan
 
 
 def target(stdin: list, _mode) -> str:

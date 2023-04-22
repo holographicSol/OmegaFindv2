@@ -24,6 +24,7 @@ import async_descan
 import async_typescan
 import async_pscan
 import async_revealscan
+import async_mtimescan
 
 import variable_paths
 
@@ -45,6 +46,8 @@ async def main(_chunks: list, _multiproc_dict: dict, _mode: str):
             _results = await pool.map(async_pscan.entry_point_p_scan, _chunks, _multiproc_dict)
         elif mode == '-r':
             _results = await pool.map(async_revealscan.entry_point_reveal_scan, _chunks, _multiproc_dict)
+        elif mode == '-m':
+            _results = await pool.map(async_mtimescan.entry_point_mtime_scan, _chunks, _multiproc_dict)
     return _results
 
 
@@ -69,10 +72,10 @@ if __name__ == '__main__':
     if omega_find_sysargv.run_and_exit(stdin=STDIN, interact=interact) is False:
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
         mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix, reveal_scan_bool,\
-            contents_scan = omega_find_sysargv.mode(STDIN)
+            contents_scan, mtime_scan = omega_find_sysargv.mode(STDIN)
 
         if type_scan_bool is True and not len(type_suffix) >= 1:
-            sys.exit('-- exiting ...\n')
+            sys.exit('-- unspecified suffix(s).\n')
 
         else:
             target = omega_find_sysargv.target(STDIN, mode)
@@ -110,9 +113,10 @@ if __name__ == '__main__':
                 elif os.path.isfile(target):
                     files = [target]
 
-                if write_bool is True:
-                    asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
-                    asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
+                # todo
+                # if write_bool is True:
+                #     asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
+                #     asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
 
                 # chunk data ready for async multiprocess
                 chunks = handler_chunk.chunk_data(files, chunk_max)
@@ -144,8 +148,10 @@ if __name__ == '__main__':
                 # for result in results:
                 #     print(result)
                 exc, results = handler_post_process.results_filter(results)
-                if write_bool is True:
-                    asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
+
+                # todo
+                # if write_bool is True:
+                #     asyncio.run(handler_file.write_exception_log(*exc, file='exception_log_' + dt + '.txt', _dt=dt))
 
                 # post-processing
                 if p_scan_bool is True:
@@ -156,7 +162,7 @@ if __name__ == '__main__':
                     # results = asyncio.run(handler_post_process.cscan(_list=results))
                     results = handler_chunk.un_chunk_data(results, depth=1)
 
-                if learn_bool is False:
+                if learn_bool is False and mtime_scan is False:
                     # sort
                     if sort_mode == '--sort=mtime':
                         results = sorted(results, key=lambda x: x[0])
@@ -176,6 +182,22 @@ if __name__ == '__main__':
                     elif sort_mode == '--sort-reverse=file':
                         results = sorted(results, key=lambda x: x[3], reverse=True)
 
+                # sort
+                elif mtime_scan is True:
+                    if sort_mode == '--sort=mtime':
+                        results = sorted(results, key=lambda x: x[0])
+                    elif sort_mode == '--sort=size':
+                        results = sorted(results, key=lambda x: x[1])
+                    elif sort_mode == '--sort=file':
+                        results = sorted(results, key=lambda x: x[2])
+
+                    elif sort_mode == '--sort-reverse=mtime':
+                        results = sorted(results, key=lambda x: x[0], reverse=True)
+                    elif sort_mode == '--sort-reverse=size':
+                        results = sorted(results, key=lambda x: x[1], reverse=True)
+                    elif sort_mode == '--sort-reverse=file':
+                        results = sorted(results, key=lambda x: x[2], reverse=True)
+
                 # post-scan results
                 handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
                                                   _learn_bool=learn_bool, _de_scan_bool=de_scan_bool,
@@ -183,7 +205,8 @@ if __name__ == '__main__':
                                                   _dt=dt, _exc=exc, _reveal_scan=reveal_scan_bool,
                                                   _t_completion=t_completion, _extract=extract, _verbose=verbose,
                                                   _pre_scan_time=pre_scan_time, interact=interact,
-                                                  _contents_scan=contents_scan, _query=query, write_bool=write_bool)
+                                                  _contents_scan=contents_scan, _query=query, write_bool=write_bool,
+                                                  _mtime_scan=mtime_scan)
 
                 # final clean of tmp
                 if os.path.exists(variable_paths.tmp_dir_path):

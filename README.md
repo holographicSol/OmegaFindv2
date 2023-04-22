@@ -128,13 +128,14 @@ Overview:
 Help:
 
     [OmegaFind v2] Forensics tool. Search differently.
-    
+
      -l       Learn                 Specify location to learn from.
      -c       Contents Scan         Specify a directory in which file contents will be scanned.
      -d       De-Obfuscation        Attempt to find files where suffix does not match contents.
      -p       Password Protected    Only scan for password protected archives.
      -r       Reveal Scan           Display all file types.
      -t       Type Scan             Display all files of type.
+     -m       Modified Time Scan    Display modified time for all files.
      -s       String Scan           Display all files containing string. Used with -q.
      -q       Query                 Specify a search query. Used with -c. -c PATH -q QUERY.
      -sfx     Suffix                Specify suffix. Used with -t.
