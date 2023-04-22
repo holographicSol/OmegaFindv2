@@ -83,7 +83,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             max_column_width_tot = max_column_width * 4
             max_dt = handler_post_process.longest_item(_results, idx=0)
             max_bytes = handler_post_process.longest_item(_results, idx=2)
-            new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 4
+            new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
             table_1 = tabulate.tabulate(_results,
                                         colalign=('left', 'right', 'right', 'left'),
                                         maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
@@ -94,7 +94,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             max_column_width_tot = max_column_width * 3
             max_dt = handler_post_process.longest_item(_results, idx=0)
             max_bytes = handler_post_process.longest_item(_results, idx=1)
-            new_max_path = max_column_width_tot - max_dt - max_bytes - 4
+            new_max_path = max_column_width_tot - max_dt - max_bytes - 8
             table_1 = tabulate.tabulate(_results,
                                         colalign=('left', 'right', 'left'),
                                         maxcolwidths=[max_dt, max_bytes, new_max_path],
