@@ -66,6 +66,8 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _pre_
             part_fname = 'reveal_scan'
         elif _contents_scan is True:
             part_fname = 'contents_scan'
+        elif _mtime_scan is True:
+            part_fname = 'mtime_scan'
 
         # write results
         if write_bool is True:
