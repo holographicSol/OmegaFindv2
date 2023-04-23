@@ -84,7 +84,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                                                  col_idx=2,
                                                                                  max_column_width=None)
 
-                # again for the next column of variable string lengths.
+                # again for the next column of variable data lengths.
                 _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
                                                                                  col_idx=1,
                                                                                  max_column_width=max_column_width)
