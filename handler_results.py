@@ -71,15 +71,20 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
             # a little tampering with tabulate to preserve the padding
             tabulate.PRESERVE_WHITESPACE = True
             if _mtime_scan is False:
+
                 # Let's produce the max_column_width alignment of one big table but with the speed of producing one
                 # tiny table. The best of both worlds.
 
+                # divide the number of characters that fit on the screen (fit at this very point in time) by N columns.
                 max_column_width = cli_character_limits.column_width_from_shutil(n=4)
 
+                # tabulate is great at creating new lines based on max_column_width however tabulate will also honour
+                # existing new lines and whitespace if instructed to do so.
                 _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
                                                                                  col_idx=2,
                                                                                  max_column_width=None)
 
+                # again for the next column of variable string lengths.
                 _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
                                                                                  col_idx=1,
                                                                                  max_column_width=max_column_width)
@@ -89,8 +94,12 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 max_dt = handler_post_process.longest_item(_results, idx=0)
                 max_bytes = handler_post_process.longest_item(_results, idx=2)
                 new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
+
                 # chunk results by a reasonable number so as not to flood the console and loose results (interactive)
                 _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+
+                # tabulate a tiny table (fast) rather than a huge table (potentially slow) while retaining maxcolwidths
+                # consistently through each tiny table.
                 n_table = 0
                 for _result in _results:
                     if n_table == 0:
