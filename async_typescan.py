@@ -19,11 +19,12 @@ async def entry_point_type_scan(chunk: list, **kwargs) -> list:
     _human_size = kwargs.get('human_size')
 
     if _extract is False:
-        return [await type_scan(_file=item, _recognized_files=_recognized_files, _buffer_max=_buffer_max,
+        return [await type_scan(_file=item,
+                                _recognized_files=_recognized_files, _buffer_max=_buffer_max,
                                 _type_suffix=_type_suffix, _target=_target, _program_root=_program_root,
                                 _digits=_digits, _human_size=_human_size) for item in chunk]
     elif _extract is True:
-        return [await extract_type_scan(_file=item, _buffer_max=_buffer_max, _recognized_files=_recognized_files,
+        return [await extract_type_scan(_file=item, _recognized_files=_recognized_files, _buffer_max=_buffer_max,
                                         _type_suffix=_type_suffix, _target=_target, _program_root=_program_root,
                                         _digits=_digits, _human_size=_human_size) for item in chunk]
 
@@ -39,7 +40,7 @@ async def type_scan(_file: str, _recognized_files: list, _buffer_max: int, _type
     return _result
 
 
-async def extract_type_scan(_file: str, _buffer_max: int, _recognized_files: list,
+async def extract_type_scan(_file: str, _recognized_files: list,  _buffer_max: int,
                             _type_suffix: list, _target: str, _program_root: str, _digits=True,
                             _human_size=False) -> list:
 
