@@ -74,7 +74,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                                                    _recognized_files=_recognized_files, _digits=_digits,
                                                    human_size=human_size)
                 if res is not None:
-                    res[3] = res[3].replace(str(_tmp), _target+'\\'+_file+'\\')
+                    res[3] = res[3].replace(str(_tmp), _file+'\\')
                     _results.append(res)
     else:
         if 'Password required' in extraction:
