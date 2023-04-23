@@ -18,7 +18,7 @@ def convert_results(_results, _human_size=False, _mtime_scan=False):
 def convert_string_match_results(_results, _human_size=False):
     n_result = 0
     for sublist in _results:
-        print(sublist)
+        # print(sublist)
         sublist[1] = handler_file.convert_timestamp_to_datetime(float(sublist[1]))
         if _human_size is True:
             sublist[2] = str(power_converter.convert_bytes(*[int(sublist[2])], abbr=True)[0])
