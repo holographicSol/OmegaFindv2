@@ -68,6 +68,9 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
         chunk_size = 75
 
         if interact is True:
+            if _bench is True:
+                t0 = time.perf_counter()
+
             # a little tampering with tabulate to preserve the padding
             tabulate.PRESERVE_WHITESPACE = True
             if _mtime_scan is False:
@@ -99,6 +102,10 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
 
                 # chunk results by a reasonable number so as not to flood the console and loose results (interactive)
                 _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+
+                if _bench is True:
+                    print(f'pre-tabulation time: {time.perf_counter()-t0}')
+                    print('')
 
                 # tabulate a tiny table (fast) rather than a huge table (potentially slow) while retaining maxcolwidths
                 # consistently through each tiny table. now tabulate only calculates maxcolwidths for one tiny

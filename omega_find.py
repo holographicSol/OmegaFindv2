@@ -260,7 +260,6 @@ if __name__ == '__main__':
                         results = sorted(results, key=lambda x: x[2], reverse=True)
                 if _bench is True:
                     print(f'sort results time: {time.perf_counter()-t0}')
-                    print('')
 
                 # post-scan results
                 handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
