@@ -71,10 +71,9 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
             # a little tampering with tabulate to preserve the padding
             tabulate.PRESERVE_WHITESPACE = True
             if _mtime_scan is False:
-                # Let's produce the max_column_width alignment of one big table but without using max_column_width
-                # and with all the speed of iterating over many small tables one at time. The best of both worlds.
-                # (convert into new tabulator helper module. this time aside from adding interact, also adds speed
-                # to huge tables that need maxcolwidths adjustments for an overall finite output width (like a screen))
+                # Let's produce the max_column_width alignment of one big table but with the speed of producing one
+                # tiny table. The best of both worlds.
+
                 max_column_width = cli_character_limits.column_width_from_shutil(n=4)
 
                 _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
