@@ -303,7 +303,7 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, human_size=False)
                                         headers=(f'Index', 'Files'),
                                         stralign='left')
 
-            tabulate_helperdisplay_rows_interactively(max_limit=75,
+            tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=fp,
                                                        table=table_0,
                                                        extra_input=True,
