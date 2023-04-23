@@ -63,70 +63,148 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
 
         # create table to be displayed:
         # tabulation in stages to greatly reduce tabulation time which was exceeding a 3rd of main operation time
+        _results_len = len(_results)
+        chunk_size = 75
 
         if interact is True:
-            # Let's try the max_column_width alignment of one big table but without using max_column_width and with
-            # all the speed of iterating over many small tables one at time. The best of both worlds.
-            _results_len = len(_results)
-            chunk_size = 75
-            max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-            n_result = 0
-            for r in _results:
-                # isolate string (in this case buffer)
-                len_r = len(r[1])
-                if len_r < max_column_width:
-                    # add padding
-                    _results[n_result][1] = r[1] + str(' ' * int(max_column_width-len_r))
-                else:
-                    # or add new lines
-                    tmp = textwrap.wrap(str(r[1]), max_column_width, replace_whitespace=False)
-                    new_item = tmp[0]
-                    n_tmp = 0
-                    for x in tmp:
-                        if n_tmp != 0:
-                            new_item = new_item + '\n' + x
-                        n_tmp += 1
-                    # put back into the sub list
-                    _results[n_result][1] = new_item
-                n_result += 1
-            # enumerate remaining column widths
-            max_column_width_tot = max_column_width * 4
-            max_dt = handler_post_process.longest_item(_results, idx=0)
-            max_bytes = handler_post_process.longest_item(_results, idx=2)
-            new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
-            # chunk results by a reasonable number so as not to flood the console and loose results (interactive)
-            _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
             # a little tampering with tabulate to preserve the padding
             tabulate.PRESERVE_WHITESPACE = True
             if _mtime_scan is False:
                 # 4 column table
+                # Let's try the max_column_width alignment of one big table but without using max_column_width and with
+                # all the speed of iterating over many small tables one at time. The best of both worlds.
+
+                max_column_width = cli_character_limits.column_width_from_shutil(n=4)
+
+                max_len_bytes = 0
+                for r in _results:
+                    if len(str(r[2])) > max_len_bytes:
+                        max_len_bytes = len(str(r[2]))
+
+                n_result = 0
+                for r in _results:
+                    # isolate string (in this case buffer)
+                    len_r = len(str(r[2]))
+                    if len_r < max_len_bytes:
+                        # add padding
+                        _results[n_result][2] = str(' ' * int(max_len_bytes - len_r)) + str(r[2])
+                    else:
+                        # or add new lines
+                        tmp = textwrap.wrap(str(r[2]), max_len_bytes, replace_whitespace=False)
+                        new_item = tmp[0]
+                        n_tmp = 0
+                        for x in tmp:
+                            if n_tmp != 0:
+                                new_item = new_item + '\n' + x
+                            n_tmp += 1
+                        # put back into the sub list
+                        _results[n_result][2] = new_item
+                    n_result += 1
+
+                n_result = 0
+                for r in _results:
+                    # isolate string (in this case buffer)
+                    len_r = len(r[1])
+                    if len_r < max_column_width:
+                        # add padding
+                        _results[n_result][1] = r[1] + str(' ' * int(max_column_width - len_r))
+                    else:
+                        # or add new lines
+                        tmp = textwrap.wrap(str(r[1]), max_column_width, replace_whitespace=False)
+                        new_item = tmp[0]
+                        n_tmp = 0
+                        for x in tmp:
+                            if n_tmp != 0:
+                                new_item = new_item + '\n' + x
+                            n_tmp += 1
+                        # put back into the sub list
+                        _results[n_result][1] = new_item
+                    n_result += 1
+                # enumerate remaining column widths
+                max_column_width_tot = max_column_width * 4
+                max_dt = handler_post_process.longest_item(_results, idx=0)
+                max_bytes = handler_post_process.longest_item(_results, idx=2)
+                new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
+                # chunk results by a reasonable number so as not to flood the console and loose results (interactive)
+                _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+                n_table = 0
                 for _result in _results:
-                    table_1 = tabulate.tabulate(_result,
-                                                colalign=('left', 'left', 'right', 'left'),
-                                                maxcolwidths=[max_dt, None, max_bytes, new_max_path],
-                                                headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
-                                                stralign='left')
+                    if n_table == 0:
+                        table_1 = tabulate.tabulate(_result,
+                                                    colalign=('left', 'left', 'right', 'left'),
+                                                    maxcolwidths=[max_dt, None, max_bytes, new_max_path],
+                                                    headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
+                                                    stralign='left')
+                    else:
+                        table_1 = tabulate.tabulate(_result,
+                                                    colalign=('left', 'left', 'right', 'left'),
+                                                    maxcolwidths=[max_dt, None, max_bytes, new_max_path],
+                                                    stralign='left',
+                                                    tablefmt='plain')
                     print(table_1)
-                    print('')
-                    input('-- more --')
-                    print('')
+                    # print('')
+                    # input('-- more --')
+                    input()
+                    # print('')
+                    n_table += 1
             else:
                 # 3 column table
+                # Let's try the max_column_width alignment of one big table but without using max_column_width and with
+                # all the speed of iterating over many small tables one at time. The best of both worlds.
+                max_column_width = cli_character_limits.column_width_from_shutil(n=3)
+
+                max_len_r = 0
+                for r in _results:
+                    if len(str(r[1])) > max_len_r:
+                        max_len_r = len(str(r[1]))
+
+                n_result = 0
+                for r in _results:
+                    # isolate string (in this case buffer)
+                    len_r = len(str(r[1]))
+                    if len_r < max_len_r:
+                        # add padding
+                        _results[n_result][1] = str(' ' * int(max_len_r - len_r)) + str(r[1])
+                    else:
+                        # or add new lines
+                        tmp = textwrap.wrap(str(r[1]), max_len_r, replace_whitespace=False)
+                        new_item = tmp[0]
+                        n_tmp = 0
+                        for x in tmp:
+                            if n_tmp != 0:
+                                new_item = new_item + '\n' + x
+                            n_tmp += 1
+                        # put back into the sub list
+                        _results[n_result][1] = new_item
+                    n_result += 1
+
+                # enumerate remaining column widths
+                max_column_width_tot = max_column_width * 3
+                max_dt = handler_post_process.longest_item(_results, idx=0)
+                max_bytes = handler_post_process.longest_item(_results, idx=1)
+                new_max_path = max_column_width_tot - max_dt - max_bytes - 8
+                # chunk results by a reasonable number so as not to flood the console and loose results (interactive)
+                _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+                n_table = 0
                 for _result in _results:
-                    max_column_width = cli_character_limits.column_width_from_shutil(n=3)
-                    max_column_width_tot = max_column_width * 3
-                    max_dt = handler_post_process.longest_item(_result, idx=0)
-                    max_bytes = handler_post_process.longest_item(_result, idx=1)
-                    new_max_path = max_column_width_tot - max_dt - max_bytes - 8
-                    table_1 = tabulate.tabulate(_result,
-                                                colalign=('left', 'right', 'left'),
-                                                maxcolwidths=[max_dt, None, max_bytes, new_max_path],
-                                                headers=('[Modified]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
-                                                stralign='left')
+                    if n_table == 0:
+                        table_1 = tabulate.tabulate(_result,
+                                                    colalign=('left', 'right', 'left'),
+                                                    maxcolwidths=[max_dt, max_bytes, new_max_path],
+                                                    headers=('[Modified]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
+                                                    stralign='left')
+                    else:
+                        table_1 = tabulate.tabulate(_result,
+                                                    colalign=('left', 'right', 'left'),
+                                                    maxcolwidths=[max_dt, max_bytes, new_max_path],
+                                                    stralign='left',
+                                                    tablefmt='plain')
+                    n_table += 1
                     print(table_1)
-                    print('')
-                    input('-- more --')
-                    print('')
+                    # print('')
+                    # input('-- more --')
+                    input()
+                    # print('')
 
         if interact is False:
             table_1 = []
