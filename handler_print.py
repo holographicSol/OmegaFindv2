@@ -8,7 +8,7 @@ import cli_character_limits
 import variables_suffix
 import tabulate_helper
 import variable_paths
-
+import tabulate_helper2
 
 # ------------------------------------------------------------------------------> banner
 
@@ -171,6 +171,7 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
                                     stralign='left')
         # display results tale
         if interact is True:
+            # todo: replace
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=table_list,
                                                        table=table_0,
@@ -185,26 +186,45 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
 
     if recognized_files:
         # enumeration for reasonable column widths
-        max_column_width = cli_character_limits.column_width_from_shutil(n=2)
-        max_column_width_tot = max_column_width * 2
-        max_0 = handler_post_process.longest_item(recognized_files, idx=0)
-        new_max_path = max_column_width_tot - max_0 - 1
+        chunk_size = 10
+        tabulate.PRESERVE_WHITESPACE = True
 
-        table_0 = tabulate.tabulate(*[recognized_files],
-                                    headers=('Ext.', f'Buffers [{len(recognized_files)}]'),
-                                    maxcolwidths=[max_0, new_max_path],
-                                    stralign='left')
-        # display results tale
-        if interact is True:
-            # todo: replace
-            tabulate_helper.display_rows_interactively(max_limit=75,
-                                                       results=recognized_files,
-                                                       table=table_0,
-                                                       extra_input=False,
-                                                       message='\n-- more --\n',
-                                                       function=None)
-        else:
-            print(table_0)
+        max_column_width = cli_character_limits.column_width_from_shutil(n=2)
+
+        max_0 = handler_post_process.longest_item(recognized_files, idx=0)
+        _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=recognized_files,
+                                                                         col_idx=0,
+                                                                         max_column_width=max_0,
+                                                                         padding_left=True)
+
+        _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                         col_idx=1,
+                                                                         max_column_width=max_column_width,
+                                                                         padding_left=False)
+
+        max_column_width_tot = max_column_width * 2
+        new_max_path = max_column_width_tot - max_0 - 2
+
+        _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+        n_table = 0
+        for _result in _results:
+            if n_table == 0:
+                table_1 = tabulate.tabulate(_result,
+                                            colalign=('left', 'left'),
+                                            headers=('Ext.', f'Buffers [{len(recognized_files)}]'),
+                                            maxcolwidths=[max_0, new_max_path],
+                                            stralign='left')
+            else:
+                table_1 = tabulate.tabulate(_result,
+                                            colalign=('left', 'left'),
+                                            maxcolwidths=[max_0, new_max_path],
+                                            stralign='left',
+                                            tablefmt='plain')
+
+            print(table_1)
+            if interact is True:
+                input()
+            n_table += 1
 
 
 # ------------------------------------------------------------------------------> saving

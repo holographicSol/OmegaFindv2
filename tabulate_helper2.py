@@ -3,7 +3,7 @@
 import textwrap
 
 
-def add_padding_and_new_lines_to_columns(data: list, col_idx: int, max_column_width=None) -> list:
+def add_padding_and_new_lines_to_columns(data: list, col_idx: int, max_column_width=None, padding_left=True) -> list:
     """ Accepts data as a list of lists [ [1,2,3], [1,2,3] ] """
 
     _results = data
@@ -22,7 +22,10 @@ def add_padding_and_new_lines_to_columns(data: list, col_idx: int, max_column_wi
         len_r = len(str(r[col_idx]))
         if len_r < max_column_width:
             # add padding
-            _results[n_result][col_idx] = str(' ' * int(max_column_width - len_r)) + str(r[col_idx])
+            if padding_left is True:
+                _results[n_result][col_idx] = str(' ' * int(max_column_width - len_r)) + str(r[col_idx])
+            else:
+                _results[n_result][col_idx] = str(r[col_idx]) + str(' ' * int(max_column_width - len_r))
         else:
             # break into chunks of max_column_width and add new lines
             tmp = textwrap.wrap(str(r[col_idx]), max_column_width, replace_whitespace=False)

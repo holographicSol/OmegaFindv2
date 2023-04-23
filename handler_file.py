@@ -310,12 +310,12 @@ async def read_report(fname: str):
     print('')
     print('')
     # todo: replace
-    # tabulate_helper.display_rows_interactively(max_limit=75,
-    #                                            results=_results,
-    #                                            table=table_1,
-    #                                            extra_input=False,
-    #                                            message='\n-- more --\n',
-    #                                            function=None)
+    tabulate_helper.display_rows_interactively(max_limit=75,
+                                               results=_results,
+                                               table=table_1,
+                                               extra_input=False,
+                                               message='\n-- more --\n',
+                                               function=None)
 
 
 async def read_definitions(fname: str, _digits=True) -> tuple:
