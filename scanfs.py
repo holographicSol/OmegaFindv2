@@ -1,12 +1,9 @@
 """ Written by Benjamin Jack Cullen """
 
-import datetime
 import os
 import time
 import cli_character_limits
-import handler_print
 import tabulate
-import tabulate_helper
 import handler_file
 import handler_post_process
 import handler_sort

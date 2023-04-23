@@ -6,11 +6,11 @@ import handler_chunk
 import power_time
 import cli_character_limits
 import variables_suffix
-import tabulate_helper
 import variable_paths
 import tabulate_helper2
 
 # ------------------------------------------------------------------------------> banner
+
 
 def banner():
     print('')

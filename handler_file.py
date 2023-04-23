@@ -2,7 +2,6 @@
 
 import datetime
 import os
-import re
 import codecs
 import time
 
@@ -13,18 +12,15 @@ import pathlib
 import shutil
 import handler_print
 import variable_paths
-import variable_strings
 import handler_strings
 import tabulate
 import cli_character_limits
 import handler_post_process
-import tabulate_helper
 import PyPDF2
 import ebooklib
 from ebooklib import epub
 import subprocess
 import handler_file
-import power_converter
 import tabulate_helper2
 import handler_chunk
 

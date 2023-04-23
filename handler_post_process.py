@@ -1,7 +1,5 @@
 """ Written by Benjamin Jack Cullen """
 
-import handler_chunk
-
 
 def results_filter(_list: list) -> tuple:
     log_filter = ['[ERROR]', '[INCOMPATIBLE NON-VARIANT]', '[INCOMPATIBLE VARIANT]', 'Password required']
