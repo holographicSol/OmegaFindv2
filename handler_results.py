@@ -142,6 +142,11 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 new_max_path = max_column_width_tot - max_dt - max_bytes - 8
                 # chunk results by a reasonable number so as not to flood the console and loose results (interactive)
                 _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+
+                if _bench is True:
+                    print(f'pre-tabulation time: {time.perf_counter()-t0}')
+                    print('')
+
                 n_table = 0
                 for _result in _results:
                     if n_table == 0:

@@ -63,13 +63,14 @@ if __name__ == '__main__':
     # check these arguments before continuing
     verbose = omega_find_sysargv.verbosity(STDIN)
     interact = omega_find_sysargv.interactive(STDIN)
+    human_size = omega_find_sysargv.human_size(STDIN)
 
     if '-h' not in STDIN:
         handler_print.display_spacer()
         handler_print.display_spacer()
 
     # check for light requests.
-    if omega_find_sysargv.run_and_exit(stdin=STDIN, interact=interact) is False:
+    if omega_find_sysargv.run_and_exit(stdin=STDIN, interact=interact, human_size=human_size) is False:
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
         mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix, reveal_scan_bool,\
             contents_scan, mtime_scan = omega_find_sysargv.mode(STDIN)
@@ -148,7 +149,8 @@ if __name__ == '__main__':
                                                          _program_root=program_root,
                                                          _contents_scan=contents_scan, _query=query,
                                                          _verbose=verbose,
-                                                         _digits=_digits)
+                                                         _digits=_digits,
+                                                         _human_size=human_size)
 
                 # run the async multiprocess operation(s)
                 if _bench is True:
@@ -243,8 +245,8 @@ if __name__ == '__main__':
                     elif sort_mode == '--sort-reverse=file':
                         results = sorted(results, key=lambda x: x[3], reverse=True)
 
-                # sort
                 elif mtime_scan is True:
+                    # sort
                     if sort_mode == '--sort=mtime':
                         results = sorted(results, key=lambda x: x[0])
                     elif sort_mode == '--sort=size':

@@ -1,0 +1,19 @@
+todo:
+
+* create various levels of verbosity.
+
+* fully utilize unoconv for mass/single file conversions. omega_find --> convert
+
+* fully utilize unoconv for cats. (cat all the things). omega_find --> cat
+
+* fully utilize patool for extraction compatibilities. omega_find --> extract
+
+* permission scans
+
+* potentially include mass encryption/decryption however it could be easily used a ransomware tool.
+
+* optionally output bytes as human sizes
+
+* ensure expected yield for each type of scan. run and step through each async/non-async scan code while analyzing
+  results output for any missed results.
+ 

@@ -24,6 +24,7 @@ import ebooklib
 from ebooklib import epub
 import subprocess
 import handler_file
+import power_converter
 
 info = subprocess.STARTUPINFO()
 info.dwFlags = 1
@@ -445,11 +446,14 @@ def get_m_time(file: str):
     return dt
 
 
-def get_size(file: str) -> int:
-    return os.path.getsize(file)
+def get_size(file: str, human_size=False) -> str:
+    sz = os.path.getsize(file)
+    if human_size is True:
+        sz = str(power_converter.convert_bytes(*[sz], abbr=True)[0])
+    return sz
 
 
-async def stat_files(_results, _target, _tmp):
+async def stat_files(_results, _target, _tmp, human_size=False):
     final_result = []
     for r in _results:
         if r[0] == '[ERROR]':
@@ -459,13 +463,13 @@ async def stat_files(_results, _target, _tmp):
             regex_fname = str(r[1]).replace(_target, _tmp)
             if os.path.exists(r[1]):
                 m = await asyncio.to_thread(get_m_time, r[1])
-                s = await asyncio.to_thread(get_size, r[1])
+                s = await asyncio.to_thread(get_size, r[1], human_size)
                 sub_result = [m, r[2], s, r[1]]
                 if sub_result not in final_result:
                     final_result.append(sub_result)
             elif os.path.exists(regex_fname):
                 m = await asyncio.to_thread(get_m_time, regex_fname)
-                s = await asyncio.to_thread(get_size, regex_fname)
+                s = await asyncio.to_thread(get_size, regex_fname, human_size)
                 sub_result = [m, r[2], s, r[1]]
                 if sub_result not in final_result:
                     final_result.append(sub_result)

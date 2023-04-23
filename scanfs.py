@@ -46,7 +46,7 @@ def scan_depth_zero(path: str) -> list:
     return [file_list, []]
 
 
-def search_scan(path: str, q: str, interact: bool) -> list:
+def search_scan(path: str, q: str, interact: bool, human_size=False) -> list:
     fp = []
     i_match = 0
     for entry in scantree(path):
@@ -54,7 +54,7 @@ def search_scan(path: str, q: str, interact: bool) -> list:
         if q in p:
             if p not in fp:
                 try:
-                    sz = handler_file.get_size(p)
+                    sz = handler_file.get_size(p, human_size)
                     mt = handler_file.get_m_time(p)
                     fp.append([i_match, mt, sz, p])
                     i_match += 1

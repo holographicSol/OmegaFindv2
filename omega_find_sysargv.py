@@ -234,6 +234,13 @@ def loop_scandir_results(_list: list):
         pass
 
 
+def human_size(stdin: list) -> bool:
+    _human_size = False
+    if '--human-size' in stdin:
+        _human_size = True
+    return _human_size
+
+
 def dev_bench(stdin: list) -> bool:
     _bench = False
     if '--bench' in stdin:
@@ -241,13 +248,13 @@ def dev_bench(stdin: list) -> bool:
     return _bench
 
 
-def run_and_exit(stdin: list, interact: bool):
+def run_and_exit(stdin: list, interact: bool, human_size=False):
 
     if '-s' in stdin:
         _path = stdin[stdin.index('-s') + 1]
         if os.path.exists(_path):
             _q = stdin[stdin.index('-q') + 1]
-            results = scanfs.search_scan(path=_path, q=_q, interact=interact)
+            results = scanfs.search_scan(path=_path, q=_q, interact=interact, human_size=human_size)
             if interact is True:
                 if results:
                     loop_scandir_results(_list=results)
