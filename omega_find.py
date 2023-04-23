@@ -118,13 +118,13 @@ if __name__ == '__main__':
                 if _bench is True:
                     print(f'prescan time: {time.perf_counter()-t0}')
 
-                if _bench is True:
-                    t0 = time.perf_counter()
                 if write_bool is True:
+                    if _bench is True:
+                        t0 = time.perf_counter()
                     asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
                     asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
-                if _bench is True:
-                    print(f'prescan write time: {time.perf_counter()-t0}')
+                    if _bench is True:
+                        print(f'prescan write time: {time.perf_counter()-t0}')
 
                 # chunk data ready for async multiprocess
                 if _bench is True:
