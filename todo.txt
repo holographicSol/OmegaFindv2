@@ -16,3 +16,5 @@ todo:
   results output for any missed results.
 
 * ensure all sorting is optimized and produces expected results.
+
+* pass all table headers through tabulate helper pad/newline function!

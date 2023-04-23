@@ -12,6 +12,9 @@ import handler_strings
 import cli_character_limits
 import tabulate
 import tabulate_helper
+import handler_post_process
+import tabulate_helper2
+import handler_chunk
 
 program_root = variable_paths.get_executable_path()
 
@@ -297,18 +300,53 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, human_size=False)
 
         # display report files
         if fp:
+            chunk_size = 2
+            tabulate.PRESERVE_WHITESPACE = True
+
             max_column_width = cli_character_limits.column_width_from_shutil(n=2, reduce=0)
-            table_0 = tabulate.tabulate(fp,
-                                        maxcolwidths=[max_column_width, max_column_width],
-                                        headers=(f'Index', 'Files'),
-                                        stralign='left')
-            # todo: replace
-            tabulate_helper.display_rows_interactively(max_limit=75,
-                                                       results=fp,
-                                                       table=table_0,
-                                                       extra_input=True,
-                                                       message='\n-- more --\n',
-                                                       function=handler_strings.input_select_report)
+
+            max_0 = handler_post_process.longest_item(fp, idx=0)
+            _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=fp,
+                                                                             col_idx=0,
+                                                                             max_column_width=max_0,
+                                                                             padding_left=False)
+
+            _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                             col_idx=1,
+                                                                             max_column_width=max_column_width,
+                                                                             padding_left=False)
+
+            max_column_width_tot = max_column_width * 2
+            new_max_path = max_column_width_tot - max_0 - 2
+
+            _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+
+            n_table = 0
+            for _result in _results:
+
+                if n_table == 0:
+                    table_1 = tabulate.tabulate(_result,
+                                                maxcolwidths=[max_0, new_max_path],
+                                                headers=(f'Index', f'Files: {len(fp)}'),
+                                                stralign='left')
+                else:
+                    table_1 = tabulate.tabulate(_result,
+                                                maxcolwidths=[max_0, new_max_path],
+                                                headers=(f'Index', f'Files: {len(fp)}'),
+                                                stralign='left',
+                                                tablefmt='plain')
+
+                print(table_1)
+
+                if interact is True:
+                    print('')
+                    f = input('select: ')
+                    if f and f.isdigit():
+                        asyncio.run(handler_file.read_report(fname=fp[int(f)][1]))
+                        break
+                    print('')
+
+                n_table += 1
 
     elif '-nsfx' in stdin:
         make_suffix_group()

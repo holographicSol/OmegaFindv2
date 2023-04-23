@@ -25,6 +25,8 @@ from ebooklib import epub
 import subprocess
 import handler_file
 import power_converter
+import tabulate_helper2
+import handler_chunk
 
 info = subprocess.STARTUPINFO()
 info.dwFlags = 1
@@ -257,9 +259,10 @@ async def read_report(fname: str):
     _data = await read_file(file=fname)
 
     # get report subject column indexes
-    _data_split = _data.split('\n')
+    _data_split = str(_data).split('\n')
     indexes = []
     for item in _data_split:
+        item = str(item).strip()
         if item.startswith('---'):
             item = item.split(' ')
             indexes = [len(item[0]), len(item[2]), len(item[4]), len(item[6])]
@@ -274,8 +277,7 @@ async def read_report(fname: str):
             item_str = str(item)
             item_list = item_str.split('  ')
             no_empty_strings = [string for string in item_list if string != ""]
-            headers = [no_empty_strings[0], no_empty_strings[1], no_empty_strings[2],
-                       no_empty_strings[3] + '    ' + no_empty_strings[4]]
+            headers = [no_empty_strings[0], no_empty_strings[1], no_empty_strings[2], no_empty_strings[3] + '    ' + no_empty_strings[4]]
         if item is not None and i_line >= 2:
             item_str = str(item)
             try:
@@ -288,34 +290,42 @@ async def read_report(fname: str):
                 pass
         i_line += 1
 
-    # enumeration for reasonable column widths
-    # todo: include mtime scans (3x column tables)
-    max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-    max_column_width_tot = max_column_width * 4
-    max_dt = handler_post_process.longest_item(_results, idx=0)
-    max_bytes = handler_post_process.longest_item(_results, idx=2)
-    new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 4
+    if len(indexes) == 4:
+        # todo: pass all table headers through tabulate helper pad/newline function!
+        chunk_size = 75
+        tabulate.PRESERVE_WHITESPACE = True
+        max_column_width = cli_character_limits.column_width_from_shutil(n=4)
 
-    # create results table
-    table_1 = tabulate.tabulate(_results,
-                                colalign=('left', 'right', 'right', 'left'),
-                                maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
-                                stralign='left',
-                                tablefmt='simple',
-                                headers=(headers[0], headers[1], headers[2], headers[3]))
-    # display results table
-    print('')
-    print('')
-    print(f'[Scan Report] {fname}')
-    print('')
-    print('')
-    # todo: replace
-    tabulate_helper.display_rows_interactively(max_limit=75,
-                                               results=_results,
-                                               table=table_1,
-                                               extra_input=False,
-                                               message='\n-- more --\n',
-                                               function=None)
+        _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                         col_idx=2,
+                                                                         max_column_width=None)
+        _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                         col_idx=1,
+                                                                         max_column_width=max_column_width)
+        max_column_width_tot = max_column_width * 4
+        max_dt = handler_post_process.longest_item(_results, idx=0)
+        max_bytes = handler_post_process.longest_item(_results, idx=2)
+        new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
+        _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+        n_table = 0
+        for _result in _results:
+            if n_table == 0:
+                table_1 = tabulate.tabulate(_result,
+                                            colalign=('left', 'right', 'right', 'left'),
+                                            maxcolwidths=[max_dt, None, max_bytes, new_max_path],
+                                            headers=(headers[0], headers[1], headers[2], headers[3]),
+                                            stralign='left',
+                                            floatfmt='f')
+            else:
+                table_1 = tabulate.tabulate(_result,
+                                            colalign=('left', 'right', 'right', 'left'),
+                                            maxcolwidths=[max_dt, None, max_bytes, new_max_path],
+                                            stralign='left',
+                                            tablefmt='plain',
+                                            floatfmt='f')
+            print(table_1)
+            input()
+            n_table += 1
 
 
 async def read_definitions(fname: str, _digits=True) -> tuple:

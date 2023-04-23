@@ -153,40 +153,59 @@ def show_suffix_group(suffix_group_name: str):
 
 
 def display_associations(recognized_files: list, suffixes: list, ext: str, interact: bool):
-    table_list = []
+    _results = []
     for recognized in recognized_files:
         if str(recognized[0]).strip() == str(ext).strip():
-            table_list.append(recognized)
+            _results.append(recognized)
 
-    if table_list:
+    if _results:
         # enumeration for reasonable column widths
-        max_column_width = cli_character_limits.column_width_from_shutil(n=2)
-        max_column_width_tot = max_column_width * 2
-        max_0 = handler_post_process.longest_item(table_list, idx=0)
-        new_max_path = max_column_width_tot - max_0 - 1
+        chunk_size = 40
+        tabulate.PRESERVE_WHITESPACE = True
 
-        table_0 = tabulate.tabulate(*[table_list],
-                                    maxcolwidths=[max_0, new_max_path],
-                                    headers=('Ext.', f'Buffers [{len(table_list)}/{len(recognized_files)}]'),
-                                    stralign='left')
-        # display results tale
-        if interact is True:
-            # todo: replace
-            tabulate_helper.display_rows_interactively(max_limit=75,
-                                                       results=table_list,
-                                                       table=table_0,
-                                                       extra_input=False,
-                                                       message='\n-- more --\n',
-                                                       function=None)
-        else:
-            print(table_0)
+        max_column_width = cli_character_limits.column_width_from_shutil(n=2)
+
+        max_0 = handler_post_process.longest_item(recognized_files, idx=0)
+        _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                         col_idx=0,
+                                                                         max_column_width=max_0,
+                                                                         padding_left=True)
+
+        _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                         col_idx=1,
+                                                                         max_column_width=max_column_width,
+                                                                         padding_left=False)
+
+        max_column_width_tot = max_column_width * 2
+        new_max_path = max_column_width_tot - max_0 - 2
+
+        _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+        n_table = 0
+        for _result in _results:
+            if n_table == 0:
+                table_1 = tabulate.tabulate(_result,
+                                            colalign=('left', 'left'),
+                                            maxcolwidths=[max_0, new_max_path],
+                                            headers=('Ext.', f'Learned Associations: {len(recognized_files)}'),
+                                            stralign='left')
+            else:
+                table_1 = tabulate.tabulate(_result,
+                                            colalign=('left', 'left'),
+                                            maxcolwidths=[max_0, new_max_path],
+                                            stralign='left',
+                                            tablefmt='plain')
+
+            print(table_1)
+            if interact is True:
+                input()
+            n_table += 1
 
 
 def display_all_associations(recognized_files: list, suffixes: list, interact: bool):
 
     if recognized_files:
         # enumeration for reasonable column widths
-        chunk_size = 10
+        chunk_size = 40
         tabulate.PRESERVE_WHITESPACE = True
 
         max_column_width = cli_character_limits.column_width_from_shutil(n=2)
@@ -211,7 +230,7 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
             if n_table == 0:
                 table_1 = tabulate.tabulate(_result,
                                             colalign=('left', 'left'),
-                                            headers=('Ext.', f'Buffers [{len(recognized_files)}]'),
+                                            headers=('Ext.', f'Learned Associations: {len(recognized_files)}'),
                                             maxcolwidths=[max_0, new_max_path],
                                             stralign='left')
             else:
