@@ -19,8 +19,7 @@ async def entry_point_type_scan(chunk: list, **kwargs) -> list:
     _human_size = kwargs.get('human_size')
 
     if _extract is False:
-        return [await type_scan(_file=item,
-                                _recognized_files=_recognized_files, _buffer_max=_buffer_max,
+        return [await type_scan(_file=item, _recognized_files=_recognized_files, _buffer_max=_buffer_max,
                                 _type_suffix=_type_suffix, _target=_target, _program_root=_program_root,
                                 _digits=_digits, _human_size=_human_size) for item in chunk]
     elif _extract is True:
@@ -53,7 +52,7 @@ async def extract_type_scan(_file: str, _recognized_files: list,  _buffer_max: i
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
     if result_bool is True:
-        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+        sub_files = await asyncio.to_thread(scanfs.scan, path=_tmp)
         sub_files[:] = [item for sublist in sub_files for item in sublist]
         for sub_file in sub_files:
             res = await type_scan(_file=sub_file, _recognized_files=_recognized_files, _buffer_max=_buffer_max,

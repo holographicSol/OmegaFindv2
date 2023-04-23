@@ -44,7 +44,7 @@ async def de_scan_extract(file: str, _recognized_files: list, _buffer_max: int, 
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         _result = await extract_de_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max,
                                         _recognized_files=_recognized_files, _target=_target,
-                                        _program_root=_program_root, human_size=human_size)
+                                        _program_root=_program_root, _digits=_digits, human_size=human_size)
     except Exception as e:
         _result = [['[ERROR]', str(file), str(e)]]
     if _result:
@@ -55,6 +55,7 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                           _program_root: str, _digits=True, human_size=False) -> list:
     suffix = await asyncio.to_thread(handler_file.get_suffix, _file)
     _results = await async_check.scan_check(_file, suffix, _buffer, _recognized_files, _digits, human_size)
+    print('1', _results)
     if _results is not None:
         _results = [_results]
     else:
@@ -70,8 +71,11 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             for sub_file in sub_files:
                 buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-                res = await async_check.scan_check(sub_file, suffix, buffer, _recognized_files, _digits, human_size)
+                res = await async_check.scan_check(file=sub_file, suffix=suffix, buffer=buffer,
+                                                   _recognized_files=_recognized_files, _digits=_digits,
+                                                   human_size=human_size)
                 if res is not None:
+                    print('2', res)
                     res[3] = res[3].replace(_tmp, _target)
                     _results.append(res)
     else:

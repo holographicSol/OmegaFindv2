@@ -17,6 +17,10 @@ todo:
 
 * ensure all sorting is optimized and produces expected results.
 
-* pass all table headers through tabulate helper pad/newline function!
+* pass all table headers through tabulate helper pad/newline function.
 
 * sanitize all input
+
+* expand on contents scan filters and compatibility
+
+* add keyboard interrupts for tables.
