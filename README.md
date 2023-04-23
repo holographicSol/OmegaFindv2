@@ -128,7 +128,7 @@ Overview:
 Help:
 
     [OmegaFind v2] Forensics tool. Search differently.
-
+    
      -l       Learn                 Specify location to learn from.
      -c       Contents Scan         Specify a directory in which file contents will be scanned.
      -d       De-Obfuscation        Attempt to find files where suffix does not match contents.
@@ -159,6 +159,7 @@ Help:
      -XP      Experience            Display how many associations have been learned.
     
      --digitless                    Omit versioning,timestamps,dimensions etc. when comparing magic buffers.
+     --human-size                   Display bytes in human sizes.
      --sort=mtime                   Sort by Modified Time
      --sort=buffer                  Sort by Buffer
      --sort=size                    Sort by Size

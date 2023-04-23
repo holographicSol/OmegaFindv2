@@ -53,6 +53,7 @@ def omega_help():
     print(' -XP      Experience            Display how many associations have been learned.')
     print('')
     print(' --digitless                    Omit versioning,timestamps,dimensions etc. when comparing magic buffers.')
+    print(' --human-size                   Display bytes in human sizes.')
     print(' --sort=mtime                   Sort by Modified Time')
     print(' --sort=buffer                  Sort by Buffer')
     print(' --sort=size                    Sort by Size')
