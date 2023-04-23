@@ -101,7 +101,8 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
 
                 # tabulate a tiny table (fast) rather than a huge table (potentially slow) while retaining maxcolwidths
-                # consistently through each tiny table.
+                # consistently through each tiny table. now tabulate only calculates maxcolwidths for one tiny
+                # table at a time (which is faster than tabulate calculating maxcolwidths for one huge table).
                 n_table = 0
                 for _result in _results:
                     if n_table == 0:
