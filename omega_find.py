@@ -163,23 +163,17 @@ if __name__ == '__main__':
                 if _bench is True:
                     print(f'main operation time: {time.perf_counter()-t0}')
 
-                # todo: SPEED UP UN-CHUNK TIME -> either faster unchunk method or change data structure before here
                 # uncomment to view data structure
                 # print('before un-chunking:')
                 # for r in results:
                 #     print(len(r), r)
                 # print('')
 
-                # Note: un-chunking approximately doubles the overall completion time on my system.
+                # un-chunk results
                 if extract is False:
                     if _bench is True:
                         t0 = time.perf_counter()
-                    # todo: experiment with different methods
 
-                    # method 1
-                    # results = handler_chunk.un_chunk_data_0(results)
-
-                    # method 2
                     results[:] = [item for sublist in results for item in sublist]
 
                     if _bench is True:
@@ -187,12 +181,7 @@ if __name__ == '__main__':
                 else:
                     if _bench is True:
                         t0 = time.perf_counter()
-                    # todo: experiment with different methods
 
-                    # method 1
-                    # results = handler_chunk.un_chunk_data_1(results)
-
-                    # method 2
                     results[:] = [item for sublist in results for item in sublist if item is not None]
                     results[:] = [item for sublist in results for item in sublist]
 
