@@ -72,10 +72,13 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
             max_column_width = cli_character_limits.column_width_from_shutil(n=4)
             n_result = 0
             for r in _results:
+                # isolate string (in this case buffer)
                 len_r = len(r[1])
                 if len_r < max_column_width:
+                    # add padding
                     _results[n_result][1] = r[1] + str(' ' * int(max_column_width-len_r))
                 else:
+                    # or add new lines
                     tmp = textwrap.wrap(str(r[1]), max_column_width, replace_whitespace=False)
                     new_item = tmp[0]
                     n_tmp = 0
@@ -83,13 +86,17 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                         if n_tmp != 0:
                             new_item = new_item + '\n' + x
                         n_tmp += 1
+                    # put back into the sub list
                     _results[n_result][1] = new_item
                 n_result += 1
+            # enumerate remaining column widths
             max_column_width_tot = max_column_width * 4
             max_dt = handler_post_process.longest_item(_results, idx=0)
             max_bytes = handler_post_process.longest_item(_results, idx=2)
             new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
+            # chunk results by a reasonable number so as not to flood the console and loose results (interactive)
             _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+            # a little tampering with tabulate
             tabulate.PRESERVE_WHITESPACE = True
             if _mtime_scan is False:
                 # 4 column table
