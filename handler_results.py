@@ -12,6 +12,7 @@ import tabulate_helper
 import power_time
 import time
 import textwrap
+import tabulate_helper2
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _verbose: bool):
@@ -70,54 +71,20 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
             # a little tampering with tabulate to preserve the padding
             tabulate.PRESERVE_WHITESPACE = True
             if _mtime_scan is False:
-                # 4 column table
-                # Let's try the max_column_width alignment of one big table but without using max_column_width and with
-                # all the speed of iterating over many small tables one at time. The best of both worlds.
+                # Let's produce the max_column_width alignment of one big table but without using max_column_width
+                # and with all the speed of iterating over many small tables one at time. The best of both worlds.
+                # (convert into new tabulator helper module. this time aside from adding interact, also adds speed
+                # to huge tables that need maxcolwidths adjustments for an overall finite output width (like a screen))
                 max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-                # enum index 2
-                max_len_bytes = 0
-                for r in _results:
-                    if len(str(r[2])) > max_len_bytes:
-                        max_len_bytes = len(str(r[2]))
-                n_result = 0
-                for r in _results:
-                    # isolate string (in this case buffer)
-                    len_r = len(str(r[2]))
-                    if len_r < max_len_bytes:
-                        # add padding
-                        _results[n_result][2] = str(' ' * int(max_len_bytes - len_r)) + str(r[2])
-                    else:
-                        # or add new lines
-                        tmp = textwrap.wrap(str(r[2]), max_len_bytes, replace_whitespace=False)
-                        new_item = tmp[0]
-                        n_tmp = 0
-                        for x in tmp:
-                            if n_tmp != 0:
-                                new_item = new_item + '\n' + x
-                            n_tmp += 1
-                        # put back into the sub list
-                        _results[n_result][2] = new_item
-                    n_result += 1
-                # enum index 1
-                n_result = 0
-                for r in _results:
-                    # isolate string (in this case buffer)
-                    len_r = len(r[1])
-                    if len_r < max_column_width:
-                        # add padding
-                        _results[n_result][1] = str(' ' * int(max_column_width - len_r)) + r[1]
-                    else:
-                        # or add new lines
-                        tmp = textwrap.wrap(str(r[1]), max_column_width, replace_whitespace=False)
-                        new_item = tmp[0]
-                        n_tmp = 0
-                        for x in tmp:
-                            if n_tmp != 0:
-                                new_item = new_item + '\n' + x
-                            n_tmp += 1
-                        # put back into the sub list
-                        _results[n_result][1] = new_item
-                    n_result += 1
+
+                _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                                 col_idx=2,
+                                                                                 max_column_width=None)
+
+                _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                                 col_idx=1,
+                                                                                 max_column_width=max_column_width)
+
                 # enumerate remaining column widths
                 max_column_width_tot = max_column_width * 4
                 max_dt = handler_post_process.longest_item(_results, idx=0)
@@ -140,37 +107,15 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                     stralign='left',
                                                     tablefmt='plain')
                     print(table_1)
-                    # print('')
-                    # input('-- more --')
                     input()
-                    # print('')
                     n_table += 1
             else:
-                # 3 column table
                 max_column_width = cli_character_limits.column_width_from_shutil(n=3)
-                max_len_r = 0
-                for r in _results:
-                    if len(str(r[1])) > max_len_r:
-                        max_len_r = len(str(r[1]))
-                n_result = 0
-                for r in _results:
-                    # isolate string (in this case buffer)
-                    len_r = len(str(r[1]))
-                    if len_r < max_len_r:
-                        # add padding
-                        _results[n_result][1] = str(' ' * int(max_len_r - len_r)) + str(r[1])
-                    else:
-                        # or add new lines
-                        tmp = textwrap.wrap(str(r[1]), max_len_r, replace_whitespace=False)
-                        new_item = tmp[0]
-                        n_tmp = 0
-                        for x in tmp:
-                            if n_tmp != 0:
-                                new_item = new_item + '\n' + x
-                            n_tmp += 1
-                        # put back into the sub list
-                        _results[n_result][1] = new_item
-                    n_result += 1
+
+                _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
+                                                                                 col_idx=1,
+                                                                                 max_column_width=None)
+
                 # enumerate remaining column widths
                 max_column_width_tot = max_column_width * 3
                 max_dt = handler_post_process.longest_item(_results, idx=0)
@@ -194,10 +139,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                     tablefmt='plain')
                     n_table += 1
                     print(table_1)
-                    # print('')
-                    # input('-- more --')
                     input()
-                    # print('')
 
         if interact is False:
             table_1 = []
