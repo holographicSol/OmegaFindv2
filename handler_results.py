@@ -77,8 +77,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
 
                 # Let's produce the max_column_width alignment of one big table but with the speed of producing one
                 # tiny table. The best of both worlds.
-                # also i will be aligning buffers right and file paths left wit a stem of bytes for a tree like
-                # art.
+                # also i will be aligning buffers right and file paths left wit a stem of bytes for art.
 
                 # divide the number of characters that fit on the screen (fit at this very point in time) by N columns.
                 max_column_width = cli_character_limits.column_width_from_shutil(n=4)
