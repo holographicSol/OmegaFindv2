@@ -55,7 +55,6 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                           _program_root: str, _digits=True, human_size=False) -> list:
     suffix = await asyncio.to_thread(handler_file.get_suffix, _file)
     _results = await async_check.scan_check(_file, suffix, _buffer, _recognized_files, _digits, human_size)
-    print('1', _results)
     if _results is not None:
         _results = [_results]
     else:
@@ -75,7 +74,6 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                                                    _recognized_files=_recognized_files, _digits=_digits,
                                                    human_size=human_size)
                 if res is not None:
-                    print('2', res)
                     res[3] = res[3].replace(_tmp, _target)
                     _results.append(res)
     else:
