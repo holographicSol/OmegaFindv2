@@ -77,6 +77,7 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
                                     tablefmt='f')
         if interact is True:
             _message = '\n-- more --\n'
+            # todo: replace
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=fp,
                                                        table=table_0,

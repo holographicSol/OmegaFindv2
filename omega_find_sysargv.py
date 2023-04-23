@@ -302,7 +302,7 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, human_size=False)
                                         maxcolwidths=[max_column_width, max_column_width],
                                         headers=(f'Index', 'Files'),
                                         stralign='left')
-
+            # todo: replace
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=fp,
                                                        table=table_0,

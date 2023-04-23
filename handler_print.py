@@ -196,6 +196,7 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
                                     stralign='left')
         # display results tale
         if interact is True:
+            # todo: replace
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=recognized_files,
                                                        table=table_0,

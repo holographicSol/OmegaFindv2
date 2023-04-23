@@ -289,6 +289,7 @@ async def read_report(fname: str):
         i_line += 1
 
     # enumeration for reasonable column widths
+    # todo: include mtime scans (3x column tables)
     max_column_width = cli_character_limits.column_width_from_shutil(n=4)
     max_column_width_tot = max_column_width * 4
     max_dt = handler_post_process.longest_item(_results, idx=0)
@@ -308,12 +309,13 @@ async def read_report(fname: str):
     print(f'[Scan Report] {fname}')
     print('')
     print('')
-    tabulate_helper.display_rows_interactively(max_limit=75,
-                                               results=_results,
-                                               table=table_1,
-                                               extra_input=False,
-                                               message='\n-- more --\n',
-                                               function=None)
+    # todo: replace
+    # tabulate_helper.display_rows_interactively(max_limit=75,
+    #                                            results=_results,
+    #                                            table=table_1,
+    #                                            extra_input=False,
+    #                                            message='\n-- more --\n',
+    #                                            function=None)
 
 
 async def read_definitions(fname: str, _digits=True) -> tuple:
