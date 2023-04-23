@@ -50,7 +50,6 @@ def scan_depth_zero(path: str) -> list:
 
 def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=False) -> list:
     fp = []
-    # i_match = 0
     for entry in scantree(path):
         p = entry.path
         if q in p:
@@ -58,13 +57,9 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
                 try:
                     sz = handler_file.get_size(p, human_size)
                     mt = handler_file.get_m_time(p)
-                    # fp.append([i_match, mt, sz, p])
                     fp.append([mt, sz, p])
-                    # i_match += 1
                 except Exception as e:
-                    # fp.append([i_match, '[?]', '[?]', p, e])
                     fp.append(['[?]', '[?]', p, e])
-                    # i_match += 1
                     pass
     if fp:
         fp = handler_sort.sort_len_2(data=fp, sort_mode=_sort_mode)
@@ -72,7 +67,6 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
 
         max_column_width = cli_character_limits.column_width_from_shutil(n=3, reduce=0)
         max_column_width_tot = max_column_width * 4
-        # max_index = handler_post_process.longest_item(fp, idx=0)+5
         max_dt = handler_post_process.longest_item(fp, idx=0)
         max_bytes = handler_post_process.longest_item(fp, idx=1)
         new_max_path = max_column_width_tot - max_dt - max_bytes - 4
@@ -82,10 +76,7 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
                                     stralign='left',
                                     tablefmt='f')
         if interact is True:
-            if len(fp) > 75:
-                _message = '\n-- more or select --\n'
-            else:
-                _message = '\n-- select --\n'
+            _message = '\n-- more --\n'
             tabulate_helper.display_rows_interactively(max_limit=75,
                                                        results=fp,
                                                        table=table_0,

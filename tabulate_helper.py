@@ -59,13 +59,11 @@ def display_rows_interactively(max_limit: int, results: list, table: str, extra_
 
                 if char == '\n':
                     if i_limiter <= max_limit:
-                        # print row from table: up to max limit
                         print(row)
                         i_limiter += 1
                     else:
                         print(row)
-                        # limit reached: present input
-                        more_or_next(results=results, extra_input=extra_input, function=function, message=message)
+                        input()
                         i_limiter = 0
                     row = ''
 
@@ -74,8 +72,8 @@ def display_rows_interactively(max_limit: int, results: list, table: str, extra_
 
         else:
             print(table)
-            if extra_input is True:
-                more_or_next(results=results, extra_input=extra_input, function=function, message=message)
+            # if extra_input is True:
+                # more_or_next(results=results, extra_input=extra_input, function=function, message=message)
 
     except KeyboardInterrupt:
         handler_print.display_spacer()
