@@ -80,6 +80,8 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
 
                 # tabulate is great at creating new lines based on max_column_width however tabulate will also honour
                 # existing new lines and whitespace if instructed to do so.
+                # tabulate helper max_column_width=None = use max data length found at col_idx in each sublist.
+                # tabulate helper max_column_width=xyz = specify a max_column_width
                 _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
                                                                                  col_idx=2,
                                                                                  max_column_width=None)
