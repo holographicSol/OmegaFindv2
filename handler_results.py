@@ -13,6 +13,8 @@ import power_time
 import time
 import textwrap
 import tabulate_helper2
+import power_converter
+import handler_convert_results
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _verbose: bool):
@@ -28,7 +30,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                            _de_scan_bool: bool, _type_scan_bool: bool, _p_scan: bool,
                            _reveal_scan: bool, _dt: str, _header_0: str,
                            interact: bool, _contents_scan: bool, write_bool: bool, _mtime_scan: bool,
-                           _bench: bool, _query=''):
+                           _bench: bool, _query='', _human_size=False):
     if len(_results) >= 1:
 
         # create filename
@@ -45,6 +47,18 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
             part_fname = 'contents_scan'
         elif _mtime_scan is True:
             part_fname = 'mtime_scan'
+
+        # convert timestamps to datetime: do not do this before sorting (omega_findv2.py).
+        _results = handler_convert_results.convert_results(_results, _human_size=_human_size, _mtime_scan=_mtime_scan)
+        # n_result = 0
+        # for sublist in _results:
+        #     sublist[0] = handler_file.convert_timestamp_to_datetime(float(sublist[0]))
+        #     if _human_size is True:
+        #         if _mtime_scan is False:
+        #             sublist[2] = str(power_converter.convert_bytes(*[int(sublist[2])], abbr=True)[0])
+        #         else:
+        #             sublist[1] = str(power_converter.convert_bytes(*[int(sublist[2])], abbr=True)[0])
+        #     n_result += 1
 
         # create table for file: each entry should be on one line for ease of parsing.
         if write_bool is True:
@@ -88,7 +102,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 # tabulate helper max_column_width=xyz = specify a max_column_width
                 _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
                                                                                  col_idx=2,
-                                                                                 max_column_width=None)
+                                                                                 max_column_width=None,)
 
                 # again for the next column of variable data lengths.
                 _results = tabulate_helper2.add_padding_and_new_lines_to_columns(data=_results,
@@ -119,13 +133,15 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                     colalign=('left', 'right', 'right', 'left'),
                                                     maxcolwidths=[max_dt, None, max_bytes, new_max_path],
                                                     headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
-                                                    stralign='left')
+                                                    stralign='left',
+                                                    floatfmt='f')
                     else:
                         table_1 = tabulate.tabulate(_result,
                                                     colalign=('left', 'right', 'right', 'left'),
                                                     maxcolwidths=[max_dt, None, max_bytes, new_max_path],
                                                     stralign='left',
-                                                    tablefmt='plain')
+                                                    tablefmt='plain',
+                                                    floatfmt='f')
                     print(table_1)
                     input()
                     n_table += 1
@@ -204,7 +220,7 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                       _type_scan_bool: bool, _p_scan: bool, _dt: str, _exc: list, _reveal_scan: bool,
                       _t_completion: str, _extract: bool, _verbose: bool,
                       interact: bool, _contents_scan: bool, _query: str, write_bool: bool, _mtime_scan: bool,
-                      _bench: bool):
+                      _bench: bool, _human_size=False):
 
     if _verbose is True:
         print('')
@@ -251,7 +267,8 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                            _query=_query,
                                            write_bool=write_bool,
                                            _mtime_scan=_mtime_scan,
-                                           _bench=_bench)
+                                           _bench=_bench,
+                                           _human_size=_human_size)
             else:
                 if _verbose is True:
                     handler_print.display_zero_results(_results, _t_completion, _exc, header_0)

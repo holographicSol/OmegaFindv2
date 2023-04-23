@@ -12,8 +12,7 @@ todo:
 
 * potentially include mass encryption/decryption however it could be easily used a ransomware tool.
 
-* optionally output bytes as human sizes
-
 * ensure expected yield for each type of scan. run and step through each async/non-async scan code while analyzing
   results output for any missed results.
- 
+
+* ensure all sorting is optimized and produces expected results.

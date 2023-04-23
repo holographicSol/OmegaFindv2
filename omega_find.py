@@ -7,6 +7,7 @@ import asyncio
 import aiomultiprocess
 import multiprocessing
 
+import handler_sort
 import omega_find_sysargv
 
 import handler_print
@@ -64,13 +65,15 @@ if __name__ == '__main__':
     verbose = omega_find_sysargv.verbosity(STDIN)
     interact = omega_find_sysargv.interactive(STDIN)
     human_size = omega_find_sysargv.human_size(STDIN)
+    sort_mode = omega_find_sysargv.sort_mode(STDIN)
 
     if '-h' not in STDIN:
         handler_print.display_spacer()
         handler_print.display_spacer()
 
     # check for light requests.
-    if omega_find_sysargv.run_and_exit(stdin=STDIN, interact=interact, human_size=human_size) is False:
+    if omega_find_sysargv.run_and_exit(stdin=STDIN, interact=interact, human_size=human_size,
+                                       _sort_mode=sort_mode) is False:
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
         mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix, reveal_scan_bool,\
             contents_scan, mtime_scan = omega_find_sysargv.mode(STDIN)
@@ -86,7 +89,6 @@ if __name__ == '__main__':
             db_recognized_files = omega_find_sysargv.database(STDIN)
             extract = omega_find_sysargv.extract(STDIN)
             query = omega_find_sysargv.query(STDIN)
-            sort_mode = omega_find_sysargv.sort_mode(STDIN)
             write_bool = omega_find_sysargv.write_bool(STDIN)
             _digits = omega_find_sysargv.sub_digits(STDIN)
             _bench = omega_find_sysargv.dev_bench(STDIN)
@@ -227,39 +229,12 @@ if __name__ == '__main__':
                     t0 = time.perf_counter()
                 if learn_bool is False and mtime_scan is False:
                     # sort
-                    if sort_mode == '--sort=mtime':
-                        results = sorted(results, key=lambda x: x[0])
-                    elif sort_mode == '--sort=buffer':
-                        results = sorted(results, key=lambda x: x[1])
-                    elif sort_mode == '--sort=size':
-                        results = sorted(results, key=lambda x: x[2])
-                    elif sort_mode == '--sort=file':
-                        results = sorted(results, key=lambda x: x[3])
-
-                    elif sort_mode == '--sort-reverse=mtime':
-                        results = sorted(results, key=lambda x: x[0], reverse=True)
-                    elif sort_mode == '--sort-reverse=buffer':
-                        results = sorted(results, key=lambda x: x[1], reverse=True)
-                    elif sort_mode == '--sort-reverse=size':
-                        results = sorted(results, key=lambda x: x[2], reverse=True)
-                    elif sort_mode == '--sort-reverse=file':
-                        results = sorted(results, key=lambda x: x[3], reverse=True)
+                    results = handler_sort.sort_len_3(data=results, sort_mode=sort_mode)
 
                 elif mtime_scan is True:
                     # sort
-                    if sort_mode == '--sort=mtime':
-                        results = sorted(results, key=lambda x: x[0])
-                    elif sort_mode == '--sort=size':
-                        results = sorted(results, key=lambda x: x[1])
-                    elif sort_mode == '--sort=file':
-                        results = sorted(results, key=lambda x: x[2])
+                    results = handler_sort.sort_len_2(data=results, sort_mode=sort_mode)
 
-                    elif sort_mode == '--sort-reverse=mtime':
-                        results = sorted(results, key=lambda x: x[0], reverse=True)
-                    elif sort_mode == '--sort-reverse=size':
-                        results = sorted(results, key=lambda x: x[1], reverse=True)
-                    elif sort_mode == '--sort-reverse=file':
-                        results = sorted(results, key=lambda x: x[2], reverse=True)
                 if _bench is True:
                     print(f'sort results time: {time.perf_counter()-t0}')
 
@@ -271,7 +246,7 @@ if __name__ == '__main__':
                                                   _t_completion=t_completion, _extract=extract, _verbose=verbose,
                                                   interact=interact,
                                                   _contents_scan=contents_scan, _query=query, write_bool=write_bool,
-                                                  _mtime_scan=mtime_scan, _bench=_bench)
+                                                  _mtime_scan=mtime_scan, _bench=_bench, _human_size=human_size)
 
                 # final clean of tmp
                 if os.path.exists(variable_paths.tmp_dir_path):

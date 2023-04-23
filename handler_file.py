@@ -435,8 +435,8 @@ def get_suffix(file: str) -> str:
     return sfx
 
 
-def get_m_time(file: str):
-    dt = str(datetime.datetime.fromtimestamp(os.path.getmtime(file)))
+def convert_timestamp_to_datetime(timestamp):
+    dt = str(datetime.datetime.fromtimestamp(timestamp))
     dt = dt.replace('-', ' ')
     dt = dt.split(' ')
     dt = dt[2] + '/' + dt[1] + '/' + dt[0] + '    ' + dt[3]
@@ -446,11 +446,12 @@ def get_m_time(file: str):
     return dt
 
 
+def get_m_time(file: str):
+    return str(os.path.getmtime(file))
+
+
 def get_size(file: str, human_size=False) -> str:
-    sz = os.path.getsize(file)
-    if human_size is True:
-        sz = str(power_converter.convert_bytes(*[sz], abbr=True)[0])
-    return sz
+    return str(os.path.getsize(file))
 
 
 async def stat_files(_results, _target, _tmp, human_size=False):

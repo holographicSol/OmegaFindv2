@@ -9,6 +9,8 @@ import tabulate
 import tabulate_helper
 import handler_file
 import handler_post_process
+import handler_sort
+import handler_convert_results
 
 x_files = []
 
@@ -46,7 +48,7 @@ def scan_depth_zero(path: str) -> list:
     return [file_list, []]
 
 
-def search_scan(path: str, q: str, interact: bool, human_size=False) -> list:
+def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=False) -> list:
     fp = []
     i_match = 0
     for entry in scantree(path):
@@ -63,6 +65,9 @@ def search_scan(path: str, q: str, interact: bool, human_size=False) -> list:
                     i_match += 1
                     pass
     if fp:
+        fp = handler_sort.sort_len_3_string_match(data=fp, sort_mode=_sort_mode)
+        _results = handler_convert_results.convert_string_match_results(fp, _human_size=human_size)
+
         max_column_width = cli_character_limits.column_width_from_shutil(n=4, reduce=0)
         max_column_width_tot = max_column_width * 4
         max_index = handler_post_process.longest_item(fp, idx=0)+5
@@ -72,7 +77,8 @@ def search_scan(path: str, q: str, interact: bool, human_size=False) -> list:
         table_0 = tabulate.tabulate(fp,
                                     maxcolwidths=[max_index, max_dt, max_bytes, new_max_path],
                                     headers=(f'[Index]', '[Modified]', '[Bytes]', f'[Files: {len(fp)}]'),
-                                    stralign='left')
+                                    stralign='left',
+                                    tablefmt='f')
         if interact is True:
             if len(fp) > 75:
                 _message = '\n-- more or select --\n'
