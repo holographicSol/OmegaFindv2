@@ -11,6 +11,7 @@ import cli_character_limits
 import tabulate_helper
 import power_time
 import time
+import textwrap
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _verbose: bool):
@@ -64,28 +65,38 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
         # tabulation in stages to greatly reduce tabulation time which was exceeding a 3rd of main operation time
 
         if interact is True:
-            # interact table solution below may be temporary as I would like all the columns to be consistently sized
-            # in one big table as with previous versions however speed takes much precedence over generating one
-            # big table. The formula below can generate one big table however time is of the essence.
-            # One big table: 30-50% of scan time + scan time (1hour scan = 1hour scan + up to 30minutes tabulation time)
-            # Many small tables: Practically instant.
-            # It seems most of the tabulation time is when maxcolwidths is used, so with smaller tables we can
-            # basically eliminate tabulation time while maintaining maxcolwidths per table rather than maintaining
-            # maxcolwidths for one big table which can be infinitely time-consuming.
+            # Let's try the max_column_width alignment of one big table but without using max_column_width and with
+            # all the speed of iterating over many small tables one at time. The best of both worlds.
             _results_len = len(_results)
             chunk_size = 75
+            max_column_width = cli_character_limits.column_width_from_shutil(n=4)
+            n_result = 0
+            for r in _results:
+                len_r = len(r[1])
+                if len_r < max_column_width:
+                    _results[n_result][1] = r[1] + str(' ' * int(max_column_width-len_r))
+                else:
+                    tmp = textwrap.wrap(str(r[1]), max_column_width, replace_whitespace=False)
+                    new_item = tmp[0]
+                    n_tmp = 0
+                    for x in tmp:
+                        if n_tmp != 0:
+                            new_item = new_item + '\n' + x
+                        n_tmp += 1
+                    _results[n_result][1] = new_item
+                n_result += 1
+            max_column_width_tot = max_column_width * 4
+            max_dt = handler_post_process.longest_item(_results, idx=0)
+            max_bytes = handler_post_process.longest_item(_results, idx=2)
+            new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
             _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
+            tabulate.PRESERVE_WHITESPACE = True
             if _mtime_scan is False:
                 # 4 column table
                 for _result in _results:
-                    max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-                    max_column_width_tot = max_column_width * 4
-                    max_dt = handler_post_process.longest_item(_result, idx=0)
-                    max_bytes = handler_post_process.longest_item(_result, idx=2)
-                    new_max_path = max_column_width_tot - max_dt - max_column_width - max_bytes - 8
                     table_1 = tabulate.tabulate(_result,
-                                                colalign=('left', 'right', 'right', 'left'),
-                                                maxcolwidths=[max_dt, max_column_width, max_bytes, new_max_path],
+                                                colalign=('left', 'left', 'right', 'left'),
+                                                maxcolwidths=[max_dt, None, max_bytes, new_max_path],
                                                 headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
                                                 stralign='left')
                     print(table_1)
@@ -102,7 +113,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                     new_max_path = max_column_width_tot - max_dt - max_bytes - 8
                     table_1 = tabulate.tabulate(_result,
                                                 colalign=('left', 'right', 'left'),
-                                                maxcolwidths=[max_dt, max_bytes, new_max_path],
+                                                maxcolwidths=[max_dt, None, max_bytes, new_max_path],
                                                 headers=('[Modified]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
                                                 stralign='left')
                     print(table_1)
