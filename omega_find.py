@@ -191,12 +191,14 @@ if __name__ == '__main__':
                 # uncomment to view data structure
                 # print('after un-chunking:')
                 # for r in results:
-                #     print(len(r), r)
+                #     if r is not None:
+                #         print(len(r), r)
                 # print('')
 
                 # post-process: filter results from errors
                 if _bench is True:
                     t0 = time.perf_counter()
+
                 exc, results = handler_post_process.results_filter(results)
 
                 if p_scan_bool is True:
