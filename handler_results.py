@@ -73,14 +73,12 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 # 4 column table
                 # Let's try the max_column_width alignment of one big table but without using max_column_width and with
                 # all the speed of iterating over many small tables one at time. The best of both worlds.
-
                 max_column_width = cli_character_limits.column_width_from_shutil(n=4)
-
+                # enum index 2
                 max_len_bytes = 0
                 for r in _results:
                     if len(str(r[2])) > max_len_bytes:
                         max_len_bytes = len(str(r[2]))
-
                 n_result = 0
                 for r in _results:
                     # isolate string (in this case buffer)
@@ -100,14 +98,14 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                         # put back into the sub list
                         _results[n_result][2] = new_item
                     n_result += 1
-
+                # enum index 1
                 n_result = 0
                 for r in _results:
                     # isolate string (in this case buffer)
                     len_r = len(r[1])
                     if len_r < max_column_width:
                         # add padding
-                        _results[n_result][1] = r[1] + str(' ' * int(max_column_width - len_r))
+                        _results[n_result][1] = str(' ' * int(max_column_width - len_r)) + r[1]
                     else:
                         # or add new lines
                         tmp = textwrap.wrap(str(r[1]), max_column_width, replace_whitespace=False)
@@ -131,13 +129,13 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 for _result in _results:
                     if n_table == 0:
                         table_1 = tabulate.tabulate(_result,
-                                                    colalign=('left', 'left', 'right', 'left'),
+                                                    colalign=('left', 'right', 'right', 'left'),
                                                     maxcolwidths=[max_dt, None, max_bytes, new_max_path],
                                                     headers=('[Modified]', f'[Buffer: {_header_0.replace(": "+_query, "")}]', '[Bytes]', f'[Files: {_results_len}    Errors: {len(_exc)}]'),
                                                     stralign='left')
                     else:
                         table_1 = tabulate.tabulate(_result,
-                                                    colalign=('left', 'left', 'right', 'left'),
+                                                    colalign=('left', 'right', 'right', 'left'),
                                                     maxcolwidths=[max_dt, None, max_bytes, new_max_path],
                                                     stralign='left',
                                                     tablefmt='plain')
@@ -149,15 +147,11 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                     n_table += 1
             else:
                 # 3 column table
-                # Let's try the max_column_width alignment of one big table but without using max_column_width and with
-                # all the speed of iterating over many small tables one at time. The best of both worlds.
                 max_column_width = cli_character_limits.column_width_from_shutil(n=3)
-
                 max_len_r = 0
                 for r in _results:
                     if len(str(r[1])) > max_len_r:
                         max_len_r = len(str(r[1]))
-
                 n_result = 0
                 for r in _results:
                     # isolate string (in this case buffer)
@@ -177,7 +171,6 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                         # put back into the sub list
                         _results[n_result][1] = new_item
                     n_result += 1
-
                 # enumerate remaining column widths
                 max_column_width_tot = max_column_width * 3
                 max_dt = handler_post_process.longest_item(_results, idx=0)
