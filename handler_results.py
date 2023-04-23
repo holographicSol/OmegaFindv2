@@ -50,15 +50,6 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
 
         # convert timestamps to datetime: do not do this before sorting (omega_findv2.py).
         _results = handler_convert_results.convert_results(_results, _human_size=_human_size, _mtime_scan=_mtime_scan)
-        # n_result = 0
-        # for sublist in _results:
-        #     sublist[0] = handler_file.convert_timestamp_to_datetime(float(sublist[0]))
-        #     if _human_size is True:
-        #         if _mtime_scan is False:
-        #             sublist[2] = str(power_converter.convert_bytes(*[int(sublist[2])], abbr=True)[0])
-        #         else:
-        #             sublist[1] = str(power_converter.convert_bytes(*[int(sublist[2])], abbr=True)[0])
-        #     n_result += 1
 
         # create table for file: each entry should be on one line for ease of parsing.
         if write_bool is True:

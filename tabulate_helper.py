@@ -29,11 +29,14 @@ import handler_print
 
 
 def more_or_next(results: list, extra_input: bool, function=None, message=''):
+    # removing soon or updating so extra input is False
+    extra_input = False
     if extra_input is True:
         print(message)
         function(results)
     else:
-        input(message)
+        input('-- more --')
+        # input(message)
 
 
 def display_rows_interactively(max_limit: int, results: list, table: str, extra_input: bool, message: str, function):

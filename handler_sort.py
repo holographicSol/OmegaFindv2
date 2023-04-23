@@ -39,7 +39,7 @@ def sort_len_2(data: list, sort_mode: str):
     return data
 
 
-def sort_len_3_string_match(data: list, sort_mode: str):
+def sort_len_2_string_match(data: list, sort_mode: str):
     if sort_mode == '--sort=mtime':
         data = sorted(data, key=lambda x: x[1])
     elif sort_mode == '--sort=size':

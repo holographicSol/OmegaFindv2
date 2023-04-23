@@ -50,7 +50,7 @@ def scan_depth_zero(path: str) -> list:
 
 def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=False) -> list:
     fp = []
-    i_match = 0
+    # i_match = 0
     for entry in scantree(path):
         p = entry.path
         if q in p:
@@ -58,25 +58,27 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
                 try:
                     sz = handler_file.get_size(p, human_size)
                     mt = handler_file.get_m_time(p)
-                    fp.append([i_match, mt, sz, p])
-                    i_match += 1
+                    # fp.append([i_match, mt, sz, p])
+                    fp.append([mt, sz, p])
+                    # i_match += 1
                 except Exception as e:
-                    fp.append([i_match, '[?]', '[?]', p, e])
-                    i_match += 1
+                    # fp.append([i_match, '[?]', '[?]', p, e])
+                    fp.append(['[?]', '[?]', p, e])
+                    # i_match += 1
                     pass
     if fp:
-        fp = handler_sort.sort_len_3_string_match(data=fp, sort_mode=_sort_mode)
+        fp = handler_sort.sort_len_2(data=fp, sort_mode=_sort_mode)
         _results = handler_convert_results.convert_string_match_results(fp, _human_size=human_size)
 
-        max_column_width = cli_character_limits.column_width_from_shutil(n=4, reduce=0)
+        max_column_width = cli_character_limits.column_width_from_shutil(n=3, reduce=0)
         max_column_width_tot = max_column_width * 4
-        max_index = handler_post_process.longest_item(fp, idx=0)+5
-        max_dt = handler_post_process.longest_item(fp, idx=1)
-        max_bytes = handler_post_process.longest_item(fp, idx=2)
-        new_max_path = max_column_width_tot - max_index - max_dt - max_bytes - 4
+        # max_index = handler_post_process.longest_item(fp, idx=0)+5
+        max_dt = handler_post_process.longest_item(fp, idx=0)
+        max_bytes = handler_post_process.longest_item(fp, idx=1)
+        new_max_path = max_column_width_tot - max_dt - max_bytes - 4
         table_0 = tabulate.tabulate(fp,
-                                    maxcolwidths=[max_index, max_dt, max_bytes, new_max_path],
-                                    headers=(f'[Index]', '[Modified]', '[Bytes]', f'[Files: {len(fp)}]'),
+                                    maxcolwidths=[max_dt, max_bytes, new_max_path],
+                                    headers=(f'[Modified]', '[Bytes]', f'[Files: {len(fp)}]'),
                                     stralign='left',
                                     tablefmt='f')
         if interact is True:
