@@ -239,6 +239,22 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                 if _result:
                     return [_result]
 
+    if read_mode is int(0):
+        import handler_extraction_method
+        _tmp = _program_root + '\\tmp\\' + str(handler_strings.randStr())
+        handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
+        if os.path.exists(_tmp):
+            for d, s, fl in os.walk(_tmp):
+                for f in fl:
+                    print(f'-- extracted file: {f}')
+                    fp = os.path.join(d, f)
+                    read_mode = int(1)
+                    _result = await str_in_txt(file_in=fp, _search_str=_query)
+                    if _bench is True:
+                        print(f'extract file filter time ({file}): {time.perf_counter() - t0}')
+                    if _result:
+                        return [file]
+
     # Unoconv Filter (Documents) Examples: docx, otg, ott, odt, odd, etc.
     if read_mode is int(0):
         for unoconv_read_filter in unoconv_read_filters:
