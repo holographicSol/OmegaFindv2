@@ -352,23 +352,26 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
         suffix_group_name = str(stdin[stdin.index('--csfx-remove') + 1]).strip()
         keep_groups = []
         found_csfx = False
-        with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
-            i = 0
-            for line in fo:
-                line = line.strip()
-                if not line.startswith(suffix_group_name):
-                    keep_groups.append(line)
-                else:
-                    found_csfx = True
-                i += 1
-        fo.close()
-        if found_csfx is True:
-            with open(variable_paths.csfx_file_path, 'w', encoding='utf8') as fo:
-                for keep_group in keep_groups:
-                    fo.write(keep_group+'\n')
+        if os.path.exists(variable_paths.csfx_file_path):
+            with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
+                i = 0
+                for line in fo:
+                    line = line.strip()
+                    if not line.startswith(suffix_group_name):
+                        keep_groups.append(line)
+                    else:
+                        found_csfx = True
+                    i += 1
             fo.close()
+            if found_csfx is True:
+                with open(variable_paths.csfx_file_path, 'w', encoding='utf8') as fo:
+                    for keep_group in keep_groups:
+                        fo.write(keep_group+'\n')
+                fo.close()
+            else:
+                print('Custom suffix group was not found in custom suffix groups.')
         else:
-            print('Custom suffix group was not found in custom suffix groups.')
+            print('No custom suffix groups have been created.')
 
     else:
         return False
