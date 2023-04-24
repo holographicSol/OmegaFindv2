@@ -339,6 +339,8 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
                     print('')
                     try:
                         f = input('select: ')
+                        print(f'generating report: {fp[int(f)][1]}')
+                        print('')
                         if f and f.isdigit():
                             try:
                                 asyncio.run(handler_file.read_report(fname=fp[int(f)][1]))
