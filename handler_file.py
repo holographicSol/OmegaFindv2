@@ -261,8 +261,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                     break
 
     if read_mode is int(0):
-        if _verbose is True:
-            print(f'-- add compatibility for: {file}')
+        if _bench is True:
+            print(f'-- add compatibility for: {file} ({_buffer})')
 
 
 async def read_report(fname: str):
