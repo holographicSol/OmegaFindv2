@@ -20,8 +20,7 @@ async def p_scan(file: str, _buffer_max: int, _extract: bool, _target: str, _pro
                  human_size=False) -> list:
     _result = []
     try:
-        # todo
-        buffer = await handler_file.async_read_bytes(file, _buffer_max)
+        buffer = await handler_file.async_read_bytes(_file=file, _buffer_max=_buffer_max)
         _result = await extract_p_scan(_buffer=buffer, _file=file, _buffer_max=_buffer_max, _target=_target,
                                        _program_root=_program_root, human_size=human_size)
     except Exception as e:

@@ -31,7 +31,7 @@ async def entry_point_type_scan(chunk: list, **kwargs) -> list:
 async def type_scan(_file: str, _recognized_files: list, _buffer_max: int, _type_suffix: list,
                     _target: str, _program_root: str, _digits=True, _human_size=False):
     try:
-        buffer = await handler_file.async_read_bytes(file=_file, _buffer_max=_buffer_max)
+        buffer = await handler_file.async_read_bytes(_file=_file, _buffer_max=_buffer_max)
         _result = await async_check.type_scan_check(_file=_file, _buffer=buffer, _recognized_files=_recognized_files,
                                                     _digits=_digits, _human_size=_human_size)
     except Exception as e:

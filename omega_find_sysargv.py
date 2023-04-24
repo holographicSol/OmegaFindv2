@@ -250,13 +250,13 @@ def dev_bench(stdin: list) -> bool:
     return _bench
 
 
-def run_and_exit(stdin: list, interact: bool, _sort_mode: str, human_size=False):
+def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False):
 
     if '-s' in stdin:
         _path = stdin[stdin.index('-s') + 1]
         if os.path.exists(_path):
             _q = stdin[stdin.index('-q') + 1]
-            results = scanfs.search_scan(path=_path, q=_q, interact=interact, human_size=human_size,
+            results = scanfs.search_scan(path=_path, q=_q, interact=interact, human_size=_human_size,
                                          _sort_mode=_sort_mode)
             if interact is True:
                 if results:

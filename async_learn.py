@@ -22,8 +22,8 @@ async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) 
 
 async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
     try:
+        buffer = await handler_file.async_read_bytes(_file=file, _buffer_max=_buffer_max)
         # todo
-        buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await scan_learn_check(suffix, buffer, _recognized_files)
     except Exception as e:

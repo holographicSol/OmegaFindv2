@@ -31,8 +31,8 @@ async def entry_point_de_scan(chunk: list, **kwargs) -> list:
 async def de_scan(_file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str,
                   _program_root: str, _digits=True, _human_size=False) -> list:
     try:
+        buffer = await handler_file.async_read_bytes(_file=_file, _buffer_max=_buffer_max)
         # todo
-        buffer = await handler_file.async_read_bytes(_file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, _file)
         _result = await async_check.scan_check(_file=_file, _suffix=suffix, _buffer=buffer,
                                                _recognized_files=_recognized_files, _digits=_digits,
@@ -46,7 +46,7 @@ async def de_scan(_file: str, _recognized_files: list, _buffer_max: int, _extrac
 async def de_scan_extract(_file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str,
                           _program_root: str, _digits=True, _human_size=False) -> list:
     try:
-        buffer = await handler_file.async_read_bytes(_file, _buffer_max)
+        buffer = await handler_file.async_read_bytes(_file=_file, _buffer_max=_buffer_max)
         _result = await extract_de_scan(_buffer=buffer, _file=_file, _buffer_max=_buffer_max,
                                         _recognized_files=_recognized_files, _target=_target,
                                         _program_root=_program_root, _digits=_digits, _human_size=_human_size)
@@ -77,8 +77,8 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
             sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
             sub_files[:] = [item for sublist in sub_files for item in sublist]
             for sub_file in sub_files:
+                buffer = await handler_file.async_read_bytes(_file=sub_file, _buffer_max=_buffer_max)
                 # todo
-                buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
                 res = await async_check.scan_check(_file=sub_file, _suffix=suffix, _buffer=buffer,
                                                    _recognized_files=_recognized_files, _digits=_digits,

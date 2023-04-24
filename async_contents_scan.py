@@ -32,10 +32,9 @@ async def contents_scan(_file: str, _query: str, _verbose: bool, _buffer_max: in
                         human_size=False) -> list:
     _result = ''
     try:
-        # todo
-        buffer = await handler_file.async_read_bytes(file=_file, _buffer_max=_buffer_max)
-        m = await asyncio.to_thread(handler_file.get_m_time, _file)
-        s = await asyncio.to_thread(handler_file.get_size, _file, human_size)
+        buffer = await handler_file.async_read_bytes(_file=_file, _buffer_max=_buffer_max)
+        m = await asyncio.to_thread(handler_file.get_m_time, _file=_file)
+        s = await asyncio.to_thread(handler_file.get_size, _file=_file)
         _result = await handler_file.file_reader(file=_file, _query=_query, _verbose=_verbose, _buffer=str(buffer),
                                                  _program_root=_program_root)
         res = [m, buffer, s, _result[0]]

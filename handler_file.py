@@ -44,8 +44,8 @@ def ensure_db_file(fname: str):
     open(variable_paths.database_dir_path + fname, 'a+').close()
 
 
-async def async_read_bytes(file: str, _buffer_max: int) -> bytes:
-    async with aiofiles.open(file, mode='rb') as handle:
+async def async_read_bytes(_file: str, _buffer_max: int) -> bytes:
+    async with aiofiles.open(_file, mode='rb') as handle:
         _bytes = await handle.read(_buffer_max)
         await handle.close()
     return await asyncio.to_thread(file_sub_ops, _bytes)
@@ -454,12 +454,12 @@ def convert_timestamp_to_datetime(timestamp):
     return dt
 
 
-def get_m_time(file: str):
-    return str(os.path.getmtime(file))
+def get_m_time(_file: str):
+    return str(os.path.getmtime(_file))
 
 
-def get_size(file: str, human_size=False) -> str:
-    return str(os.path.getsize(file))
+def get_size(_file: str) -> str:
+    return str(os.path.getsize(_file))
 
 
 async def stat_files(_results, _target, _tmp, human_size=False):
@@ -471,14 +471,14 @@ async def stat_files(_results, _target, _tmp, human_size=False):
         else:
             regex_fname = str(r[1]).replace(_target, _tmp)
             if os.path.exists(r[1]):
-                m = await asyncio.to_thread(get_m_time, r[1])
-                s = await asyncio.to_thread(get_size, r[1], human_size)
+                m = await asyncio.to_thread(get_m_time, _file=r[1])
+                s = await asyncio.to_thread(get_size, _file=r[1])
                 sub_result = [m, r[2], s, r[1]]
                 if sub_result not in final_result:
                     final_result.append(sub_result)
             elif os.path.exists(regex_fname):
-                m = await asyncio.to_thread(get_m_time, regex_fname)
-                s = await asyncio.to_thread(get_size, regex_fname, human_size)
+                m = await asyncio.to_thread(get_m_time, _file=regex_fname)
+                s = await asyncio.to_thread(get_size, _file=regex_fname)
                 sub_result = [m, r[2], s, r[1]]
                 if sub_result not in final_result:
                     final_result.append(sub_result)

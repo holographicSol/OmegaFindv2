@@ -47,15 +47,15 @@ def scan_depth_zero(path: str) -> list:
     return [file_list, []]
 
 
-def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=False) -> list:
+def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=False):
     fp = []
     for entry in scantree(path):
         p = entry.path
         if q in p:
             if p not in fp:
                 try:
-                    sz = handler_file.get_size(p, human_size)
-                    mt = handler_file.get_m_time(p)
+                    sz = handler_file.get_size(_file=p)
+                    mt = handler_file.get_m_time(_file=p)
                     fp.append([mt, sz, p])
                 except Exception as e:
                     fp.append(['[?]', '[?]', p, e])
