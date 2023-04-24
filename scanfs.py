@@ -97,10 +97,11 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
                                             tablefmt='plain')
             print(table_1)
             n_table += 1
-            try:
-                handler_input.input_singularity(message='select: ')
-            except KeyboardInterrupt:
-                break
+            if not _result == _results[-1]:
+                try:
+                    handler_input.input_singularity(message='')
+                except KeyboardInterrupt:
+                    break
 
 
 def pre_scan_handler(_target: str, _verbose: bool, _recursive: bool) -> tuple:
