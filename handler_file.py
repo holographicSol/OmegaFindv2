@@ -99,14 +99,15 @@ async def str_in_pdf(file_in='', _search_str=''):
         pdf_file = await asyncio.to_thread(read_all_bytes, file_in=file_in)
         pdf_reader = await asyncio.to_thread(pytopdf_read, pdf_file=pdf_file)
         n_pages = await asyncio.to_thread(pytopdf_get_pages, pdf_reader=pdf_reader)
-        for page_num in range(n_pages):
-            _text = await asyncio.to_thread(pytoodf_extract,
-                                            page_num=page_num, pdf_reader=pdf_reader, _search_str=_search_str)
-            _text = str(_text).strip()
-            _result = await asyncio.to_thread(string_match, _search_str=_search_str, _text=_text)
-            if _result is True:
-                pdf_file.close()
-                return file_in
+        if str(n_pages).isdigit():
+            for page_num in range(n_pages):
+                _text = await asyncio.to_thread(pytoodf_extract,
+                                                page_num=page_num, pdf_reader=pdf_reader, _search_str=_search_str)
+                _text = str(_text).strip()
+                _result = await asyncio.to_thread(string_match, _search_str=_search_str, _text=_text)
+                if _result is True:
+                    pdf_file.close()
+                    return file_in
         pdf_file.close()
     except Exception as e:
         # print(f'{e} {file_in}')

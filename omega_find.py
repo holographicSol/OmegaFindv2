@@ -241,8 +241,8 @@ if __name__ == '__main__':
                                                   _mtime_scan=mtime_scan, _bench=_bench, _human_size=human_size)
 
                 # final clean of tmp
-                if os.path.exists(variable_paths.tmp_dir_path):
-                    handler_file.rem_dir(path=variable_paths.tmp_dir_path)
+                # if os.path.exists(variable_paths.tmp_dir_path):
+                #     handler_file.rem_dir(path=variable_paths.tmp_dir_path)
 
             else:
                 handler_print.display_invalid_input()
