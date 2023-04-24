@@ -56,6 +56,7 @@ async def read_file(file: str) -> list:
     if os.path.exists(file):
         async with aiofiles.open(file, mode='r', encoding='utf8') as handle:
             data = await handle.read()
+        await handle.close()
     return data
 
 
@@ -282,8 +283,8 @@ async def read_report(fname: str):
                 _bytes = item_str[indexes[0]+indexes[1]+2:indexes[0]+indexes[1]+indexes[2]+4].strip()
                 filepath = item_str[indexes[0]+indexes[1]+indexes[2]+4:indexes[0]+indexes[1]+indexes[2]+indexes[3]+6].strip()
                 _results.append([mtime, buff, _bytes, filepath])
-            except:
-                pass
+            except Exception as e:
+                print(e)
         i_line += 1
 
     if len(indexes) == 4:
@@ -305,23 +306,33 @@ async def read_report(fname: str):
         _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
         n_table = 0
         for _result in _results:
-            if n_table == 0:
-                table_1 = tabulate.tabulate(_result,
-                                            colalign=('left', 'right', 'right', 'left'),
-                                            maxcolwidths=[max_dt, None, max_bytes, new_max_path],
-                                            headers=(headers[0], headers[1], headers[2], headers[3]),
-                                            stralign='left',
-                                            floatfmt='f')
-            else:
-                table_1 = tabulate.tabulate(_result,
-                                            colalign=('left', 'right', 'right', 'left'),
-                                            maxcolwidths=[max_dt, None, max_bytes, new_max_path],
-                                            stralign='left',
-                                            tablefmt='plain',
-                                            floatfmt='f')
-            print(table_1)
-            input()
-            n_table += 1
+            try:
+                if n_table == 0:
+                    table_1 = tabulate.tabulate(_result,
+                                                colalign=('left', 'right', 'right', 'left'),
+                                                maxcolwidths=[max_dt, None, max_bytes, new_max_path],
+                                                headers=(headers[0], headers[1], headers[2], headers[3]),
+                                                stralign='left',
+                                                floatfmt='f')
+                else:
+                    table_1 = tabulate.tabulate(_result,
+                                                colalign=('left', 'right', 'right', 'left'),
+                                                maxcolwidths=[max_dt, None, max_bytes, new_max_path],
+                                                stralign='left',
+                                                tablefmt='plain',
+                                                floatfmt='f')
+                print(table_1)
+                n_table += 1
+                try:
+                    input()
+                except KeyboardInterrupt:
+                    print('logging: keyboard interrupt')
+                    break
+                except:
+                    pass
+            except KeyboardInterrupt:
+                print('logging: keyboard interrupt')
+                break
 
 
 async def read_definitions(fname: str, _digits=True) -> tuple:

@@ -256,11 +256,8 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
         _path = stdin[stdin.index('-s') + 1]
         if os.path.exists(_path):
             _q = stdin[stdin.index('-q') + 1]
-            results = scanfs.search_scan(path=_path, q=_q, interact=interact, human_size=_human_size,
-                                         _sort_mode=_sort_mode)
-            if interact is True:
-                if results:
-                    loop_scandir_results(_list=results)
+            scanfs.search_scan(path=_path, q=_q, interact=interact, human_size=_human_size,
+                               _sort_mode=_sort_mode)
 
     elif '-h' in stdin:
         handler_print.omega_help()
@@ -336,16 +333,23 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
                                                 tablefmt='plain')
 
                 print(table_1)
+                n_table += 1
 
                 if interact is True:
                     print('')
-                    f = input('select: ')
-                    if f and f.isdigit():
-                        asyncio.run(handler_file.read_report(fname=fp[int(f)][1]))
+                    try:
+                        f = input('select: ')
+                        if f and f.isdigit():
+                            try:
+                                asyncio.run(handler_file.read_report(fname=fp[int(f)][1]))
+                            except KeyboardInterrupt:
+                                break
+                            break
+                        print('')
+                    except KeyboardInterrupt:
                         break
-                    print('')
-
-                n_table += 1
+                else:
+                    print(table_1)
 
     elif '-nsfx' in stdin:
         make_suffix_group()

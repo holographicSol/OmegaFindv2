@@ -169,9 +169,12 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                     maxcolwidths=[max_dt, max_bytes, new_max_path],
                                                     stralign='left',
                                                     tablefmt='plain')
-                    n_table += 1
                     print(table_1)
-                    input()
+                    n_table += 1
+                    try:
+                        input()
+                    except KeyboardInterrupt:
+                        break
 
         if interact is False:
             table_1 = []

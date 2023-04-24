@@ -196,9 +196,12 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
                                             tablefmt='plain')
 
             print(table_1)
-            if interact is True:
-                input()
             n_table += 1
+            if interact is True:
+                try:
+                    input()
+                except KeyboardInterrupt:
+                    break
 
 
 def display_all_associations(recognized_files: list, suffixes: list, interact: bool):
@@ -241,9 +244,12 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
                                             tablefmt='plain')
 
             print(table_1)
-            if interact is True:
-                input()
             n_table += 1
+            if interact is True:
+                try:
+                    input()
+                except KeyboardInterrupt:
+                    break
 
 
 # ------------------------------------------------------------------------------> saving

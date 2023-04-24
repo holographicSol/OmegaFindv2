@@ -45,12 +45,3 @@ def input_open_dir(_list) -> bool:
             if usr_input <= len(_list):
                 os.startfile(fullpath)
     return repeat_request
-
-
-def input_select_report(_list):
-    if _list:
-        usr_input = handler_print.input_select()
-        if usr_input.isdigit():
-            usr_input = int(usr_input)
-            result = _list[usr_input][1]
-            asyncio.run(handler_file.read_report(fname=result))

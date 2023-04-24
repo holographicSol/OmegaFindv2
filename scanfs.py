@@ -94,9 +94,12 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
                                             maxcolwidths=[max_dt, max_bytes, new_max_path],
                                             stralign='left',
                                             tablefmt='plain')
-            n_table += 1
             print(table_1)
-            input()
+            n_table += 1
+            try:
+                input()
+            except KeyboardInterrupt:
+                break
 
 
 def pre_scan_handler(_target: str, _verbose: bool, _recursive: bool) -> tuple:
