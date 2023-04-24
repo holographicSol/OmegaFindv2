@@ -20,7 +20,7 @@ async def entry_point_contents_scan(chunk: list, **kwargs) -> list:
     verbose = kwargs.get('verbose')
     human_size = kwargs.get('human_size')
     if _extract is False:
-        return [await contents_scan(file=item, _query=_query, _verbose=verbose, _buffer_max=_buffer_max,
+        return [await contents_scan(_file=item, _query=_query, _verbose=verbose, _buffer_max=_buffer_max,
                                     _program_root=_program_root, human_size=human_size) for item in chunk]
     elif _extract is True:
         return [await contents_scan_extract(_file=item, _query=_query, _verbose=verbose,
@@ -28,15 +28,15 @@ async def entry_point_contents_scan(chunk: list, **kwargs) -> list:
                                             _target=_target, human_size=human_size) for item in chunk]
 
 
-async def contents_scan(file: str, _query: str, _verbose: bool, _buffer_max: int, _program_root: str,
+async def contents_scan(_file: str, _query: str, _verbose: bool, _buffer_max: int, _program_root: str,
                         human_size=False) -> list:
     _result = ''
     try:
         # todo
-        buffer = await handler_file.async_read_bytes(file, _buffer_max)
-        m = await asyncio.to_thread(handler_file.get_m_time, file)
-        s = await asyncio.to_thread(handler_file.get_size, file, human_size)
-        _result = await handler_file.file_reader(file=file, _query=_query, _verbose=_verbose, _buffer=str(buffer),
+        buffer = await handler_file.async_read_bytes(file=_file, _buffer_max=_buffer_max)
+        m = await asyncio.to_thread(handler_file.get_m_time, _file)
+        s = await asyncio.to_thread(handler_file.get_size, _file, human_size)
+        _result = await handler_file.file_reader(file=_file, _query=_query, _verbose=_verbose, _buffer=str(buffer),
                                                  _program_root=_program_root)
         res = [m, buffer, s, _result[0]]
         return res
@@ -58,7 +58,7 @@ async def contents_scan_extract(_file: str, _query: str, _verbose: bool, _buffer
 
 async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer_max: int, _program_root: str,
                                 _target: str, human_size=False) -> list:
-    _results = await contents_scan(file=_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
+    _results = await contents_scan(_file=_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                    _program_root=_program_root, human_size=human_size)
     if _results is not None:
         if '[ERROR]' not in _results[0]:
@@ -78,10 +78,10 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
             sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
             sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
             for sub_file in sub_files:
-                res = await contents_scan(file=sub_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
+                res = await contents_scan(_file=sub_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                           _program_root=_program_root, human_size=human_size)
                 if res is not None:
-                    res[-1] = res[-1].replace(_tmp, _target)
+                    res[-1] = res[-1].replace(_tmp, _file)
                     _results.append(res)
     else:
         if 'Password required' in extraction:
