@@ -140,8 +140,8 @@ Help:
      -q       Query                 Specify a search query. Used with -c. -c PATH -q QUERY.
      -sfx     Suffix                Specify suffix. Used with -t.
      -csfx    Custom Suffix         Specify custom suffix group. Used with -t.
-     -nsfx    New Suffix Group      Create new custom suffix group.
      -gsfx    Group Suffix          Specify default suffix group. Used with -t.
+     -nsfx    New Suffix Group      Create new custom suffix group.
                                     archive, audio, book, code, exe, font, image, sheet, slide, text, video, web.
     
      -db      Database              Specify database to use while learning/scanning.
@@ -168,6 +168,7 @@ Help:
      --sort-reverse=buffer          Sort by Buffer
      --sort-reverse=size            Sort by Size
      --sort-reverse=file            Sort by Filename
+     --csfx-remove                  Specify a custom suffix group to be removed.
     
      -v       Verbosity             Increase verbosity.
      -h       Help                  Display this help message.
