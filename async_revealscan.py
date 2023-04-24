@@ -27,7 +27,6 @@ async def reveal_scan(_file: str, _buffer_max: int, _extract: bool, _target: str
     _result = []
     try:
         buffer = await handler_file.async_read_bytes(_file=_file, _buffer_max=_buffer_max)
-        # todo
         m = await asyncio.to_thread(handler_file.get_m_time, _file=_file)
         s = await asyncio.to_thread(handler_file.get_size, _file=_file)
         return [m, buffer, s, _file]
@@ -52,7 +51,6 @@ async def reveal_scan_extract(_file: str, _buffer_max: int, _extract: bool, _tar
 async def extract_reveal_scan(_file: str, _buffer_max: int, _target: str, _program_root: str,
                               _buffer: bytes, _human_size=False) -> list:
     _results = []
-    # todo
     m = await asyncio.to_thread(handler_file.get_m_time, _file=_file)
     s = await asyncio.to_thread(handler_file.get_size, _file=_file)
     _results = [[m, _buffer, s, _file]]
@@ -61,8 +59,7 @@ async def extract_reveal_scan(_file: str, _buffer_max: int, _target: str, _progr
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
     if result_bool is True:
-        # todo
-        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+        sub_files = await asyncio.to_thread(scanfs.scan, _path=_tmp)
         sub_files[:] = [item for sublist in sub_files for item in sublist]
         for sub_file in sub_files:
             buffer = await handler_file.async_read_bytes(_file=_file, _buffer_max=_buffer_max)

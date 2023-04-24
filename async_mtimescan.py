@@ -53,8 +53,7 @@ async def extract_mtime_scan(_file: str, _target: str, _program_root: str, _huma
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
     if result_bool is True:
-        # todo
-        sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
+        sub_files = await asyncio.to_thread(scanfs.scan, _path=_tmp)
         sub_files[:] = [item for sublist in sub_files for item in sublist]
         for sub_file in sub_files:
             m = await asyncio.to_thread(handler_file.get_m_time, _file=sub_file)

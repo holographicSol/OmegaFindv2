@@ -26,11 +26,11 @@ def scantree(path: str) -> str:
         x_files.append(['[ERROR]', str(e)])
 
 
-def scan(path: str) -> list:
+def scan(_path: str) -> list:
     global x_files
     x_files = []
     fp = []
-    [fp.append(entry.path) for entry in scantree(path)]
+    [fp.append(entry.path) for entry in scantree(_path)]
     return [fp, x_files]
 
 
@@ -100,9 +100,8 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
 
 
 def pre_scan_handler(_target: str, _verbose: bool, _recursive: bool) -> tuple:
-    t = time.perf_counter()
     if _recursive is True:
-        scan_results = scan(path=_target)
+        scan_results = scan(_path=_target)
     else:
         scan_results = scan_depth_zero(path=_target)
     _files = scan_results[0]

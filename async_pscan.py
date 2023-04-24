@@ -37,8 +37,7 @@ async def extract_p_scan(_buffer: bytes, _file: str, _buffer_max: int, _target: 
                                                      temp_directory=_tmp,
                                                      _target=_target,
                                                      _static_tmp=_tmp)
-    # todo
-    final_result = await handler_file.stat_files(_results, _target, _tmp, human_size)
+    final_result = await handler_file.stat_files(_results=_results, _target=_target, _tmp=_tmp, _human_size=human_size)
 
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return final_result

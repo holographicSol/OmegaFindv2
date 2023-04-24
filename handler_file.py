@@ -435,8 +435,8 @@ def read_bytes(file: str) -> bytes:
     return _bytes
 
 
-def get_suffix(file: str) -> str:
-    sfx = pathlib.Path(file).suffix
+def get_suffix(_file: str) -> str:
+    sfx = pathlib.Path(_file).suffix
     sfx = sfx.replace('.', '').lower()
     if sfx == '':
         sfx = 'no_file_extension'
@@ -462,7 +462,7 @@ def get_size(_file: str) -> str:
     return str(os.path.getsize(_file))
 
 
-async def stat_files(_results, _target, _tmp, human_size=False):
+async def stat_files(_results, _target, _tmp, _human_size=False):
     final_result = []
     for r in _results:
         if r[0] == '[ERROR]':

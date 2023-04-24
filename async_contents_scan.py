@@ -73,9 +73,8 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
                                                       _static_tmp=_tmp)
     if result_bool is True:
         if os.path.exists(_tmp):
-            # todo
-            sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
-            sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
+            sub_files = await asyncio.to_thread(scanfs.scan, _path=_tmp)
+            sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, data=sub_files, depth=1)
             for sub_file in sub_files:
                 res = await contents_scan(_file=sub_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                           _program_root=_program_root, human_size=human_size)

@@ -52,8 +52,7 @@ async def extract_type_scan(_file: str, _recognized_files: list,  _buffer_max: i
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
     if result_bool is True:
-        # todo
-        sub_files = await asyncio.to_thread(scanfs.scan, path=_tmp)
+        sub_files = await asyncio.to_thread(scanfs.scan, _path=_tmp)
         sub_files[:] = [item for sublist in sub_files for item in sublist]
         for sub_file in sub_files:
             res = await type_scan(_file=sub_file, _recognized_files=_recognized_files, _buffer_max=_buffer_max,
