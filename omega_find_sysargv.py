@@ -59,31 +59,22 @@ def mode(stdin: list) -> tuple:
             suffix = variables_suffix.get_specified_suffix_group(suffix_)
         # custom suffix group
         elif '-csfx' in stdin:
-            handler_print.display_searching_custom_suffix()
-            handler_print.display_spacer()
-            if os.path.exists(variable_paths.csfx_file_path):
-                custom_suffix_groups = []
-                with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
-                    i = 0
-                    for line in fo:
-                        line = line.strip()
-                        handler_print.display_custom_suffix_result(i, line)
-                        custom_suffix_groups.append(line)
-                        i += 1
-                fo.close()
-                handler_print.display_spacer()
-                select_group = handler_input.input_singularity(message='select: ')
-                handler_print.display_spacer()
-                select_group = int(select_group.strip())
-                if select_group in range(len(custom_suffix_groups)):
-                    _sfx_group = custom_suffix_groups[select_group]
-                    idx_sfx_name = _sfx_group.find(' ')
-                    sfx_name = _sfx_group[:idx_sfx_name]
-                    sfx_group = _sfx_group[idx_sfx_name+1:]
-                    sfx_group = sfx_group.split(' ')
-                    suffix = sfx_group
-            else:
+            suffix_group_name = str(stdin[stdin.index('-csfx')+1]).strip()
+            suffixes = ''
+            with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
+                i = 0
+                for line in fo:
+                    line = line.strip()
+                    if line.startswith(suffix_group_name):
+                        line = line.split(' ')
+                        line.remove(line[0])
+                        suffix = line
+                        break
+                    i += 1
+            fo.close()
+            if not suffix:
                 handler_print.display_no_custom_suffix()
+
     return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan, contents_scan, mtime_scan
 
 
