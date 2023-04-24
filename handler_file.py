@@ -246,7 +246,6 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
         if os.path.exists(_tmp):
             for d, s, fl in os.walk(_tmp):
                 for f in fl:
-                    print(f'-- extracted file: {f}')
                     fp = os.path.join(d, f)
                     read_mode = int(1)
                     _result = await str_in_txt(file_in=fp, _search_str=_query)
