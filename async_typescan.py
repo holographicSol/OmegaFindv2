@@ -32,8 +32,8 @@ async def type_scan(_file: str, _recognized_files: list, _buffer_max: int, _type
                     _target: str, _program_root: str, _digits=True, _human_size=False):
     try:
         buffer = await handler_file.async_read_bytes(file=_file, _buffer_max=_buffer_max)
-        _result = await async_check.type_scan_check(file=_file, buffer=buffer, _recognized_files=_recognized_files,
-                                                    _digits=_digits, human_size=_human_size)
+        _result = await async_check.type_scan_check(_file=_file, _buffer=buffer, _recognized_files=_recognized_files,
+                                                    _digits=_digits, _human_size=_human_size)
     except Exception as e:
         _result = [['[ERROR]', str(_file), str(e)]]
     return _result
@@ -52,6 +52,7 @@ async def extract_type_scan(_file: str, _recognized_files: list,  _buffer_max: i
                                                       file=_file, temp_directory=_tmp, _target=_target,
                                                       _static_tmp=_tmp)
     if result_bool is True:
+        # todo
         sub_files = await asyncio.to_thread(scanfs.scan, path=_tmp)
         sub_files[:] = [item for sublist in sub_files for item in sublist]
         for sub_file in sub_files:
@@ -60,7 +61,7 @@ async def extract_type_scan(_file: str, _recognized_files: list,  _buffer_max: i
                                   _digits=_digits, _human_size=_human_size)
             if res is not None:
                 if len(res) == 4:
-                    res[3] = res[3].replace(str(_tmp), _target)
+                    res[3] = res[3].replace(str(_tmp), _file)
                     _results.append(res)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results

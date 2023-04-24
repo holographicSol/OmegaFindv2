@@ -14,7 +14,6 @@ async def entry_point_learn(chunk: list, **kwargs) -> list:
 
 async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) -> list:
     global x_learn
-    # buffer = handler_strings.sub_str(_buffer=buffer)  # digitless
     if [suffix, buffer] not in x_learn:
         x_learn.append([suffix, buffer])
         if [suffix, buffer] not in _recognized_files:
@@ -23,6 +22,7 @@ async def scan_learn_check(suffix: str, buffer: bytes, _recognized_files: list) 
 
 async def scan_learn(file: str, _recognized_files: list, _buffer_max: int) -> list:
     try:
+        # todo
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, file)
         _result = await scan_learn_check(suffix, buffer, _recognized_files)

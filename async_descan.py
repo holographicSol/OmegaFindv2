@@ -31,9 +31,12 @@ async def entry_point_de_scan(chunk: list, **kwargs) -> list:
 async def de_scan(_file: str, _recognized_files: list, _buffer_max: int, _extract: bool, _target: str,
                   _program_root: str, _digits=True, _human_size=False) -> list:
     try:
+        # todo
         buffer = await handler_file.async_read_bytes(_file, _buffer_max)
         suffix = await asyncio.to_thread(handler_file.get_suffix, _file)
-        _result = await async_check.scan_check(_file, suffix, buffer, _recognized_files, _digits, _human_size)
+        _result = await async_check.scan_check(_file=_file, _suffix=suffix, _buffer=buffer,
+                                               _recognized_files=_recognized_files, _digits=_digits,
+                                               _human_size=_human_size)
     except Exception as e:
         _result = [['[ERROR]', str(_file), str(e)]]
     if _result:
@@ -55,8 +58,11 @@ async def de_scan_extract(_file: str, _recognized_files: list, _buffer_max: int,
 
 async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recognized_files: list, _target: str,
                           _program_root: str, _digits=True, _human_size=False) -> list:
+    # todo
     suffix = await asyncio.to_thread(handler_file.get_suffix, _file)
-    _results = await async_check.scan_check(_file, suffix, _buffer, _recognized_files, _digits, _human_size)
+    _results = await async_check.scan_check(_file=_file, _suffix=suffix, _buffer=_buffer,
+                                            _recognized_files=_recognized_files, _digits=_digits,
+                                            _human_size=_human_size)
     if _results is not None:
         _results = [_results]
     else:
@@ -67,14 +73,16 @@ async def extract_de_scan(_buffer: bytes, _file: str, _buffer_max: int, _recogni
                                                       _static_tmp=_tmp)
     if result_bool is True:
         if os.path.exists(_tmp):
+            # todo
             sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
             sub_files[:] = [item for sublist in sub_files for item in sublist]
             for sub_file in sub_files:
+                # todo
                 buffer = await handler_file.async_read_bytes(sub_file, _buffer_max)
                 suffix = await asyncio.to_thread(handler_file.get_suffix, sub_file)
-                res = await async_check.scan_check(file=sub_file, suffix=suffix, buffer=buffer,
+                res = await async_check.scan_check(_file=sub_file, _suffix=suffix, _buffer=buffer,
                                                    _recognized_files=_recognized_files, _digits=_digits,
-                                                   human_size=_human_size)
+                                                   _human_size=_human_size)
                 if res is not None:
                     res[3] = res[3].replace(str(_tmp), _file+'\\')
                     _results.append(res)

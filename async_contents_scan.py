@@ -32,6 +32,7 @@ async def contents_scan(file: str, _query: str, _verbose: bool, _buffer_max: int
                         human_size=False) -> list:
     _result = ''
     try:
+        # todo
         buffer = await handler_file.async_read_bytes(file, _buffer_max)
         m = await asyncio.to_thread(handler_file.get_m_time, file)
         s = await asyncio.to_thread(handler_file.get_size, file, human_size)
@@ -47,7 +48,8 @@ async def contents_scan(file: str, _query: str, _verbose: bool, _buffer_max: int
 async def contents_scan_extract(_file: str, _query: str, _verbose: bool, _buffer_max: int, _program_root: str,
                                 _target: str, human_size=False) -> list:
     try:
-        _result = await extract_contents_scan(_file, _query, _verbose, _buffer_max, _program_root, _target, human_size)
+        _result = await extract_contents_scan(_file=_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
+                                              _program_root=_program_root, _target=_target, human_size=human_size)
         return _result
     except Exception as e:
         pass
@@ -72,9 +74,9 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
                                                       _static_tmp=_tmp)
     if result_bool is True:
         if os.path.exists(_tmp):
+            # todo
             sub_files = await asyncio.to_thread(scanfs.scan, _tmp)
             sub_files = await asyncio.to_thread(handler_chunk.un_chunk_data, sub_files, depth=1)
-            # sub_files[:] = [item for sublist in sub_files for item in sublist]
             for sub_file in sub_files:
                 res = await contents_scan(file=sub_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                           _program_root=_program_root, human_size=human_size)
