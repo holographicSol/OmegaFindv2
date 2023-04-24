@@ -326,13 +326,14 @@ async def read_report(fname: str):
                                                 floatfmt='f')
                 print(table_1)
                 n_table += 1
-                try:
-                    handler_input.input_singularity(message='')
-                except KeyboardInterrupt:
-                    print('logging: keyboard interrupt')
-                    break
-                except:
-                    pass
+                if not _result == _results[-1]:
+                    try:
+                        handler_input.input_singularity(message='')
+                    except KeyboardInterrupt:
+                        print('logging: keyboard interrupt')
+                        break
+                    except:
+                        pass
             except KeyboardInterrupt:
                 print('logging: keyboard interrupt')
                 break

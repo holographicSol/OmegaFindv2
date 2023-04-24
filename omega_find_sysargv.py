@@ -301,7 +301,7 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
 
         # display report files
         if fp:
-            chunk_size = 2
+            chunk_size = 75
             tabulate.PRESERVE_WHITESPACE = True
 
             max_column_width = cli_character_limits.column_width_from_shutil(n=2, reduce=0)
@@ -344,14 +344,16 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
                     print('')
                     try:
                         f = handler_input.input_singularity(message='select: ')
-                        print(f'generating report: {fp[int(f)][1]}')
-                        print('')
-                        if f and f.isdigit():
-                            try:
-                                asyncio.run(handler_file.read_report(fname=fp[int(f)][1]))
-                            except KeyboardInterrupt:
-                                break
-                            break
+                        if f:
+                            if os.path.exists(str(fp[int(f)][1])):
+                                print(f'generating report: {fp[int(f)][1]}')
+                                print('')
+                                if f and f.isdigit():
+                                    try:
+                                        asyncio.run(handler_file.read_report(fname=fp[int(f)][1]))
+                                    except KeyboardInterrupt:
+                                        break
+                                    break
                     except KeyboardInterrupt:
                         break
                 else:

@@ -133,10 +133,13 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                     floatfmt='f')
                     print(table_1)
                     n_table += 1
-                    try:
-                        handler_input.input_singularity(message='')
-                    except KeyboardInterrupt:
-                        break
+                    if not _result == _results[-1]:
+                        try:
+                            handler_input.input_singularity(message='')
+                        except KeyboardInterrupt:
+                            break
+                        except:
+                            pass
             else:
                 max_column_width = cli_character_limits.column_width_from_shutil(n=3)
 
@@ -172,10 +175,13 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                     tablefmt='plain')
                     print(table_1)
                     n_table += 1
-                    try:
-                        handler_input.input_singularity(message='')
-                    except KeyboardInterrupt:
-                        break
+                    if not _result == _results[-1]:
+                        try:
+                            handler_input.input_singularity(message='')
+                        except KeyboardInterrupt:
+                            break
+                        except:
+                            pass
 
         if interact is False:
             table_1 = []

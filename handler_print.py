@@ -214,10 +214,14 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
             print(table_1)
             n_table += 1
             if interact is True:
-                try:
-                    handler_input.input_singularity(message='')
-                except KeyboardInterrupt:
-                    break
+                if not _result == _results[-1]:
+                    try:
+                        handler_input.input_singularity(message='')
+                    except KeyboardInterrupt:
+                        print('logging: keyboard interrupt')
+                        break
+                    except:
+                        pass
 
 
 def display_all_associations(recognized_files: list, suffixes: list, interact: bool):
