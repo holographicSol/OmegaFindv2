@@ -79,7 +79,7 @@ if __name__ == '__main__':
             contents_scan, mtime_scan = omega_find_sysargv.mode(STDIN)
 
         if type_scan_bool is True and not len(type_suffix) >= 1:
-            sys.exit('-- unspecified suffix(s).\n')
+            sys.exit('Unspecified suffix(s).\n')
 
         else:
             target = omega_find_sysargv.target(STDIN, mode)
