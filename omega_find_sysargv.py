@@ -59,21 +59,24 @@ def mode(stdin: list) -> tuple:
             suffix = variables_suffix.get_specified_suffix_group(suffix_)
         # custom suffix group
         elif '-csfx' in stdin:
-            suffix_group_name = str(stdin[stdin.index('-csfx')+1]).strip()
-            suffixes = ''
-            with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
-                i = 0
-                for line in fo:
-                    line = line.strip()
-                    if line.startswith(suffix_group_name):
-                        line = line.split(' ')
-                        line.remove(line[0])
-                        suffix = line
-                        break
-                    i += 1
-            fo.close()
-            if not suffix:
-                handler_print.display_no_custom_suffix()
+            if os.path.exists(variable_paths.csfx_file_path):
+                suffix_group_name = str(stdin[stdin.index('-csfx')+1]).strip()
+                suffixes = ''
+                with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
+                    i = 0
+                    for line in fo:
+                        line = line.strip()
+                        if line.startswith(suffix_group_name):
+                            line = line.split(' ')
+                            line.remove(line[0])
+                            suffix = line
+                            break
+                        i += 1
+                fo.close()
+                if not suffix:
+                    print('Custom suffix group not found.')
+            else:
+                print('No custom suffix groups have been created.')
 
     return _mode, learn, de_scan, type_scan, p_scan, suffix, reveal_scan, contents_scan, mtime_scan
 
@@ -265,17 +268,25 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
 
     elif '-G' in stdin:
         if len(stdin) == 3:
-            suffix_group_name = stdin[stdin.index('-G') + 1]
-            handler_print.show_suffix_group(suffix_group_name)
+            if os.path.exists(variable_paths.csfx_file_path):
+                suffix_group_name = stdin[stdin.index('-G') + 1]
+                handler_print.show_suffix_group(suffix_group_name)
+            else:
+                print('Custom Suffix Groups: No custom suffix groups have been created.')
         elif len(stdin) == 2:
             print('Default Suffix Groups: archive, audio, book, code, exe, font, image, sheet, slide, text, video, web.')
-            group_names = handler_print.show_custom_suffix_group_names()
-            if group_names:
-                print('Custom Suffix Groups:\n')
-                chunks = handler_chunk.chunk_data(data=group_names, chunk_size=6)
-                print(tabulate.tabulate(chunks, tablefmt='plain'))
+
+            if os.path.exists(variable_paths.csfx_file_path):
+                group_names = handler_print.show_custom_suffix_group_names()
+                if group_names:
+                    print('Custom Suffix Groups:\n')
+                    chunks = handler_chunk.chunk_data(data=group_names, chunk_size=6)
+                    print(tabulate.tabulate(chunks, tablefmt='plain'))
+
+                else:
+                    print('Custom Suffix Groups: No custom suffix groups have been created.')
             else:
-                print('Custom Suffix Groups: None.')
+                print('Custom Suffix Groups:  No custom suffix groups have been created.')
 
     elif '-L' in stdin:
 
