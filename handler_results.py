@@ -131,8 +131,11 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                                                     tablefmt='plain',
                                                     floatfmt='f')
                     print(table_1)
-                    input()
                     n_table += 1
+                    try:
+                        input()
+                    except KeyboardInterrupt:
+                        break
             else:
                 max_column_width = cli_character_limits.column_width_from_shutil(n=3)
 
