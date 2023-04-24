@@ -283,16 +283,28 @@ def display_spacer():
 # ------------------------------------------------------------------------------> input
 
 def input_custom_suffix_group_name() -> str:
-    return input('-- enter new a suffix group name (alpha numeric): ')
+    try:
+        return input('-- enter new a suffix group name (alpha numeric): ')
+    except KeyboardInterrupt:
+        exit(0)
 
 
 def input_custom_suffix() -> str:
-    return input('-- enter suffix(s) (space delimited example: sh exe): ')
+    try:
+        return input('-- enter suffix(s) (space delimited example: sh exe): ')
+    except KeyboardInterrupt:
+        exit(0)
 
 
 def input_save() -> str:
-    return input('-- save?: ')
+    try:
+        return input('-- save?: ')
+    except KeyboardInterrupt:
+        exit(0)
 
 
 def input_select() -> str:
-    return input(': ')
+    try:
+        return input(': ')
+    except KeyboardInterrupt:
+        exit(0)

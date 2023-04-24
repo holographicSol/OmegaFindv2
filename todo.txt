@@ -23,4 +23,4 @@ todo:
 
 * expand on contents scan filters and compatibility
 
-* add keyboard interrupts for tables.
+* todo next: add keyboard interrupts for tables for clean early exits.

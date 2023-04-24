@@ -227,15 +227,6 @@ def write_bool(stdin: list) -> bool:
     return _write_bool
 
 
-def loop_scandir_results(_list: list):
-    try:
-        handler_strings.input_open_dir(_list=_list)
-        loop_scandir_results(_list=_list)
-    except KeyboardInterrupt:
-        handler_print.display_spacer()
-        pass
-
-
 def human_size(stdin: list) -> bool:
     _human_size = False
     if '--human-size' in stdin:
@@ -347,7 +338,6 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
                             except KeyboardInterrupt:
                                 break
                             break
-                        print('')
                     except KeyboardInterrupt:
                         break
                 else:

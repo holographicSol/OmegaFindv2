@@ -509,8 +509,3 @@ def file_sub_ops(_bytes: bytes) -> str:
 def rem_dir(path: str):
     if os.path.exists(path):
         shutil.rmtree(path)
-
-
-def call_input_open_dir(_results):
-    if handler_strings.input_open_dir(_list=_results) is True:
-        call_input_open_dir(_results)
