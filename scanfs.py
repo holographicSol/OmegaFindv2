@@ -10,6 +10,7 @@ import handler_sort
 import handler_convert_results
 import tabulate_helper2
 import handler_chunk
+import handler_input
 
 x_files = []
 
@@ -97,7 +98,7 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
             print(table_1)
             n_table += 1
             try:
-                input()
+                handler_input.input_singularity(message='select: ')
             except KeyboardInterrupt:
                 break
 

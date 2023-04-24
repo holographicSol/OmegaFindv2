@@ -12,6 +12,7 @@ import power_time
 import time
 import tabulate_helper2
 import handler_convert_results
+import handler_input
 
 
 def learn_result_handler_display(_results: list, _exc: list, _t_completion: str, _verbose: bool):
@@ -133,7 +134,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                     print(table_1)
                     n_table += 1
                     try:
-                        input()
+                        handler_input.input_singularity(message='')
                     except KeyboardInterrupt:
                         break
             else:
@@ -172,7 +173,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                     print(table_1)
                     n_table += 1
                     try:
-                        input()
+                        handler_input.input_singularity(message='')
                     except KeyboardInterrupt:
                         break
 

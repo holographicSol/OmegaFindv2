@@ -14,6 +14,7 @@ import tabulate
 import handler_post_process
 import tabulate_helper2
 import handler_chunk
+import handler_input
 
 program_root = variable_paths.get_executable_path()
 
@@ -71,7 +72,7 @@ def mode(stdin: list) -> tuple:
                         i += 1
                 fo.close()
                 handler_print.display_spacer()
-                select_group = handler_print.input_select()
+                select_group = handler_input.input_singularity(message='select: ')
                 handler_print.display_spacer()
                 select_group = int(select_group.strip())
                 if select_group in range(len(custom_suffix_groups)):
@@ -142,19 +143,20 @@ def database(stdin: list) -> str:
     handler_file.ensure_db_file(variable_paths.database_file)
     if '-db' in stdin:
         _db_recognized_files = stdin[stdin.index('-db')+1]
-        if vaild_chars(chars=_db_recognized_files) is True:
+        if handler_input.valid_alphanum(chars=_db_recognized_files) is True:
             handler_file.ensure_db_file(_db_recognized_files)
             _db_recognized_files = variable_paths.database_dir_path + _db_recognized_files
     return _db_recognized_files
 
 
 def make_suffix_group():
-    sfx_name = handler_print.input_custom_suffix_group_name()
-    if vaild_chars(chars=sfx_name) is True:
-        sfx_group = handler_print.input_custom_suffix()
+    sfx_name = handler_input.input_singularity(message='enter new suffix group name (alphanumeric): ',
+                                               condition='alphanum')
+    if sfx_name:
+        sfx_group = handler_input.input_singularity(message='enter suffix(s) (space delimited, example: sh exe bat): ')
         handler_print.display_new_custom_suffix_name(sfx_name)
         handler_print.display_new_custom_suffix_group(sfx_group)
-        create_new_suffix_group = handler_print.input_save()
+        create_new_suffix_group = handler_input.input_singularity(message='save?: ')
         if create_new_suffix_group == 'Y' or create_new_suffix_group == 'y':
             handler_print.display_saving()
             with open(variable_paths.csfx_file_path, 'a+', encoding='utf8') as fo:
@@ -271,8 +273,18 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
         handler_print.display_all_associations(recognized_files, suffixes, interact)
 
     elif '-G' in stdin:
-        suffix_group_name = stdin[stdin.index('-G') + 1]
-        handler_print.show_suffix_group(suffix_group_name)
+        if len(stdin) == 3:
+            suffix_group_name = stdin[stdin.index('-G') + 1]
+            handler_print.show_suffix_group(suffix_group_name)
+        elif len(stdin) == 2:
+            print('Default Suffix Groups: archive, audio, book, code, exe, font, image, sheet, slide, text, video, web.')
+            group_names = handler_print.show_custom_suffix_group_names()
+            if group_names:
+                print('Custom Suffix Groups:\n')
+                chunks = handler_chunk.chunk_data(data=group_names, chunk_size=6)
+                print(tabulate.tabulate(chunks, tablefmt='plain'))
+            else:
+                print('Custom Suffix Groups: None.')
 
     elif '-L' in stdin:
 
@@ -329,7 +341,7 @@ def run_and_exit(stdin: list, interact: bool, _sort_mode: str, _human_size=False
                 if interact is True:
                     print('')
                     try:
-                        f = input('select: ')
+                        f = handler_input.input_singularity(message='select: ')
                         print(f'generating report: {fp[int(f)][1]}')
                         print('')
                         if f and f.isdigit():

@@ -10,6 +10,8 @@ import asyncio
 import magic
 import pathlib
 import shutil
+
+import handler_input
 import handler_print
 import variable_paths
 import handler_strings
@@ -23,6 +25,7 @@ import subprocess
 import handler_file
 import tabulate_helper2
 import handler_chunk
+import handler_input
 
 info = subprocess.STARTUPINFO()
 info.dwFlags = 1
@@ -324,7 +327,7 @@ async def read_report(fname: str):
                 print(table_1)
                 n_table += 1
                 try:
-                    input()
+                    handler_input.input_singularity(message='')
                 except KeyboardInterrupt:
                     print('logging: keyboard interrupt')
                     break

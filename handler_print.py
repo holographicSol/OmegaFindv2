@@ -1,4 +1,5 @@
 """ Written by Benjamin Jack Cullen """
+import os
 
 import tabulate
 import handler_post_process
@@ -8,6 +9,7 @@ import cli_character_limits
 import variables_suffix
 import variable_paths
 import tabulate_helper2
+import handler_input
 
 # ------------------------------------------------------------------------------> banner
 
@@ -90,19 +92,19 @@ def display_zero_results(_results, _t_completion, _exc, _header_0):
 
 # ------------------------------------------------------------------------------> invalid
 def display_invalid_input():
-    print('-- invalid input')
+    print('invalid input')
 
 
 def display_invalid_path(path):
-    print(f'-- invalid path: {path}')
+    print(f'invalid path: {path}')
 
 
 def display_invalid_database(path):
-    print(f'-- invalid database: {path}')
+    print(f'invalid database: {path}')
 
 
 def display_invalid_char(char):
-    print(f'-- invalid character: {char}')
+    print(f'invalid character: {char}')
 
 
 # ------------------------------------------------------------------------------> custom suffix
@@ -116,20 +118,20 @@ def display_custom_suffix_result(i, item):
 
 
 def display_no_custom_suffix():
-    print('-- no custom suffix groups found ...')
+    print('no custom suffix groups found ...')
 
 
 def display_new_custom_suffix_name(sfx_name):
-    print(f'-- new suffix group name: {sfx_name}')
+    print(f'new suffix group name: {sfx_name}')
 
 
 def display_new_custom_suffix_group(sfx_group):
-    print(f'-- new suffix group name: {sfx_group}')
+    print(f'new suffix group name: {sfx_group}')
 
 
 def display_suffixes(_msg: str, _list: list):
     print(_msg)
-    print('')
+    print('Suffix Group:\n')
     chunks = handler_chunk.chunk_data(data=_list, chunk_size=6)
     print(tabulate.tabulate(chunks, tablefmt='plain'))
 
@@ -149,7 +151,20 @@ def show_suffix_group(suffix_group_name: str):
                 i += 1
         fo.close()
     if suffix:
-        display_suffixes(_msg=f'[ Suffix Group: {suffix_group_name} ]', _list=suffix)
+        display_suffixes(_msg=f'Suffix Group Name: {suffix_group_name}', _list=suffix)
+
+
+def show_custom_suffix_group_names():
+    if os.path.exists(variable_paths.csfx_file_path):
+        group_names = []
+        with open(variable_paths.csfx_file_path, 'r', encoding='utf8') as fo:
+            for line in fo:
+                line = line.strip()
+                line = line.split(' ')
+                group_names.append(line[0])
+        fo.close()
+        if group_names:
+            return group_names
 
 
 def display_associations(recognized_files: list, suffixes: list, ext: str, interact: bool):
@@ -199,7 +214,7 @@ def display_associations(recognized_files: list, suffixes: list, ext: str, inter
             n_table += 1
             if interact is True:
                 try:
-                    input()
+                    handler_input.input_singularity(message='')
                 except KeyboardInterrupt:
                     break
 
@@ -247,7 +262,7 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
             n_table += 1
             if interact is True:
                 try:
-                    input()
+                    handler_input.input_singularity(message='')
                 except KeyboardInterrupt:
                     break
 
@@ -255,13 +270,13 @@ def display_all_associations(recognized_files: list, suffixes: list, interact: b
 # ------------------------------------------------------------------------------> saving
 
 def display_saving():
-    print('-- saving ...')
+    print('saving ...')
 
 
 # ------------------------------------------------------------------------------> completed
 
 def display_completed():
-    print('-- done.')
+    print('done.')
 
 
 # ------------------------------------------------------------------------------> xp
@@ -278,33 +293,3 @@ def display_len_recognized_suffixes(suffixes):
 
 def display_spacer():
     print('')
-
-
-# ------------------------------------------------------------------------------> input
-
-def input_custom_suffix_group_name() -> str:
-    try:
-        return input('-- enter new a suffix group name (alpha numeric): ')
-    except KeyboardInterrupt:
-        exit(0)
-
-
-def input_custom_suffix() -> str:
-    try:
-        return input('-- enter suffix(s) (space delimited example: sh exe): ')
-    except KeyboardInterrupt:
-        exit(0)
-
-
-def input_save() -> str:
-    try:
-        return input('-- save?: ')
-    except KeyboardInterrupt:
-        exit(0)
-
-
-def input_select() -> str:
-    try:
-        return input(': ')
-    except KeyboardInterrupt:
-        exit(0)

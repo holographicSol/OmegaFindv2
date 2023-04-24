@@ -22,5 +22,3 @@ todo:
 * sanitize all input
 
 * expand on contents scan filters and compatibility
-
-* todo next: add keyboard interrupts for tables for clean early exits.
