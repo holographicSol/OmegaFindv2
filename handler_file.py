@@ -169,7 +169,7 @@ def convert_all_to_text(file_in='', _program_root='', _verbose=False):
         return _tmp, _tmp_dir
 
 
-async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _program_root: str) -> list:
+async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _program_root: str, _bench: bool) -> list:
     """ todo -->
     Intention: Filter different types of files into different read functions and then parse the file contents
                for _query.
@@ -185,8 +185,7 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     standard_read_filters = ['ASCII text',
                              'XML',
                              'Rich Text Format',
-                             'UTF-8 Unicode text',
-                             'UTF-8 Unicode (with BOM) text']
+                             'UTF-8 Unicode']
 
     # Buffers for unoconv filter  # uncomment to use this filter (this filter is incomplete).
     unoconv_read_filters = ['Composite Document File V2 Document',
@@ -199,6 +198,9 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
 
     read_mode = int(0)
 
+    if _bench is True:
+        t0 = time.perf_counter()
+
     # PDF: Specific PDF method
     if read_mode is int(0):
         if 'PDF' in _buffer:
@@ -206,6 +208,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                 print(f'-- using pdf-method: {file}')
             read_mode = int(1)
             _result = await str_in_pdf(file_in=file, _search_str=_query)
+            if _bench is True:
+                print(f'pdf time ({file}): {time.perf_counter()-t0}')
             if _result:
                 return [_result]
 
@@ -216,6 +220,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                 print(f'-- using epub-method: {file}')
             read_mode = int(1)
             _result = await str_in_epub(file_in=file, _search_str=_query)
+            if _bench is True:
+                print(f'epub filter time ({file}): {time.perf_counter()-t0}')
             if _result:
                 return [_result]
 
@@ -228,6 +234,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                     print(f'-- using standard-method: {file}')
                 read_mode = int(1)
                 _result = await str_in_txt(file_in=file, _search_str=_query)
+                if _bench is True:
+                    print(f'standard filter time ({file}): {time.perf_counter() - t0}')
                 if _result:
                     return [_result]
 
@@ -247,6 +255,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
 
                     if _result:
                         _result = file
+                        if _bench is True:
+                            print(f'unoconv filter time ({file}): {time.perf_counter() - t0}')
                         return [_result]
                     break
 

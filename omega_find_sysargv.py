@@ -107,7 +107,7 @@ def query(stdin: list) -> str:
 
 
 def chunk_max(stdin: list) -> int:
-    _chunk_max = 16
+    _chunk_max = 1
     if '-cmax' in stdin:
         _chunk_max = int(stdin[stdin.index('-cmax') + 1])
     return _chunk_max

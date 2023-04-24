@@ -152,7 +152,8 @@ if __name__ == '__main__':
                                                          _contents_scan=contents_scan, _query=query,
                                                          _verbose=verbose,
                                                          _digits=_digits,
-                                                         _human_size=human_size)
+                                                         _human_size=human_size,
+                                                         _bench=_bench)
 
                 # run the async multiprocess operation(s)
                 if _bench is True:
