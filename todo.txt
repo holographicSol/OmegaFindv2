@@ -22,3 +22,5 @@ todo:
 * sanitize all input
 
 * expand on contents scan filters and compatibility
+
+* remove csfx selection prompt and replace with stdin('-csfx')+1 argument
