@@ -194,8 +194,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                             'OpenDocument Text Template',
                             'Zip archive data']
 
-    if _verbose is True:
-        print(f'scanning: {file}')
+    # if _verbose is True:
+    #     print(f'scanning: {file}')
 
     read_mode = int(0)
 
@@ -205,8 +205,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     # PDF: Specific PDF method
     if read_mode is int(0):
         if 'PDF' in _buffer:
-            # if _verbose is True:
-            #     print(f'-- using pdf-method: {file}')
+            if _verbose is True:
+                print(f'-- using pdf-method: {file}')
             read_mode = int(1)
             _result = await str_in_pdf(file_in=file, _search_str=_query)
             # if _bench is True:
@@ -217,8 +217,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     # EPUB Specific EPUB method
     if read_mode is int(0):
         if 'EPUB' in _buffer:
-            # if _verbose is True:
-            #     print(f'-- using epub-method: {file}')
+            if _verbose is True:
+                print(f'-- using epub-method: {file}')
             read_mode = int(1)
             _result = await str_in_epub(file_in=file, _search_str=_query)
             # if _bench is True:
@@ -231,8 +231,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     if read_mode is int(0):
         for standard_read_filter in standard_read_filters:
             if standard_read_filter in _buffer:
-                # if _verbose is True:
-                #     print(f'-- using standard-method: {file}')
+                if _verbose is True:
+                    print(f'-- using standard-method: {file}')
                 read_mode = int(1)
                 _result = await str_in_txt(file_in=file, _search_str=_query)
                 # if _bench is True:
@@ -243,11 +243,14 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     if read_mode is int(0):
         import handler_extraction_method
         _tmp = _program_root + '\\tmp\\' + str(handler_strings.randStr())
+        # todo: replace with an in memory only extract
         handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
         if os.path.exists(_tmp):
             for d, s, fl in os.walk(_tmp):
                 for f in fl:
                     fp = os.path.join(d, f)
+                    if _verbose is True:
+                        print(f'-- using zipfile-method: {file}')
                     _result = await str_in_txt(file_in=fp, _search_str=_query)
                     # if _bench is True:
                     #     print(f'extract file filter time ({file}): {time.perf_counter() - t0}')
@@ -259,8 +262,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     if read_mode is int(0):
         for unoconv_read_filter in unoconv_read_filters:
             if unoconv_read_filter in _buffer:
-                # if _verbose is True:
-                #     print(f'-- using unoconv-method: {file}')
+                if _verbose is True:
+                    print(f'-- using unoconv-method: {file}')
                 _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
                                                               _verbose=_verbose)
                 if _tmp_file:
