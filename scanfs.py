@@ -48,7 +48,7 @@ def scan_depth_zero(path: str) -> list:
     return [file_list, []]
 
 
-def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=False):
+def search_scan(path: str, q: str, interact: bool, _sort_mode: str, _verbose: bool, human_size=False):
     fp = []
     for entry in scantree(path):
         p = entry.path
@@ -62,7 +62,7 @@ def search_scan(path: str, q: str, interact: bool, _sort_mode: str, human_size=F
                     fp.append(['[?]', '[?]', p, e])
                     pass
     if fp:
-        fp = handler_sort.sort_len_2(data=fp, sort_mode=_sort_mode)
+        fp = handler_sort.sort_len_2(data=fp, sort_mode=_sort_mode, _verbose=_verbose)
         _results = handler_convert_results.convert_string_match_results(fp, _human_size=human_size)
 
         chunk_size = 75

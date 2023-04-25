@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     # check for light requests.
     if omega_find_sysargv.run_and_exit(stdin=STDIN, interact=interact, _human_size=human_size,
-                                       _sort_mode=sort_mode) is False:
+                                       _sort_mode=sort_mode, _verbose=verbose) is False:
         # WARNING: ensure sufficient ram/page-file/swap if changing buffer_max. ensure chunk_max suits your system.
         mode, learn_bool, de_scan_bool, type_scan_bool, p_scan_bool, type_suffix, reveal_scan_bool,\
             contents_scan, mtime_scan = omega_find_sysargv.mode(STDIN)
