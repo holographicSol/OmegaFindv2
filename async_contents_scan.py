@@ -42,10 +42,8 @@ async def contents_scan(_file: str, _query: str, _verbose: bool, _buffer_max: in
                                                  _program_root=_program_root, _bench=_bench)
         if _result:
             res = [m, buffer, s, _result[0]]
-            print(res)
             return res
     except Exception as e:
-        print(e)
         return [['[ERROR]', str(_file), str(e)]]
 
 
@@ -58,7 +56,6 @@ async def contents_scan_extract(_file: str, _query: str, _verbose: bool, _buffer
         if _result is not None:
             return _result
     except Exception as e:
-        print('[ERROR]', str(_file), str(e))
         return [['[ERROR]', str(_file), str(e)]]
 
 
@@ -89,7 +86,6 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
                             res[-1] = res[-1].replace(_tmp, _file)
                             _results.append(res)
                     except Exception as e:
-                        print(f'[ERROR] ({e}): {res}')
                         res = [['[ERROR]', str(_file), str(e)]]
                         _results.append(res)
     # else:
