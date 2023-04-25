@@ -60,7 +60,7 @@ async def extract_mtime_scan(_file: str, _target: str, _program_root: str, _huma
             s = await asyncio.to_thread(handler_file.get_size, _file=sub_file)
             res = [m, s, sub_file]
             if res is not None:
-                res[2] = res[2].replace(str(_tmp), _file)
+                res[2] = str(res[2]).replace(str(_tmp), _file)
                 _results.append(res)
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results
