@@ -12,12 +12,12 @@
 
 "./omega_find.exe" -cmax 1 -R -e -t .\test_files\ -gsfx text
 
-"./omega_find.exe" -cmax 1 -R -c .\test_files\ -q hello
+"./omega_find.exe" -cmax 1 -R -c .\test_files\ -q e
 
-"./omega_find.exe" -cmax 1 -R -e -c .\test_files\ -q hello
+"./omega_find.exe" -cmax 1 -R -e -c .\test_files\ -q e
 
 "./omega_find.exe" -cmax 1 -R -m ".\test_files\"
 
 "./omega_find.exe" -cmax 1 -R -e -m ".\test_files\"
 
-"./omega_find.exe" -cmax 1 -R -s .\test_files\ -q .
+"./omega_find.exe" -cmax 1 -R -s .\test_files\ -q e

@@ -43,8 +43,7 @@ async def contents_scan(_file: str, _query: str, _verbose: bool, _buffer_max: in
         res = [m, buffer, s, _result[0]]
         return res
     except Exception as e:
-        pass
-        # _result = ['[ERROR]', str(file), str(e)]
+        return [['[ERROR]', str(_file), str(e)]]
 
 
 async def contents_scan_extract(_file: str, _query: str, _verbose: bool, _buffer_max: int, _program_root: str,
@@ -54,11 +53,9 @@ async def contents_scan_extract(_file: str, _query: str, _verbose: bool, _buffer
                                               _program_root=_program_root, _target=_target,
                                               _bench=_bench, human_size=human_size)
         if _result is not None:
-            if '[ERROR]' not in _result[0]:
-                return _result
+            return _result
     except Exception as e:
-        pass
-        # _result = ['[ERROR]', str(_file), str(e)]
+        return [['[ERROR]', str(_file), str(e)]]
 
 
 async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer_max: int, _program_root: str,
@@ -67,10 +64,7 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
     _results = await contents_scan(_file=_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                    _program_root=_program_root, _bench=_bench, human_size=human_size)
     if _results is not None:
-        if '[ERROR]' not in _results[0]:
-            _results = [_results]
-        else:
-            _results = []
+        _results = [_results]
     else:
         _results = []
 
@@ -87,8 +81,11 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
                                           _program_root=_program_root, _bench=_bench, human_size=human_size)
                 if res is not None:
                     if _results is not None:
-                        if '[ERROR]' not in _results[0]:
+                        try:
                             res[-1] = res[-1].replace(_tmp, _file)
+                            _results.append(res)
+                        except Exception as e:
+                            res = [['[ERROR]', str(_file), str(e)]]
                             _results.append(res)
     # else:
     #     if 'Password required' in extraction:
