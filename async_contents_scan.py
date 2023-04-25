@@ -82,9 +82,11 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
                 if res is not None:
                     if _results is not None:
                         try:
-                            res[-1] = res[-1].replace(_tmp, _file)
-                            _results.append(res)
+                            if len(res) == 4:
+                                res[-1] = res[-1].replace(_tmp, _file)
+                                _results.append(res)
                         except Exception as e:
+                            print(f'[ERROR] ({e}): {res}')
                             res = [['[ERROR]', str(_file), str(e)]]
                             _results.append(res)
     # else:
