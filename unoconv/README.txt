@@ -1,1 +1,0 @@
-This version of unoconv working with Libre Office 7.5.2.2 and python version 3.11.2. (Other LO/Python versions may work with this unoconv version).
