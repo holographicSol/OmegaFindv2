@@ -135,6 +135,7 @@ async def async_read(file: str, enc=omega_encodings.enc_logical[iter_enc]) -> li
 
 
 async def str_in_txt(file_in='', _search_str='', _omega_encoding=omega_encodings.enc_logical[iter_enc], _verbose=False):
+    """ read file with brute force encodings """
     global iter_enc
     try:
         with codecs.open(file_in, 'r', encoding=_omega_encoding) as fo:
