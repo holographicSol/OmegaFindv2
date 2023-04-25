@@ -146,7 +146,7 @@ async def str_in_txt(file_in='', _search_str='', _omega_encoding=omega_encodings
                         print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
                     return file_in
     except Exception as e:
-        if "codec can't decode" in str(e) or 'stream does not start with BO' in str(e) or 'Incorrect padding' in str(e)\
+        if "codec can't decode" in str(e) or 'stream does not start with BOM' in str(e) or 'Incorrect padding' in str(e)\
                 or 'Invalid' in str(e):
             iter_enc += 1
             await str_in_txt(file_in=file_in, _search_str=_search_str,
@@ -190,7 +190,7 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
 
     if str(_buffer) != 'empty':
 
-        # PDF: Specific PDF method
+        # PDF Filter
         if 'PDF' in _buffer:
             if _verbose is True:
                 print(f'-- using pdf-method {_buffer}: {file}')
@@ -198,7 +198,7 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
             if _result:
                 return [_result]
 
-        # EPUB Specific EPUB method
+        # EPUB Filter
         if 'EPUB' in _buffer:
             if _verbose is True:
                 print(f'-- using epub-method {_buffer}: {file}')
@@ -207,7 +207,6 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                 return [_result]
 
         # Standard Filter (Text) Examples: txt, html, xml, sh, py, etc.
-        # This method covers a lot of different file types both executable and non-executable.
         for standard_read_filter in standard_read_filters:
             if standard_read_filter in _buffer:
                 if _verbose is True:
@@ -216,8 +215,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                 if _result:
                     return [_result]
 
-        # last resort: compatibility before extraction is preferable so as not to touch disk and for performance.
-        # except if extraction occurs in memory (todo).
+        # Last resort: compatibility before extraction is preferable so as not to touch disk and for performance.
+        # todo: extract to memory not disk.
         for zipfile_read_filter in zipfile_read_filters:
             if zipfile_read_filter in _buffer:
                 if _verbose is True:
