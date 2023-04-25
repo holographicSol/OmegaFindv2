@@ -126,27 +126,32 @@ async def str_in_epub(file_in='', _search_str=''):
                 return file_in
 
 
-async def str_in_txt(file_in='', _search_str='', _omega_encoding=omega_encodings.enc_logical[iter_enc]):
+async def async_read(file: str, enc=omega_encodings.enc_logical[iter_enc]) -> list:
+    data = []
+    if os.path.exists(file):
+        async with aiofiles.open(file, mode='r', encoding=enc, errors='Silent') as handle:
+            data = await handle.read()
+    return data
+
+
+async def str_in_txt(file_in='', _search_str='', _omega_encoding=omega_encodings.enc_logical[iter_enc], _verbose=False):
     global iter_enc
     try:
         with codecs.open(file_in, 'r', encoding=_omega_encoding) as fo:
             for line in fo:
                 line = line.strip()
                 if string_match(_search_str=_search_str, _text=line) is True:
-                    # print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
+                    if _verbose is True:
+                        print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
                     return file_in
     except Exception as e:
         if "codec can't decode" in str(e) or 'stream does not start with BO' in str(e) or 'Incorrect padding' in str(e)\
                 or 'Invalid' in str(e):
-            # print(e)
-            # print(f'trying encoding {omega_encodings.enc[iter_enc]}: {file_in}')
             iter_enc += 1
             await str_in_txt(file_in=file_in, _search_str=_search_str,
                              _omega_encoding=omega_encodings.enc_logical[iter_enc])
-
         else:
             print(e)
-    # print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
 
 
 def walk_extracted(file: str, path: str, _search_str: str, _verbose: bool):
@@ -206,7 +211,7 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
             if standard_read_filter in _buffer:
                 if _verbose is True:
                     print(f'-- using standard-method {_buffer}: {file}')
-                _result = await str_in_txt(file_in=file, _search_str=_query)
+                _result = await str_in_txt(file_in=file, _search_str=_query, _verbose=_verbose)
                 if _result:
                     return [_result]
 
@@ -220,7 +225,7 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                 handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
                 if os.path.exists(_tmp):
                     fp = await asyncio.to_thread(walk_extracted, file=file, path=_tmp, _search_str=_query, _verbose=_verbose)
-                    _result = await str_in_txt(file_in=fp, _search_str=_query)
+                    _result = await str_in_txt(file_in=fp, _search_str=_query, _verbose=_verbose)
                     if _result:
                         return [file]
 
