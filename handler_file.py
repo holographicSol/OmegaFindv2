@@ -25,6 +25,7 @@ import subprocess
 import tabulate_helper2
 import handler_chunk
 import handler_input
+import handler_extraction_method
 import col
 
 info = subprocess.STARTUPINFO()
@@ -131,54 +132,12 @@ async def str_in_txt(file_in='', _search_str=''):
                 return file_in
 
 
-def convert_all_to_text(file_in='', _program_root='', _verbose=False):
-    global retry_limit_convert_all_to_text
-
-    _tmp_dir = _program_root + '\\tmp\\' + str(handler_strings.randStr()) + '\\'
-    filename_idx = file_in.rfind('\\')
-    filename = file_in[filename_idx:]
-    _tmp = _tmp_dir + filename+'.txt'
-
-    cmd = '"./python.exe" "./unoconv/unoconv" -o "' + _tmp + '" -f txt "' + file_in + '"'
-    if _verbose is True:
-        print(f'-- running command: {cmd}')
-    xcmd = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, startupinfo=info)
-    try_again = False
-    while True:
-        output = xcmd.stdout.readline()
-        if output == '' and xcmd.poll() is not None:
-            break
-        if output:
-            output_str = str(output.decode("utf-8").strip())
-            if _verbose is True:
-                print(output_str)
-            if 'Error' in output_str or 'Exception' in output_str or 'UnoException' in output_str or \
-                    'untimeException' in output_str:
-                try_again = True
-                break
-        else:
-            break
-    rc = xcmd.poll()
-    if try_again is True:
-        if retry_limit_convert_all_to_text > int(0):
-            retry_limit_convert_all_to_text -= 1
-            time.sleep(1)
-            convert_all_to_text(file_in=file_in, _program_root=_program_root, _verbose=_verbose)
-    retry_limit_convert_all_to_text = 3
-    if os.path.exists(_tmp):
-        return _tmp, _tmp_dir
-
-
 async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _program_root: str, _bench: bool) -> list:
     """ todo -->
     Intention: Filter different types of files into different read functions and then parse the file contents
                for _query.
     Adding compatibility:
         Try do do as much in memory as possible.
-        Try to avoid defaulting to unoconv (to avoid touching disk and for speed/efficiency).
-        Develop both standard_read_filters and unoconv_read_filters by analyzing files extensively (time consuming).
-        Performance can greatly improve by developing standard_read_filters and unoconv_read_filters and by adding
-        more compatibility before resorting to unoconv.
     """
 
     # Buffers for standard read filter (this filter is incomplete).
@@ -187,99 +146,48 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
                              'Rich Text Format',
                              'UTF-8 Unicode']
 
-    # Buffers for unoconv filter  # uncomment to use this filter (this filter is incomplete).
-    unoconv_read_filters = ['Composite Document File V2 Document',
-                            'OpenDocument Text',
-                            'OpenDocument Text Template',
-                            'Zip archive data']
-
-    # if _verbose is True:
-    #     print(f'scanning: {file}')
-
-    read_mode = int(0)
-
-    # if _bench is True:
-    #     t0 = time.perf_counter()
-
     # PDF: Specific PDF method
-    if read_mode is int(0):
-        if 'PDF' in _buffer:
-            if _verbose is True:
-                print(f'-- using pdf-method: {file}')
-            read_mode = int(1)
-            _result = await str_in_pdf(file_in=file, _search_str=_query)
-            # if _bench is True:
-            #     print(f'pdf time ({file}): {time.perf_counter()-t0}')
-            if _result:
-                return [_result]
+    if 'PDF' in _buffer:
+        if _verbose is True:
+            print(f'-- using pdf-method: {file}')
+        _result = await str_in_pdf(file_in=file, _search_str=_query)
+        if _result:
+            return [_result]
 
     # EPUB Specific EPUB method
-    if read_mode is int(0):
-        if 'EPUB' in _buffer:
-            if _verbose is True:
-                print(f'-- using epub-method: {file}')
-            read_mode = int(1)
-            _result = await str_in_epub(file_in=file, _search_str=_query)
-            # if _bench is True:
-            #     print(f'epub filter time ({file}): {time.perf_counter()-t0}')
-            if _result:
-                return [_result]
+    if 'EPUB' in _buffer:
+        if _verbose is True:
+            print(f'-- using epub-method: {file}')
+        _result = await str_in_epub(file_in=file, _search_str=_query)
+        if _result:
+            return [_result]
 
     # Standard Filter (Text) Examples: txt, html, xml, sh, py, etc.
     # This method covers a lot of different file types both executable and non-executable.
-    if read_mode is int(0):
-        for standard_read_filter in standard_read_filters:
-            if standard_read_filter in _buffer:
+    for standard_read_filter in standard_read_filters:
+        if standard_read_filter in _buffer:
+            if _verbose is True:
+                print(f'-- using standard-method: {file}')
+            _result = await str_in_txt(file_in=file, _search_str=_query)
+            if _result:
+                return [_result]
+
+    # last resort: compatibility before extraction is preferable so as not to touch disk and for performance.
+    # except if extraction occurs in memory (todo).
+    _tmp = _program_root + '\\tmp\\' + str(handler_strings.randStr())
+    handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
+    if os.path.exists(_tmp):
+        for d, s, fl in os.walk(_tmp):
+            for f in fl:
+                fp = os.path.join(d, f)
                 if _verbose is True:
-                    print(f'-- using standard-method: {file}')
-                read_mode = int(1)
-                _result = await str_in_txt(file_in=file, _search_str=_query)
-                # if _bench is True:
-                #     print(f'standard filter time ({file}): {time.perf_counter() - t0}')
+                    print(f'-- using zipfile-method: {file}')
+                _result = await str_in_txt(file_in=fp, _search_str=_query)
                 if _result:
-                    return [_result]
+                    return [file]
 
-    if read_mode is int(0):
-        import handler_extraction_method
-        _tmp = _program_root + '\\tmp\\' + str(handler_strings.randStr())
-        # todo: replace with an in memory only extract
-        handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
-        if os.path.exists(_tmp):
-            for d, s, fl in os.walk(_tmp):
-                for f in fl:
-                    fp = os.path.join(d, f)
-                    if _verbose is True:
-                        print(f'-- using zipfile-method: {file}')
-                    _result = await str_in_txt(file_in=fp, _search_str=_query)
-                    # if _bench is True:
-                    #     print(f'extract file filter time ({file}): {time.perf_counter() - t0}')
-                    if _result:
-                        read_mode = int(1)
-                        return [file]
-
-    # Unoconv Filter (Documents) Examples: docx, otg, ott, odt, odd, etc.
-    if read_mode is int(0):
-        for unoconv_read_filter in unoconv_read_filters:
-            if unoconv_read_filter in _buffer:
-                if _verbose is True:
-                    # display use of unoconv in yellow to make it easier to identify if fallback unoconv is used.
-                    print(col.p(s=f'-- using unoconv-method: {file}', c='Y'))
-                _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
-                                                              _verbose=_verbose)
-                if _tmp_file:
-                    read_mode = int(1)
-                    _result = await str_in_txt(file_in=_tmp_file, _search_str=_query)
-
-                    if _result:
-                        _result = file
-                        # if _bench is True:
-                        #     print(f'unoconv filter time ({file}): {time.perf_counter() - t0}')
-                        return [_result]
-                    break
-
-    if read_mode is int(0):
-        if _verbose is True:
-            print(f'-- add compatibility for: {file} ({_buffer})')
+    if _verbose is True:
+        print(f'-- add compatibility for: {file} ({_buffer})')
 
 
 async def read_report(fname: str):
