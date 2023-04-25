@@ -133,7 +133,7 @@ async def str_in_txt(file_in='', _search_str='', _omega_encoding=omega_encodings
             for line in fo:
                 line = line.strip()
                 if string_match(_search_str=_search_str, _text=line) is True:
-                    print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
+                    # print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
                     return file_in
     except Exception as e:
         if "codec can't decode" in str(e) or 'stream does not start with BO' in str(e) or 'Incorrect padding' in str(e)\
