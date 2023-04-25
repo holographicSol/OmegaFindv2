@@ -125,7 +125,7 @@ async def str_in_epub(file_in='', _search_str=''):
 
 
 async def str_in_txt(file_in='', _search_str=''):
-    with codecs.open(file_in, 'r', encoding='utf8') as fo:
+    with codecs.open(file_in, 'r') as fo:
         for line in fo:
             line = line.strip()
             if string_match(_search_str=_search_str, _text=line) is True:
@@ -146,54 +146,67 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     """ todo -->
     Intention: Filter different types of files into different read functions and then parse the file contents
                for _query.
+               The filters determine how each file will be read predicated up what the file really looks like.
     Adding compatibility:
         Try do do as much in memory as possible.
+        Expand on the standard read filter.
     """
 
-    # Buffers for standard read filter (this filter is incomplete).
-    standard_read_filters = ['ASCII text',
+    # todo: expand filter for even more compatibility
+    standard_read_filters = ['ASCII',
                              'XML',
                              'Rich Text Format',
-                             'UTF-8 Unicode']
+                             'UTF-8']
 
-    # PDF: Specific PDF method
-    if 'PDF' in _buffer:
-        if _verbose is True:
-            print(f'-- using pdf-method: {file}')
-        _result = await str_in_pdf(file_in=file, _search_str=_query)
-        if _result:
-            return [_result]
+    # todo: expand filter for even more compatibility
+    zipfile_read_filters = ['compressed',
+                           'archive',
+                           'OpenDocument']
 
-    # EPUB Specific EPUB method
-    if 'EPUB' in _buffer:
-        if _verbose is True:
-            print(f'-- using epub-method: {file}')
-        _result = await str_in_epub(file_in=file, _search_str=_query)
-        if _result:
-            return [_result]
+    if str(_buffer) != 'empty':
 
-    # Standard Filter (Text) Examples: txt, html, xml, sh, py, etc.
-    # This method covers a lot of different file types both executable and non-executable.
-    for standard_read_filter in standard_read_filters:
-        if standard_read_filter in _buffer:
+        # PDF: Specific PDF method
+        if 'PDF' in _buffer:
             if _verbose is True:
-                print(f'-- using standard-method: {file}')
-            _result = await str_in_txt(file_in=file, _search_str=_query)
+                print(f'-- using pdf-method {_buffer}: {file}')
+            _result = await str_in_pdf(file_in=file, _search_str=_query)
             if _result:
                 return [_result]
 
-    # last resort: compatibility before extraction is preferable so as not to touch disk and for performance.
-    # except if extraction occurs in memory (todo).
-    _tmp = _program_root + '\\tmp\\' + str(handler_strings.randStr())
-    handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
-    if os.path.exists(_tmp):
-        fp = await asyncio.to_thread(walk_extracted, file=file, path=_tmp, _search_str=_query, _verbose=_verbose)
-        _result = await str_in_txt(file_in=fp, _search_str=_query)
-        if _result:
-            return [file]
+        # EPUB Specific EPUB method
+        if 'EPUB' in _buffer:
+            if _verbose is True:
+                print(f'-- using epub-method {_buffer}: {file}')
+            _result = await str_in_epub(file_in=file, _search_str=_query)
+            if _result:
+                return [_result]
 
-    if _verbose is True:
-        print(f'-- add compatibility for: {file} ({_buffer})')
+        # Standard Filter (Text) Examples: txt, html, xml, sh, py, etc.
+        # This method covers a lot of different file types both executable and non-executable.
+        for standard_read_filter in standard_read_filters:
+            if standard_read_filter in _buffer:
+                if _verbose is True:
+                    print(f'-- using standard-method {_buffer}: {file}')
+                _result = await str_in_txt(file_in=file, _search_str=_query)
+                if _result:
+                    return [_result]
+
+        # last resort: compatibility before extraction is preferable so as not to touch disk and for performance.
+        # except if extraction occurs in memory (todo).
+        for zipfile_read_filter in zipfile_read_filters:
+            if zipfile_read_filter in _buffer:
+                if _verbose is True:
+                    print(f'-- using zipfile-method {_buffer}: {file}')
+                _tmp = _program_root + '\\tmp\\' + str(handler_strings.randStr())
+                handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
+                if os.path.exists(_tmp):
+                    fp = await asyncio.to_thread(walk_extracted, file=file, path=_tmp, _search_str=_query, _verbose=_verbose)
+                    _result = await str_in_txt(file_in=fp, _search_str=_query)
+                    if _result:
+                        return [file]
+
+        if _verbose is True:
+            print(f'-- add compatibility for: {file} ({_buffer})')
 
 
 async def read_report(fname: str):
