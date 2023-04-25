@@ -126,21 +126,27 @@ async def str_in_epub(file_in='', _search_str=''):
                 return file_in
 
 
-async def str_in_txt(file_in='', _search_str='', _omega_encoding='utf-8'):
+async def str_in_txt(file_in='', _search_str='', _omega_encoding=omega_encodings.enc_logical[iter_enc]):
     global iter_enc
     try:
         with codecs.open(file_in, 'r', encoding=_omega_encoding) as fo:
             for line in fo:
                 line = line.strip()
                 if string_match(_search_str=_search_str, _text=line) is True:
+                    print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
                     return file_in
     except Exception as e:
-        if "codec can't decode" in str(e):
+        if "codec can't decode" in str(e) or 'stream does not start with BO' in str(e) or 'Incorrect padding' in str(e)\
+                or 'Invalid' in str(e):
             # print(e)
             # print(f'trying encoding {omega_encodings.enc[iter_enc]}: {file_in}')
-            sub_iter_enc = iter_enc
             iter_enc += 1
-            await str_in_txt(file_in=file_in, _search_str=_search_str, _omega_encoding=omega_encodings.enc[sub_iter_enc])
+            await str_in_txt(file_in=file_in, _search_str=_search_str,
+                             _omega_encoding=omega_encodings.enc_logical[iter_enc])
+
+        else:
+            print(e)
+    # print(f'accepted encoding {omega_encodings.enc_logical[iter_enc]}: {file_in}')
 
 
 def walk_extracted(file: str, path: str, _search_str: str, _verbose: bool):
