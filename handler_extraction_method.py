@@ -14,7 +14,7 @@ result = []
 
 
 def ex_zip(_file: str, _temp_directory: str) -> None:
-    with zipfile.ZipFile(_file, 'r') as extract_file:
+    with zipfile.ZipFile(_file, mode='r') as extract_file:
         extract_file.extractall(path=_temp_directory + '\\')
 
 

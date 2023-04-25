@@ -22,10 +22,10 @@ import PyPDF2
 import ebooklib
 from ebooklib import epub
 import subprocess
-import handler_file
 import tabulate_helper2
 import handler_chunk
 import handler_input
+import col
 
 info = subprocess.STARTUPINFO()
 info.dwFlags = 1
@@ -96,8 +96,7 @@ def read_all_bytes(file_in: str):
 async def str_in_pdf(file_in='', _search_str=''):
     """ look for search_str in file """
     try:
-        pdf_file = await asyncio.to_thread(read_all_bytes, file_in=file_in)
-        pdf_reader = await asyncio.to_thread(pytopdf_read, pdf_file=pdf_file)
+        pdf_reader = await asyncio.to_thread(pytopdf_read, pdf_file=file_in)
         n_pages = await asyncio.to_thread(pytopdf_get_pages, pdf_reader=pdf_reader)
         if str(n_pages).isdigit():
             for page_num in range(n_pages):
@@ -106,12 +105,12 @@ async def str_in_pdf(file_in='', _search_str=''):
                 _text = str(_text).strip()
                 _result = await asyncio.to_thread(string_match, _search_str=_search_str, _text=_text)
                 if _result is True:
-                    pdf_file.close()
                     return file_in
-        pdf_file.close()
     except Exception as e:
+        # todo: return pdf reader errors in correct data structure for the results filter
+        pass
         # print(f'{e} {file_in}')
-        return ['[ERROR] ', str(e), str(file_in)]
+        # return [['[ERROR]', '', str(file_in), str(e)]]
 
 
 async def str_in_epub(file_in='', _search_str=''):
@@ -263,14 +262,13 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
         for unoconv_read_filter in unoconv_read_filters:
             if unoconv_read_filter in _buffer:
                 if _verbose is True:
-                    print(f'-- using unoconv-method: {file}')
+                    # display use of unoconv in yellow to make it easier to identify if fallback unoconv is used.
+                    print(col.p(s=f'-- using unoconv-method: {file}', c='Y'))
                 _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
                                                               _verbose=_verbose)
                 if _tmp_file:
                     read_mode = int(1)
                     _result = await str_in_txt(file_in=_tmp_file, _search_str=_query)
-                    if os.path.exists(_tmp_dir):
-                        handler_file.rem_dir(path=_tmp_dir)
 
                     if _result:
                         _result = file
