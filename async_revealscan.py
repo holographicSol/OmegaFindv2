@@ -62,7 +62,7 @@ async def extract_reveal_scan(_file: str, _buffer_max: int, _target: str, _progr
         sub_files = await asyncio.to_thread(scanfs.scan, _path=_tmp)
         sub_files[:] = [item for sublist in sub_files for item in sublist]
         for sub_file in sub_files:
-            buffer = await handler_file.async_read_bytes(_file=_file, _buffer_max=_buffer_max)
+            buffer = await handler_file.async_read_bytes(_file=sub_file, _buffer_max=_buffer_max)
             m = await asyncio.to_thread(handler_file.get_m_time, _file=sub_file)
             s = await asyncio.to_thread(handler_file.get_size, _file=sub_file)
             res = [m, buffer, s, sub_file]
