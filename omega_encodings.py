@@ -1,5 +1,8 @@
 """ Written by Benjamin Jack Cullen (for me with my module parser to list program) """
+import codecs
+import os
 
+idx_enc_logical = 0
 
 # enc alpha order
 enc = ['ascii', 'base64_codec', 'big5', 'big5hkscs', 'bz2_codec', 'cp037', 'cp1026', 'cp1125', 'cp1140',
@@ -28,3 +31,23 @@ enc_logical = ['utf_8', 'utf_16', 'utf_16_be', 'utf_16_le', 'utf_32', 'utf_32_be
                'johab', 'koi8_r', 'kz1048', 'latin_1', 'mac_cyrillic', 'mac_greek', 'mac_iceland', 'mac_latin2',
                'mac_roman', 'mac_turkish', 'mbcs', 'ptcp154', 'quopri_codec', 'rot_13', 'shift_jis', 'shift_jis_2004',
                'shift_jisx0213', 'tis_620', 'uu_codec', 'zlib_codec']
+
+
+def power_read(_file: str, _verbose=False, _encoding=enc_logical[idx_enc_logical]):
+    global idx_enc_logical
+    if os.path.exists(_file):
+        try:
+            data = codecs.open(_file, 'r', encoding=_encoding)
+            if _verbose is True:
+                print(f'accepted encoding {_encoding}: {_file}')
+            return data
+        except Exception as e:
+            if _verbose is True:
+                print(f'[{_encoding}] {e}: {_file}')
+            if "codec can't decode" in str(e) or 'stream does not start with BOM' in str(
+                    e) or 'Incorrect padding' in str(e) \
+                    or 'Invalid' in str(e):
+                idx_enc_logical += 1
+                power_read(_file=_file,
+                           _verbose=_verbose,
+                           _encoding=enc_logical[idx_enc_logical])

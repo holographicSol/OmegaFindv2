@@ -11,7 +11,6 @@ import magic
 import pathlib
 import shutil
 
-import handler_input
 import handler_print
 import variable_paths
 import handler_strings
@@ -26,7 +25,6 @@ import tabulate_helper2
 import handler_chunk
 import handler_input
 import handler_extraction_method
-import col
 import omega_encodings
 
 info = subprocess.STARTUPINFO()
@@ -112,8 +110,7 @@ async def str_in_pdf(file_in='', _search_str=''):
     except Exception as e:
         # todo: return pdf reader errors in correct data structure for the results filter
         pass
-        # print(f'{e} {file_in}')
-        # return [['[ERROR]', '', str(file_in), str(e)]]
+        # return ['[ERROR]', file_in, str(e)]
 
 
 async def str_in_epub(file_in='', _search_str=''):
@@ -124,14 +121,6 @@ async def str_in_epub(file_in='', _search_str=''):
             content = item.get_content()
             if handler_strings.canonical_caseless(_search_str) in handler_strings.canonical_caseless(str(content)).strip():
                 return file_in
-
-
-async def async_read(file: str, enc=omega_encodings.enc_logical[iter_enc]) -> list:
-    data = []
-    if os.path.exists(file):
-        async with aiofiles.open(file, mode='r', encoding=enc, errors='Silent') as handle:
-            data = await handle.read()
-    return data
 
 
 async def str_in_txt(file_in='', _search_str='', _omega_encoding=omega_encodings.enc_logical[iter_enc], _verbose=False):
