@@ -27,6 +27,7 @@ import handler_chunk
 import handler_input
 import handler_extraction_method
 import col
+import omega_encodings
 
 info = subprocess.STARTUPINFO()
 info.dwFlags = 1
@@ -37,6 +38,7 @@ debug = False
 result = []
 program_root = variable_paths.program_root
 retry_limit_convert_all_to_text = 3
+iter_enc = 0
 
 
 def ensure_dir(path: str):
@@ -124,12 +126,21 @@ async def str_in_epub(file_in='', _search_str=''):
                 return file_in
 
 
-async def str_in_txt(file_in='', _search_str=''):
-    with codecs.open(file_in, 'r') as fo:
-        for line in fo:
-            line = line.strip()
-            if string_match(_search_str=_search_str, _text=line) is True:
-                return file_in
+async def str_in_txt(file_in='', _search_str='', _omega_encoding='utf-8'):
+    global iter_enc
+    try:
+        with codecs.open(file_in, 'r', encoding=_omega_encoding) as fo:
+            for line in fo:
+                line = line.strip()
+                if string_match(_search_str=_search_str, _text=line) is True:
+                    return file_in
+    except Exception as e:
+        if "codec can't decode" in str(e):
+            # print(e)
+            # print(f'trying encoding {omega_encodings.enc[iter_enc]}: {file_in}')
+            sub_iter_enc = iter_enc
+            iter_enc += 1
+            await str_in_txt(file_in=file_in, _search_str=_search_str, _omega_encoding=omega_encodings.enc[sub_iter_enc])
 
 
 def walk_extracted(file: str, path: str, _search_str: str, _verbose: bool):
@@ -151,6 +162,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
         Try do do as much in memory as possible.
         Expand on the standard read filter.
     """
+    global iter_enc
+    iter_enc = 0
 
     # todo: expand filter for even more compatibility
     standard_read_filters = ['ASCII',
