@@ -181,14 +181,6 @@ Download executable and source code bundled with compatible LibreOffice version:
     https://drive.google.com/drive/folders/16z-UuosDoe2DnTaiCxjqh-Sh8RUYtPC2?usp=sharing
 
 
-Requirements:
-
-    * LibreOffice_7.5.2_Win_x86-64.msi (This specific version of LibreOffice is currently required to ensure
-      compatibiity between unoconv and the bundled python.exe version 3.11.2 so that unoconv can work correctly).
-      I will try to bundle a portable LibreOffice with OmegaFindv2 to remove the LibreOffice installation dependancy.
-      Unoconv is required to work properly only if OmegaFindv2 -c (contents scan) argument is used. 
-
-
 User:
 
     * Ensure sufficient ram/page-file/swap if changing buffer_max. Ensure chunk_max suits your system while also
@@ -295,5 +287,5 @@ Summary:
 
 Gratitude and Thanks:
 
-    Powered by asyncio, aiomultiprocess, aiofiles, python-magic, patool, tabulate, unoconv and of course
+    Powered by asyncio, aiomultiprocess, aiofiles, python-magic, patool, tabulate and of course
     the python standard library.
