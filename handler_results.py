@@ -137,9 +137,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                         try:
                             handler_input.input_singularity(message='')
                         except KeyboardInterrupt:
-                            break
-                        except:
-                            pass
+                            exit(0)
             else:
                 max_column_width = cli_character_limits.column_width_from_shutil(n=3)
 
@@ -179,9 +177,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                         try:
                             handler_input.input_singularity(message='')
                         except KeyboardInterrupt:
-                            break
-                        except:
-                            pass
+                            exit(0)
 
         if interact is False:
             table_1 = []
