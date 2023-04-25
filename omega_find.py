@@ -221,11 +221,11 @@ if __name__ == '__main__':
                     t0 = time.perf_counter()
                 if learn_bool is False and mtime_scan is False:
                     # sort
-                    results = handler_sort.sort_len_3(data=results, sort_mode=sort_mode)
+                    results = handler_sort.sort_len_3(data=results, sort_mode=sort_mode, _verbose=verbose)
 
                 elif mtime_scan is True:
                     # sort
-                    results = handler_sort.sort_len_2(data=results, sort_mode=sort_mode)
+                    results = handler_sort.sort_len_2(data=results, sort_mode=sort_mode, _verbose=verbose)
 
                 if _bench is True:
                     print(f'sort results time: {time.perf_counter()-t0}')

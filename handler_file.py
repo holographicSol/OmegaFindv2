@@ -199,30 +199,30 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
 
     read_mode = int(0)
 
-    if _bench is True:
-        t0 = time.perf_counter()
+    # if _bench is True:
+    #     t0 = time.perf_counter()
 
     # PDF: Specific PDF method
     if read_mode is int(0):
         if 'PDF' in _buffer:
-            if _verbose is True:
-                print(f'-- using pdf-method: {file}')
+            # if _verbose is True:
+            #     print(f'-- using pdf-method: {file}')
             read_mode = int(1)
             _result = await str_in_pdf(file_in=file, _search_str=_query)
-            if _bench is True:
-                print(f'pdf time ({file}): {time.perf_counter()-t0}')
+            # if _bench is True:
+            #     print(f'pdf time ({file}): {time.perf_counter()-t0}')
             if _result:
                 return [_result]
 
     # EPUB Specific EPUB method
     if read_mode is int(0):
         if 'EPUB' in _buffer:
-            if _verbose is True:
-                print(f'-- using epub-method: {file}')
+            # if _verbose is True:
+            #     print(f'-- using epub-method: {file}')
             read_mode = int(1)
             _result = await str_in_epub(file_in=file, _search_str=_query)
-            if _bench is True:
-                print(f'epub filter time ({file}): {time.perf_counter()-t0}')
+            # if _bench is True:
+            #     print(f'epub filter time ({file}): {time.perf_counter()-t0}')
             if _result:
                 return [_result]
 
@@ -231,12 +231,12 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     if read_mode is int(0):
         for standard_read_filter in standard_read_filters:
             if standard_read_filter in _buffer:
-                if _verbose is True:
-                    print(f'-- using standard-method: {file}')
+                # if _verbose is True:
+                #     print(f'-- using standard-method: {file}')
                 read_mode = int(1)
                 _result = await str_in_txt(file_in=file, _search_str=_query)
-                if _bench is True:
-                    print(f'standard filter time ({file}): {time.perf_counter() - t0}')
+                # if _bench is True:
+                #     print(f'standard filter time ({file}): {time.perf_counter() - t0}')
                 if _result:
                     return [_result]
 
@@ -248,19 +248,19 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
             for d, s, fl in os.walk(_tmp):
                 for f in fl:
                     fp = os.path.join(d, f)
-                    read_mode = int(1)
                     _result = await str_in_txt(file_in=fp, _search_str=_query)
-                    if _bench is True:
-                        print(f'extract file filter time ({file}): {time.perf_counter() - t0}')
+                    # if _bench is True:
+                    #     print(f'extract file filter time ({file}): {time.perf_counter() - t0}')
                     if _result:
+                        read_mode = int(1)
                         return [file]
 
     # Unoconv Filter (Documents) Examples: docx, otg, ott, odt, odd, etc.
     if read_mode is int(0):
         for unoconv_read_filter in unoconv_read_filters:
             if unoconv_read_filter in _buffer:
-                if _verbose is True:
-                    print(f'-- using unoconv-method: {file}')
+                # if _verbose is True:
+                #     print(f'-- using unoconv-method: {file}')
                 _tmp_file, _tmp_dir = await asyncio.to_thread(convert_all_to_text, file_in=file, _program_root=_program_root,
                                                               _verbose=_verbose)
                 if _tmp_file:
@@ -271,8 +271,8 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
 
                     if _result:
                         _result = file
-                        if _bench is True:
-                            print(f'unoconv filter time ({file}): {time.perf_counter() - t0}')
+                        # if _bench is True:
+                        #     print(f'unoconv filter time ({file}): {time.perf_counter() - t0}')
                         return [_result]
                     break
 

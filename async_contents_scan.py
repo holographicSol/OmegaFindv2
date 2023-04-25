@@ -53,7 +53,9 @@ async def contents_scan_extract(_file: str, _query: str, _verbose: bool, _buffer
         _result = await extract_contents_scan(_file=_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                               _program_root=_program_root, _target=_target,
                                               _bench=_bench, human_size=human_size)
-        return _result
+        if _result is not None:
+            if '[ERROR]' not in _result[0]:
+                return _result
     except Exception as e:
         pass
         # _result = ['[ERROR]', str(_file), str(e)]
@@ -84,10 +86,12 @@ async def extract_contents_scan(_file: str, _query: str, _verbose: bool, _buffer
                 res = await contents_scan(_file=sub_file, _query=_query, _verbose=_verbose, _buffer_max=_buffer_max,
                                           _program_root=_program_root, _bench=_bench, human_size=human_size)
                 if res is not None:
-                    res[-1] = res[-1].replace(_tmp, _file)
-                    _results.append(res)
-    else:
-        if 'Password required' in extraction:
-            _results = extraction
+                    if _results is not None:
+                        if '[ERROR]' not in _results[0]:
+                            res[-1] = res[-1].replace(_tmp, _file)
+                            _results.append(res)
+    # else:
+    #     if 'Password required' in extraction:
+    #         _results = extraction
     await asyncio.to_thread(handler_file.rem_dir, path=_tmp)
     return _results
