@@ -14,12 +14,18 @@ async def entry_point_learn(chunk: list, **kwargs) -> list:
                              _buffer_max=_buffer_max) for item in chunk]
 
 
+async def check_list(_list_1: list, _list_2: list) -> bool:
+    if _list_1 not in _list_2:
+        return False
+
+
 async def scan_learn_check(_suffix: str, _buffer: bytes, _recognized_files: list) -> list:
     global x_learn
-    if [_suffix, _buffer] not in x_learn:
-        x_learn.append([_suffix, _buffer])
-        if [_suffix, _buffer] not in _recognized_files:
-            return [_suffix, _buffer]
+    assoc = [_suffix, _buffer]
+    if await check_list(_list_1=assoc, _list_2=x_learn) is False:
+        x_learn.append(assoc)
+        if await check_list(_list_1=assoc, _list_2=_recognized_files) is False:
+            return assoc
 
 
 async def scan_learn(_file: str, _recognized_files: list, _buffer_max: int) -> list:
