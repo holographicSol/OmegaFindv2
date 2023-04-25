@@ -213,6 +213,12 @@ Developer:
     Omegafindv2 output tries to blend in with the dir/ls command. Simple and clean non verbose output.
 
 
+Vulnerabilities:
+
+    tarbombs and alike are a thing. This software may be vulnerable to malicious compressed files when using
+    -e (extract) and or -c (contents scan) and or -p (password scan) arguments.
+
+
 Extraction Compatibility (Below compatibility accounts for many more file suffixes listed as different suffixes use
     the same compression as below. Like epubs for one example):
     
