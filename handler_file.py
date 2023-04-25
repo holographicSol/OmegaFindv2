@@ -132,6 +132,16 @@ async def str_in_txt(file_in='', _search_str=''):
                 return file_in
 
 
+def walk_extracted(file: str, path: str, _search_str: str, _verbose: bool):
+    if os.path.exists(path):
+        for d, s, fl in os.walk(path):
+            for f in fl:
+                fp = os.path.join(d, f)
+                if _verbose is True:
+                    print(f'-- using zipfile-method: {file}')
+                return fp
+
+
 async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _program_root: str, _bench: bool) -> list:
     """ todo -->
     Intention: Filter different types of files into different read functions and then parse the file contents
@@ -177,14 +187,10 @@ async def file_reader(file: str, _query: str, _verbose: bool, _buffer: str, _pro
     _tmp = _program_root + '\\tmp\\' + str(handler_strings.randStr())
     handler_extraction_method.ex_zip(_file=file, _temp_directory=_tmp)
     if os.path.exists(_tmp):
-        for d, s, fl in os.walk(_tmp):
-            for f in fl:
-                fp = os.path.join(d, f)
-                if _verbose is True:
-                    print(f'-- using zipfile-method: {file}')
-                _result = await str_in_txt(file_in=fp, _search_str=_query)
-                if _result:
-                    return [file]
+        fp = await asyncio.to_thread(walk_extracted, file=file, path=_tmp, _search_str=_query, _verbose=_verbose)
+        _result = await str_in_txt(file_in=fp, _search_str=_query)
+        if _result:
+            return [file]
 
     if _verbose is True:
         print(f'-- add compatibility for: {file} ({_buffer})')
