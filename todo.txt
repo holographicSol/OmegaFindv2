@@ -22,3 +22,8 @@ todo:
 * sanitize all input
 
 * expand on contents scan filters and compatibility.
+
+* naturally as is, learning becomes progressively slower as the database grows.
+    This is because each magic-buffer to suffix association is compared to every suffix/magic buffer in
+    the database, as the database grows, comparison time increases.
+    Find a solution.

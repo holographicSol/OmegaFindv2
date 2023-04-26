@@ -64,14 +64,6 @@ async def read_file(file: str) -> list:
     return data
 
 
-async def async_read_all_bytes(file: str) -> list:
-    data = []
-    if os.path.exists(file):
-        async with aiofiles.open(file, mode='rb') as handle:
-            data = await handle.read()
-    return data
-
-
 def pytopdf_read(pdf_file: str):
     return PyPDF2.PdfReader(pdf_file, strict=False)
 
@@ -88,10 +80,6 @@ def pytoodf_extract(page_num: int, _search_str: str, pdf_reader):
 def string_match(_search_str: str, _text: str):
     if handler_strings.canonical_caseless(_search_str) in handler_strings.canonical_caseless(_text):
         return True
-
-
-def read_all_bytes(file_in: str):
-    return open(file_in, 'rb')
 
 
 async def str_in_pdf(file_in='', _search_str=''):
