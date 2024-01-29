@@ -2,6 +2,7 @@ OmegaFind v2. Search differently.
 
 Multi-processed async for better performance.
 
+Executable with prebuilt database available in dist directory.
 
 Overview:
 
