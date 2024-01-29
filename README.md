@@ -63,7 +63,10 @@ Overview:
 
     [ Database ]
     OmegaFindv2 stores all learned suffix to buffer associations to it's database during
-    learning. The database can be specified with -db argument.
+    learning. The database can be specified with -db argument. Note that larger databases
+    can increase scan time however it still may be preferrable to have a large general
+    purpose database like the one provided out of the box. This can be the included
+    database or OmegaFindv2 can build a new database from files of your discretion.
 
     [ Extract ]
     OmegaFindv2 is capable of extraction/decompression of nested compressed files unless
