@@ -78,8 +78,8 @@ Overview:
     vary depending on default or specified bmax and file sizes distributed accross
     chunks. An optional auto tune argument may be added in the future, such a feature
     would have to consider actual file sizes and bmax as well as file quantity. For now
-    cmax is specified and can greatly increase performance when an optimum cmax is
-    specified.
+    cmax is optionally specified and can greatly increase performance when an optimum
+    cmax is specified.
 
     [ BMAX ]
     Buffer max. OmegaFindv2 is reading files to ascertain what the files are during
