@@ -83,7 +83,11 @@ Overview:
     various scan techniques. BMAX specifies how many bytes of each file to read.
     If you have very large files on the system then be careful increasing BMAX, while
     also considering that BMAX minimum should be at least 2048 bytes to get a good
-    idea of what each file really is.
+    idea of what each file really is. CAREFULL consideration and preperation may be
+    required when optionally specifying bmax, to ensure sufficient RAM/pagefile/swap
+    will be available otherwise you may run into serious issues because this is
+    potentially very high performance software. Ensure your system meets logical
+    minimum requirements.
 
     [ RECURSIVE ]
     Scan techniques can be performed recursivley through all sub-directories of a
