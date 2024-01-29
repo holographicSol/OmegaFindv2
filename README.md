@@ -140,7 +140,7 @@ Overview:
     OmegaFindv2 contents scans brute force decoding to help maximize results yield
     from a contents scan. There are modules that guess encodings however they might
     choose the right encoding and so a brute force may be preferrable in order to
-    view characters in every which available way.
+    scan characters in every which available way.
 
 
 Help:
