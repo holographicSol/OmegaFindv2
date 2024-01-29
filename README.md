@@ -31,10 +31,9 @@ Overview:
     This scan technique attempts to expose files that may have been
     obfuscated in a particular way. Attempted exposition is performed by comparing suffixes
     and buffers of files during deobfuscation scans to 'trusted' buffer, suffix associations
-    in the database.
-    False positives can simply be unrecognized files (no suffix to buffer relationship exists
-    in the database for that suffix and buffer) or you learned something that is incorrect
-    (creating a suffix buffer association that is not true) and the solution
+    in the database. False positives can simply be unrecognized files (no suffix to buffer
+    relationship exists in the database for that suffix and buffer) or you learned something
+    that is incorrect (creating a suffix buffer association that is not true) and the solution
     to false positives is to learn -l more and learn carefully.
 
     [ Reveal Scan (R-SCAN) ]
