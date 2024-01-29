@@ -74,9 +74,12 @@ Overview:
     Chunk max. OmegaFindv2 scan teechniques are asynchronous and multiprocessed. CMAX
     specifies how many files will be in each chunk fed into the child processes.
     Exact optimum chunk max is variable predicated upon exactly how many files are
-    being scanned. Best performance -cmax 1000 for say 300,000 files. An optional
-    auto tune argument may be added in the future, for now cmax is optionally
-    specified and can greatly increase performance when an optimum cmax is specified.
+    being scanned. Best performance -cmax 1000 for say 300,000 files although this
+    may be different depending on bmax and file sizes distributed accross chunks.
+    An optional auto tune argument may be added in the future, such a feature would
+    have to consider actual file sizes and bmax as well as file quantity. For now
+    cmax is specified and can greatly increase performance when an optimum cmax is
+    specified.
 
     [ BMAX ]
     Buffer max. OmegaFindv2 is reading files to ascertain what the files are during
