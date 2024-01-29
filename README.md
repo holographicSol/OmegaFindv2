@@ -181,11 +181,6 @@ Help:
     [Author] Developed and written by Benjamin Jack Cullen.
 
 
-Download executable and source code bundled with compatible LibreOffice version:
-
-    https://drive.google.com/drive/folders/16z-UuosDoe2DnTaiCxjqh-Sh8RUYtPC2?usp=sharing
-
-
 User:
 
     * Ensure sufficient ram/page-file/swap if changing buffer_max. Ensure chunk_max suits your system while also
