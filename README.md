@@ -102,7 +102,7 @@ Overview:
     Omitting -R while specifying a directory should force OmegaFindv2 to only scan
     files in the immediate directory (no scanning in sub-directories).
     A file can also be specified with no extra arguments and -R if included should
-    be ignored. Recurive depth specification will likely be in an update soon.
+    be ignored. Recurive depth specification may be added at some point.
 
     [ Interact ]
     Great care has been taken for special custom displaying of tables which has been
