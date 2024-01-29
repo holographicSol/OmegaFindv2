@@ -91,7 +91,7 @@ if __name__ == '__main__':
             query = omega_find_sysargv.query(STDIN)
             write_bool = omega_find_sysargv.write_bool(STDIN)
             _digits = omega_find_sysargv.sub_digits(STDIN)
-            _bench = omega_find_sysargv.dev_bench(STDIN)
+            _bench = omega_find_sysargv.dev_bench(STDIN)    # intended for development purposes
 
             if os.path.exists(target) and os.path.exists(db_recognized_files):
 
@@ -118,8 +118,9 @@ if __name__ == '__main__':
                     files, x_files = scanfs.pre_scan_handler(_target=target, _verbose=verbose, _recursive=recursive)
                 elif os.path.isfile(target):
                     files = [target]
+                print(f'[SCANDIR] Files: {len(files)}. Errors: {len(x_files)}\n')
                 if _bench is True:
-                    print(f'prescan time: {time.perf_counter()-t0}')
+                    print(f'[BENCHMARK] Scandir:               {time.perf_counter()-t0}')
 
                 if write_bool is True:
                     if _bench is True:
@@ -127,14 +128,14 @@ if __name__ == '__main__':
                     asyncio.run(handler_file.write_scan_results(*files, file='pre_scan_files_'+dt+'.txt', _dt=dt))
                     asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
                     if _bench is True:
-                        print(f'prescan write time: {time.perf_counter()-t0}')
+                        print(f'[BENCHMARK] Write Scandir Results: {time.perf_counter()-t0}')
 
                 # chunk data ready for async multiprocess
                 if _bench is True:
                     t0 = time.perf_counter()
                 chunks = handler_chunk.chunk_data(files, chunk_max)
                 if _bench is True:
-                    print(f'chunk data time: {time.perf_counter()-t0}')
+                    print(f'[BENCHMARK] Chunking:              {time.perf_counter() - t0}')
 
                 # uncomment to view chunks
                 # print(f'[CHUNKS]')
@@ -162,7 +163,7 @@ if __name__ == '__main__':
                 results = asyncio.run(main(chunks, multiproc_dict, mode))
                 t_completion = str(time.perf_counter()-t)
                 if _bench is True:
-                    print(f'main operation time: {time.perf_counter()-t0}')
+                    print(f'[BENCHMARK] Scan Technique:        {time.perf_counter() - t0}')
 
                 # uncomment to view data structure
                 # print('before un-chunking:')
@@ -171,23 +172,15 @@ if __name__ == '__main__':
                 # print('')
 
                 # un-chunk results
+                if _bench is True:
+                    t0 = time.perf_counter()
                 if extract is False:
-                    if _bench is True:
-                        t0 = time.perf_counter()
-
                     results[:] = [item for sublist in results for item in sublist]
-
-                    if _bench is True:
-                        print(f'unchunk extract=False time: {time.perf_counter()-t0}')
                 else:
-                    if _bench is True:
-                        t0 = time.perf_counter()
-
                     results[:] = [item for sublist in results for item in sublist if item is not None]
                     results[:] = [item for sublist in results for item in sublist]
-
-                    if _bench is True:
-                        print(f'unchunk extract=True time: {time.perf_counter()-t0}')
+                if _bench is True:
+                    print(f'[BENCHMARK] Unchunking:            {time.perf_counter() - t0}')
 
                 # uncomment to view data structure
                 # print('after un-chunking:')
@@ -206,7 +199,7 @@ if __name__ == '__main__':
                     results = handler_chunk.un_chunk_data_0(results)
                     # results[:] = [item for sublist in results for item in sublist if item not in results]
                 if _bench is True:
-                    print(f'post-process time: {time.perf_counter()-t0}')
+                    print(f'[BENCHMARK] Post-Processing:       {time.perf_counter() - t0}')
 
                 # uncomment to view data structure
                 # print('after post-processing')
@@ -228,7 +221,7 @@ if __name__ == '__main__':
                     results = handler_sort.sort_len_2(data=results, sort_mode=sort_mode, _verbose=verbose)
 
                 if _bench is True:
-                    print(f'sort results time: {time.perf_counter()-t0}')
+                    print(f'[BENCHMARK] Sorting:               {time.perf_counter() - t0}')
 
                 # post-scan results
                 handler_results.post_scan_results(_results=results, _db_recognized_files=db_recognized_files,
