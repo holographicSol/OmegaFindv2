@@ -108,7 +108,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
 
                 if _bench is True:
-                    print(f'pre-tabulation time: {time.perf_counter()-t0}')
+                    print(f'[BENCHMARK] Pre-tabulation:        {time.perf_counter()-t0}')
                     print('')
 
                 # tabulate a tiny table (fast) rather than a huge table (potentially slow) while retaining maxcolwidths
@@ -154,7 +154,7 @@ def result_handler_display(_results: list, _exc: list, _t_completion: str, _verb
                 _results = handler_chunk.chunk_data(data=_results, chunk_size=chunk_size)
 
                 if _bench is True:
-                    print(f'pre-tabulation time: {time.perf_counter()-t0}')
+                    print(f'[BENCHMARK] Pre-tabulation:        {time.perf_counter()-t0}')
                     print('')
 
                 n_table = 0
@@ -219,10 +219,6 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                       interact: bool, _contents_scan: bool, _query: str, write_bool: bool, _mtime_scan: bool,
                       _bench: bool, _human_size=False):
 
-    if _verbose is True:
-        print('')
-        print('-- formulating tabulated results...')
-        print('')
     header_0 = 'Results'
     if _de_scan_bool is True:
         header_0 = 'De-Scan'
@@ -267,11 +263,11 @@ def post_scan_results(_results: list, _db_recognized_files: str, _learn_bool: bo
                                            _bench=_bench,
                                            _human_size=_human_size)
             else:
-                if _verbose is True:
-                    handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
-        else:
-            if _verbose is True:
+                # if _verbose is True:
                 handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
-    else:
-        if _verbose is True:
+        else:
+            # if _verbose is True:
             handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
+    else:
+        # if _verbose is True:
+        handler_print.display_zero_results(_results, _t_completion, _exc, header_0)
