@@ -34,7 +34,7 @@ Overview:
     in the database. False positives can simply be unrecognized files (no suffix to buffer
     relationship exists in the database for that suffix and buffer) or you learned something
     that is incorrect (creating a suffix buffer association that is not true) and the solution
-    to false positives is to learn -l more and learn carefully.
+    to reducing false positives is to learn more and learn carefully and on trusted files.
 
     [ Reveal Scan (R-SCAN) ]
     Return the file type of all files encountered during scan. 
