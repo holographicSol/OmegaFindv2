@@ -1,10 +1,8 @@
 OmegaFind v2. Search differently.
 
+Find files by file type, not by what they are called or claim to be.
 Multi-processed and asynchronous for high performance.
-
-Executable with prebuilt database available in dist directory.
-
-READ DOCUMENTATION BEFORE USING OMEGA FIND V2.
+A digital forensics tool.
 
 Overview:
 
