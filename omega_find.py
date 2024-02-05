@@ -84,7 +84,7 @@ if __name__ == '__main__':
         else:
             target = omega_find_sysargv.target(STDIN, mode)
             recursive = omega_find_sysargv.recursive(STDIN)
-            chunk_max = omega_find_sysargv.chunk_max(STDIN)
+            # chunk_max = omega_find_sysargv.chunk_max(STDIN)
             buffer_max = omega_find_sysargv.buffer_max(STDIN)
             db_recognized_files = omega_find_sysargv.database(STDIN)
             extract = omega_find_sysargv.extract(STDIN)
@@ -129,6 +129,9 @@ if __name__ == '__main__':
                     asyncio.run(handler_file.write_exception_log(*x_files, file='pre_scan_exception_log_'+dt+'.txt', _dt=dt))
                     if _bench is True:
                         print(f'[BENCHMARK] Write Scandir Results: {time.perf_counter()-t0}')
+
+                # use cmax from stdin or set cmax automatically using a broad formula
+                chunk_max = omega_find_sysargv.chunk_max(STDIN, len(files))
 
                 # chunk data ready for async multiprocess
                 if _bench is True:
