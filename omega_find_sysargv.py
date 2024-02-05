@@ -106,8 +106,9 @@ def query(stdin: list) -> str:
     return _query
 
 
-def chunk_max(stdin: list) -> int:
-    _chunk_max = 1
+def chunk_max(stdin: list, n: int) -> int:
+    third_cmax = round((n / os.cpu_count()) / 3)
+    _chunk_max = third_cmax * 2
     if '-cmax' in stdin:
         _chunk_max = int(stdin[stdin.index('-cmax') + 1])
     return _chunk_max
